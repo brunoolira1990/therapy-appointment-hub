@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Calendar, UserCheck, Stethoscope, FileHeart, ShieldCheck, MoveHorizontal, Activity } from 'lucide-react';
+import { ArrowRight, Calendar, UserCheck, Stethoscope, FileHeart, ShieldCheck, MoveHorizontal, Activity, Clock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import ServiceCard from '@/components/ServiceCard';
@@ -37,19 +37,19 @@ const Index = () => {
     {
       name: 'Sarah Thompson',
       role: 'Recovery Patient',
-      content: 'The care and attention I received at PhysioHub was exceptional. Their therapists are knowledgeable and my recovery was much faster than expected.',
+      content: "The care and attention I received at PhysioHub was exceptional. Their therapists are knowledgeable and my recovery was much faster than expected.",
       avatar: '1'
     },
     {
       name: 'Michael Rodriguez',
       role: 'Sports Injury',
-      content: 'As an athlete, I needed specialized care for my knee injury. The team designed a personalized recovery plan that got me back to training in record time.',
+      content: "As an athlete, I needed specialized care for my knee injury. The team designed a personalized recovery plan that got me back to training in record time.",
       avatar: '2'
     },
     {
       name: 'Emily Wilson',
       role: 'Chronic Pain Patient',
-      content: 'After years of chronic back pain, I finally found relief through their manual therapy program. I can now enjoy activities I thought I'd never do again.',
+      content: "After years of chronic back pain, I finally found relief through their manual therapy program. I can now enjoy activities I thought I'd never do again.",
       avatar: '3'
     }
   ];
