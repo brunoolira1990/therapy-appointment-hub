@@ -24,7 +24,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('pt-BR', {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
@@ -53,14 +53,14 @@ const PatientCard: React.FC<PatientCardProps> = ({
             <button 
               onClick={onEdit} 
               className="p-2 rounded-full text-foreground/60 hover:text-primary hover:bg-secondary transition-colors"
-              aria-label="Edit patient"
+              aria-label="Editar paciente"
             >
               <Edit size={16} />
             </button>
             <button 
               onClick={onDelete} 
               className="p-2 rounded-full text-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors"
-              aria-label="Delete patient"
+              aria-label="Excluir paciente"
             >
               <Trash2 size={16} />
             </button>
@@ -79,7 +79,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
           </div>
           <div className="flex items-center text-sm text-muted-foreground">
             <Calendar size={14} className="mr-2" />
-            <span>Born {formatDate(birthDate)}</span>
+            <span>Nascido em {formatDate(birthDate)}</span>
           </div>
         </div>
       </div>
@@ -87,10 +87,10 @@ const PatientCard: React.FC<PatientCardProps> = ({
       {/* Action Bar */}
       <div className="border-t border-border px-6 py-3 bg-secondary/40 flex justify-between items-center">
         <span className="text-xs text-muted-foreground">
-          Patient ID: #PT-{Math.floor(1000 + Math.random() * 9000)}
+          ID Paciente: #PT-{Math.floor(1000 + Math.random() * 9000)}
         </span>
         <button className="text-sm font-medium text-primary hover:underline">
-          View Appointments
+          Ver Consultas
         </button>
       </div>
     </div>

@@ -22,18 +22,18 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
           {/* Badge */}
           <div className="inline-flex items-center px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm animate-fade-in">
             <span className="inline-block w-2 h-2 rounded-full bg-primary mr-2"></span>
-            <span>Professional Physiotherapy Services</span>
+            <span>Serviços Profissionais de Fisioterapia</span>
           </div>
 
           {/* Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight animate-slide-up text-balance">
-            Restore Your Body's{' '}
-            <span className="text-primary">Natural Balance</span>
+            Restaure o Equilíbrio{' '}
+            <span className="text-primary">Natural do seu Corpo</span>
           </h1>
 
           {/* Subheading */}
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-slide-up animation-delay-100 text-balance">
-            Experience personalized physiotherapy treatments designed to address your specific needs and help you achieve optimal physical wellbeing.
+            Experimente tratamentos fisioterapêuticos personalizados, projetados para atender às suas necessidades específicas e ajudá-lo a alcançar o bem-estar físico ideal.
           </p>
 
           {/* CTA Buttons */}
@@ -44,7 +44,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
               icon={<Calendar size={18} />}
               iconPosition="left"
             >
-              Book an Appointment
+              Agendar uma Consulta
             </Button>
             <Button
               variant="outline"
@@ -52,7 +52,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
               icon={<ArrowRight size={18} />}
               iconPosition="right"
             >
-              Explore Services
+              Explorar Serviços
             </Button>
           </div>
 
@@ -65,7 +65,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
                   <path d="m9 12 2 2 4-4" />
                 </svg>
               </div>
-              <span>Professional Certified Therapists</span>
+              <span>Terapeutas Certificados e Profissionais</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
@@ -73,7 +73,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
                   <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                 </svg>
               </div>
-              <span>Personalized Treatment Plans</span>
+              <span>Planos de Tratamento Personalizados</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
@@ -82,7 +82,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
                   <path d="m9 12 2 2 4-4" />
                 </svg>
               </div>
-              <span>Modern Equipment & Techniques</span>
+              <span>Equipamentos e Técnicas Modernas</span>
             </div>
           </div>
         </div>

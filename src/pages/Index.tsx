@@ -13,21 +13,21 @@ const Index = () => {
   // Sample patient data
   const featuredPatients = [
     {
-      name: 'Alex Johnson',
-      email: 'alex@example.com',
-      phone: '(123) 456-7890',
+      name: 'Alexandre Silva',
+      email: 'alexandre@exemplo.com',
+      phone: '(11) 98765-4321',
       birthDate: '1985-06-15'
     },
     {
-      name: 'Maria Garcia',
-      email: 'maria@example.com',
-      phone: '(123) 456-7891',
+      name: 'Maria Santos',
+      email: 'maria@exemplo.com',
+      phone: '(11) 98765-4322',
       birthDate: '1990-03-22'
     },
     {
-      name: 'David Chen',
-      email: 'david@example.com',
-      phone: '(123) 456-7892',
+      name: 'David Costa',
+      email: 'david@exemplo.com',
+      phone: '(11) 98765-4323',
       birthDate: '1978-11-08'
     }
   ];
@@ -35,21 +35,21 @@ const Index = () => {
   // Sample reviews
   const testimonials = [
     {
-      name: 'Sarah Thompson',
-      role: 'Recovery Patient',
-      content: "The care and attention I received at PhysioHub was exceptional. Their therapists are knowledgeable and my recovery was much faster than expected.",
+      name: 'Sara Thompson',
+      role: 'Paciente em Recuperação',
+      content: "O cuidado e atenção que recebi na FisioHub foi excepcional. Os fisioterapeutas são muito capacitados e minha recuperação foi muito mais rápida do que o esperado.",
       avatar: '1'
     },
     {
-      name: 'Michael Rodriguez',
-      role: 'Sports Injury',
-      content: "As an athlete, I needed specialized care for my knee injury. The team designed a personalized recovery plan that got me back to training in record time.",
+      name: 'Miguel Rodriguez',
+      role: 'Lesão Esportiva',
+      content: "Como atleta, eu precisava de cuidados especializados para minha lesão no joelho. A equipe criou um plano de recuperação personalizado que me permitiu voltar aos treinos em tempo recorde.",
       avatar: '2'
     },
     {
-      name: 'Emily Wilson',
-      role: 'Chronic Pain Patient',
-      content: "After years of chronic back pain, I finally found relief through their manual therapy program. I can now enjoy activities I thought I'd never do again.",
+      name: 'Emília Silva',
+      role: 'Paciente com Dor Crônica',
+      content: "Depois de anos com dor crônica nas costas, finalmente encontrei alívio através do programa de terapia manual. Agora posso aproveitar atividades que pensei que nunca mais faria.",
       avatar: '3'
     }
   ];
@@ -67,48 +67,48 @@ const Index = () => {
           <div className="container-wide">
             <div className="text-center mb-12">
               <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
-                Our Services
+                Nossos Serviços
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Specialized Physiotherapy Services</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Serviços Especializados de Fisioterapia</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                We offer a comprehensive range of physical therapy treatments tailored to your specific needs and conditions.
+                Oferecemos uma ampla gama de tratamentos fisioterapêuticos adaptados às suas necessidades e condições específicas.
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <ServiceCard
-                title="Physical Rehabilitation"
-                description="Comprehensive rehabilitation for injuries, surgeries, and chronic conditions to restore mobility and function."
+                title="Reabilitação Física"
+                description="Reabilitação abrangente para lesões, cirurgias e condições crônicas para restaurar a mobilidade e função."
                 icon={<MoveHorizontal size={24} />}
               />
               
               <ServiceCard
-                title="Sports Therapy"
-                description="Specialized therapy for athletes focusing on injury prevention, performance enhancement, and quick recovery."
+                title="Terapia Esportiva"
+                description="Terapia especializada para atletas com foco na prevenção de lesões, melhoria de desempenho e recuperação rápida."
                 icon={<Activity size={24} />}
               />
               
               <ServiceCard
-                title="Manual Therapy"
-                description="Hands-on techniques to reduce pain, increase range of motion, and improve tissue healing through expert manipulation."
+                title="Terapia Manual"
+                description="Técnicas manuais para reduzir a dor, aumentar a amplitude de movimento e melhorar a cicatrização dos tecidos."
                 icon={<Stethoscope size={24} />}
               />
               
               <ServiceCard
-                title="Neurological Therapy"
-                description="Specialized treatments for patients with neurological conditions to improve movement, balance, and coordination."
+                title="Terapia Neurológica"
+                description="Tratamentos especializados para pacientes com condições neurológicas para melhorar movimento, equilíbrio e coordenação."
                 icon={<FileHeart size={24} />}
               />
               
               <ServiceCard
-                title="Geriatric Therapy"
-                description="Gentle and effective therapy designed specifically for older adults to maintain mobility and independence."
+                title="Terapia Geriátrica"
+                description="Terapia suave e eficaz projetada especificamente para idosos para manter a mobilidade e independência."
                 icon={<UserCheck size={24} />}
               />
               
               <ServiceCard
-                title="Preventive Care"
-                description="Educational programs and exercises to prevent injuries and maintain optimal physical health and wellbeing."
+                title="Cuidados Preventivos"
+                description="Programas educacionais e exercícios para prevenir lesões e manter a saúde física ideal e bem-estar."
                 icon={<ShieldCheck size={24} />}
               />
             </div>
@@ -120,7 +120,7 @@ const Index = () => {
                 icon={<ArrowRight size={18} />}
                 iconPosition="right"
               >
-                View All Services
+                Ver Todos os Serviços
               </Button>
             </div>
           </div>
@@ -133,20 +133,20 @@ const Index = () => {
               {/* Text Column */}
               <div className="flex flex-col justify-center">
                 <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
-                  Book a Session
+                  Agende uma Sessão
                 </span>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">Schedule Your Next Appointment</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">Agende Sua Próxima Consulta</h2>
                 <p className="text-muted-foreground mb-6">
-                  Taking the first step towards recovery is now easier than ever. Schedule an appointment with our expert physiotherapists and start your journey to better health.
+                  Dar o primeiro passo em direção à recuperação agora é mais fácil do que nunca. Agende uma consulta com nossos fisioterapeutas especialistas e comece sua jornada para uma saúde melhor.
                 </p>
                 
                 <ul className="space-y-4 mb-8">
                   {[
-                    'Convenient online scheduling system',
-                    'Flexible appointment times to suit your schedule',
-                    'Same-day appointments for urgent cases',
-                    'No referral needed for most services',
-                    'Multiple therapists with different specializations'
+                    'Sistema de agendamento online conveniente',
+                    'Horários de consulta flexíveis para se adequar à sua agenda',
+                    'Consultas no mesmo dia para casos urgentes',
+                    'Não é necessário encaminhamento para a maioria dos serviços',
+                    'Múltiplos terapeutas com diferentes especializações'
                   ].map((item, index) => (
                     <li key={index} className="flex items-center">
                       <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center mr-3">
@@ -162,11 +162,11 @@ const Index = () => {
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                   <div className="flex items-center">
                     <Calendar size={14} className="mr-1 text-primary" />
-                    <span>Available 6 days a week</span>
+                    <span>Disponível 6 dias por semana</span>
                   </div>
                   <div className="flex items-center">
                     <Clock size={14} className="mr-1 text-primary" />
-                    <span>Extended hours available</span>
+                    <span>Horários estendidos disponíveis</span>
                   </div>
                 </div>
               </div>
@@ -185,9 +185,9 @@ const Index = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
               <div>
                 <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
-                  Patient Management
+                  Gestão de Pacientes
                 </span>
-                <h2 className="text-3xl md:text-4xl font-bold">Manage Your Patients</h2>
+                <h2 className="text-3xl md:text-4xl font-bold">Gerencie Seus Pacientes</h2>
               </div>
               <div className="mt-4 md:mt-0">
                 <Button
@@ -196,7 +196,7 @@ const Index = () => {
                   icon={<UserCheck size={16} />}
                   iconPosition="left"
                 >
-                  Add New Patient
+                  Adicionar Novo Paciente
                 </Button>
               </div>
             </div>
@@ -209,8 +209,8 @@ const Index = () => {
                   email={patient.email}
                   phone={patient.phone}
                   birthDate={patient.birthDate}
-                  onEdit={() => console.log(`Edit patient: ${patient.name}`)}
-                  onDelete={() => console.log(`Delete patient: ${patient.name}`)}
+                  onEdit={() => console.log(`Editar paciente: ${patient.name}`)}
+                  onDelete={() => console.log(`Excluir paciente: ${patient.name}`)}
                 />
               ))}
             </div>
@@ -222,7 +222,7 @@ const Index = () => {
                 icon={<ArrowRight size={18} />}
                 iconPosition="right"
               >
-                View All Patients
+                Ver Todos os Pacientes
               </Button>
             </div>
           </div>
@@ -233,11 +233,11 @@ const Index = () => {
           <div className="container-narrow">
             <div className="text-center mb-12">
               <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
-                Testimonials
+                Depoimentos
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Patients Say</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">O Que Nossos Pacientes Dizem</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Here's what some of our patients have to say about their experience with our physiotherapy services.
+                Veja o que alguns de nossos pacientes têm a dizer sobre sua experiência com nossos serviços de fisioterapia.
               </p>
             </div>
             
@@ -279,9 +279,9 @@ const Index = () => {
         <section className="py-16 bg-primary/5 relative overflow-hidden">
           <div className="container-narrow relative z-10">
             <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Start Your Recovery Journey?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Pronto para Iniciar Sua Jornada de Recuperação?</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-                Take the first step towards improved health and mobility by scheduling an appointment with our expert physiotherapists today.
+                Dê o primeiro passo em direção a uma saúde e mobilidade melhores agendando uma consulta com nossos fisioterapeutas especialistas hoje mesmo.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button
@@ -290,13 +290,13 @@ const Index = () => {
                   icon={<Calendar size={18} />}
                   iconPosition="left"
                 >
-                  Book an Appointment
+                  Agendar uma Consulta
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
                 >
-                  Contact Us
+                  Fale Conosco
                 </Button>
               </div>
             </div>

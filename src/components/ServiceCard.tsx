@@ -39,7 +39,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         icon={<ArrowRight size={16} />}
         iconPosition="right"
       >
-        Learn more
+        Saiba mais
       </Button>
       
       {/* Subtle Gradient Overlay */}

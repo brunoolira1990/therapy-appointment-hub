@@ -28,22 +28,22 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
   
-  // Sample data
+  // Dados de exemplo
   const services: Service[] = [
-    { id: '1', name: 'Physical Rehabilitation', description: 'Recovery from injuries or surgeries' },
-    { id: '2', name: 'Sports Therapy', description: 'Specialized therapy for athletes' },
-    { id: '3', name: 'Manual Therapy', description: 'Hands-on techniques for pain relief' },
-    { id: '4', name: 'Neurological Therapy', description: 'Treatment for neurological conditions' }
+    { id: '1', name: 'Reabilitação Física', description: 'Recuperação de lesões ou cirurgias' },
+    { id: '2', name: 'Terapia Esportiva', description: 'Terapia especializada para atletas' },
+    { id: '3', name: 'Terapia Manual', description: 'Técnicas manuais para alívio da dor' },
+    { id: '4', name: 'Terapia Neurológica', description: 'Tratamento para condições neurológicas' }
   ];
   
   const timeSlots: TimeSlot[] = [
-    { id: '1', time: '09:00 AM' },
-    { id: '2', time: '10:00 AM' },
-    { id: '3', time: '11:00 AM' },
-    { id: '4', time: '01:00 PM' },
-    { id: '5', time: '02:00 PM' },
-    { id: '6', time: '03:00 PM' },
-    { id: '7', time: '04:00 PM' }
+    { id: '1', time: '09:00' },
+    { id: '2', time: '10:00' },
+    { id: '3', time: '11:00' },
+    { id: '4', time: '13:00' },
+    { id: '5', time: '14:00' },
+    { id: '6', time: '15:00' },
+    { id: '7', time: '16:00' }
   ];
   
   const generateDateOptions = () => {
@@ -54,7 +54,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       
-      // Skip weekends (0 = Sunday, 6 = Saturday)
+      // Pula fins de semana (0 = Domingo, 6 = Sábado)
       if (date.getDay() !== 0 && date.getDay() !== 6) {
         dates.push(date);
       }
@@ -64,16 +64,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
   };
   
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('pt-BR', {
       weekday: 'short',
-      month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      month: 'short'
     }).format(date);
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Process form submission
+    // Processa envio do formulário
     console.log({
       name,
       email,
@@ -84,10 +84,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
       notes
     });
     
-    // Here you would typically send this data to your backend
-    alert('Appointment request submitted. We will contact you to confirm.');
+    // Aqui você normalmente enviaria esses dados para o backend
+    alert('Solicitação de consulta enviada. Entraremos em contato para confirmar.');
     
-    // Reset form
+    // Reseta formulário
     setSelectedDate(null);
     setSelectedService('');
     setSelectedTimeSlot('');
@@ -100,17 +100,17 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
   return (
     <div className={cn('glass-card rounded-2xl overflow-hidden', className)}>
       <div className="bg-primary px-6 py-4 text-primary-foreground">
-        <h3 className="text-xl font-bold">Book Your Appointment</h3>
+        <h3 className="text-xl font-bold">Agende Sua Consulta</h3>
         <p className="text-primary-foreground/80 text-sm">
-          Fill out the form below to schedule a session
+          Preencha o formulário abaixo para agendar uma sessão
         </p>
       </div>
       
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
-        {/* Service Selection */}
+        {/* Seleção de Serviço */}
         <div className="space-y-3">
           <label className="block text-sm font-medium">
-            Select Service
+            Selecione o Serviço
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {services.map((service) => (
@@ -133,11 +133,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           </div>
         </div>
         
-        {/* Date Selection */}
+        {/* Seleção de Data */}
         <div className="space-y-3">
           <label className="block text-sm font-medium flex items-center">
             <CalendarIcon size={16} className="mr-1 text-primary" />
-            Select Date
+            Selecione a Data
           </label>
           <div className="flex overflow-x-auto pb-2 space-x-2 no-scrollbar">
             {generateDateOptions().map((date, index) => (
@@ -158,11 +158,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           </div>
         </div>
         
-        {/* Time Selection */}
+        {/* Seleção de Horário */}
         <div className="space-y-3">
           <label className="block text-sm font-medium flex items-center">
             <Clock size={16} className="mr-1 text-primary" />
-            Select Time
+            Selecione o Horário
           </label>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
             {timeSlots.map((slot) => (
@@ -182,16 +182,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           </div>
         </div>
         
-        {/* Contact Information */}
+        {/* Informações de Contato */}
         <div className="space-y-4">
           <label className="block text-sm font-medium">
-            Your Information
+            Suas Informações
           </label>
           
           <div className="space-y-3">
             <input
               type="text"
-              placeholder="Full Name"
+              placeholder="Nome Completo"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
@@ -201,7 +201,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 type="email"
-                placeholder="Email Address"
+                placeholder="Endereço de Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
@@ -210,7 +210,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
               
               <input
                 type="tel"
-                placeholder="Phone Number"
+                placeholder="Número de Telefone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
@@ -219,7 +219,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
             </div>
             
             <textarea
-              placeholder="Additional Notes (Optional)"
+              placeholder="Observações Adicionais (Opcional)"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none h-24"
@@ -233,11 +233,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           size="lg"
           fullWidth
         >
-          Request Appointment
+          Solicitar Agendamento
         </Button>
         
         <p className="text-xs text-center text-muted-foreground mt-3">
-          By submitting this form, you agree to our Terms of Service and Privacy Policy.
+          Ao enviar este formulário, você concorda com nossos Termos de Serviço e Política de Privacidade.
         </p>
       </form>
     </div>

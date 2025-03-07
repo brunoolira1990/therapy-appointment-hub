@@ -19,10 +19,10 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', path: '/', icon: <Home size={18} /> },
-    { name: 'Services', path: '/services', icon: <Clipboard size={18} /> },
-    { name: 'Patients', path: '/patients', icon: <Users size={18} /> },
-    { name: 'Schedule', path: '/schedule', icon: <Calendar size={18} /> },
+    { name: 'Início', path: '/', icon: <Home size={18} /> },
+    { name: 'Serviços', path: '/services', icon: <Clipboard size={18} /> },
+    { name: 'Pacientes', path: '/patients', icon: <Users size={18} /> },
+    { name: 'Agenda', path: '/schedule', icon: <Calendar size={18} /> },
   ];
 
   return (
@@ -37,13 +37,13 @@ const Navbar: React.FC = () => {
         <Link 
           to="/" 
           className="flex items-center space-x-2"
-          aria-label="Homepage"
+          aria-label="Página Inicial"
         >
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-            <span className="text-white font-heading font-bold text-xl">PT</span>
+            <span className="text-white font-heading font-bold text-xl">FT</span>
           </div>
           <div className="font-heading font-medium text-lg">
-            <span className="text-primary">Physio</span>
+            <span className="text-primary">Fisio</span>
             <span className="text-foreground">Hub</span>
           </div>
         </Link>
@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
             icon={<Calendar size={16} />}
             iconPosition="left"
           >
-            Book Appointment
+            Agendar Consulta
           </Button>
         </div>
 
@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="md:hidden p-2 rounded-full hover:bg-secondary transition-colors"
-          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
               iconPosition="left"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Book Appointment
+              Agendar Consulta
             </Button>
           </div>
         </div>
