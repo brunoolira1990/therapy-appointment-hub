@@ -6,11 +6,11 @@ import { Edit, Trash2, Phone, Mail, Calendar, ClipboardList, Clock, CheckCircle,
 interface PatientCardProps {
   name: string;
   email: string;
-  phone: string;
+  whatsApp: string;  // Changed from phone to whatsApp
   birthDate: string;
   patientId: string;
   appointmentsCount: number;
-  appointments?: any[];  // Add appointments array
+  appointments?: any[];
   hasPendingAppointment?: boolean;
   className?: string;
   onEdit?: () => void;
@@ -21,7 +21,7 @@ interface PatientCardProps {
 const PatientCard: React.FC<PatientCardProps> = ({
   name,
   email,
-  phone,
+  whatsApp,  // Changed from phone to whatsApp
   birthDate,
   patientId,
   appointmentsCount,
@@ -104,7 +104,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
           </div>
           <div className="flex items-center text-sm text-muted-foreground">
             <Phone size={14} className="mr-2" />
-            <span>{phone}</span>
+            <span>{whatsApp}</span>
           </div>
           <div className="flex items-center text-sm text-muted-foreground">
             <Calendar size={14} className="mr-2" />

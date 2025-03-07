@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, CheckCircle, XCircle, Send, AlertTriangle, Mail, Phone } from "lucide-react";
+import { Calendar, Clock, CheckCircle, XCircle, Send, AlertTriangle, Mail, MessageSquare } from "lucide-react";
+import { sendWhatsApp, sendEmail } from "@/utils/notifications";
 
 interface Appointment {
   id?: string;
@@ -22,7 +23,7 @@ interface Patient {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  whatsApp: string; // Changed from phone to whatsApp
   birthDate: string;
   appointments: Appointment[];
 }
@@ -76,22 +77,32 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
     }
   };
 
-  const handleSendSMS = (phone: string, appointmentInfo: string) => {
-    // Simulação de envio de SMS
-    toast.success('SMS enviado com sucesso', {
-      description: `Enviado para ${phone}`,
-      icon: <Phone className="h-4 w-4" />
-    });
-    console.log(`Simulando envio de SMS para ${phone}: ${appointmentInfo}`);
+  const handleSendWhatsApp = async (whatsAppNumber: string, appointmentInfo: string) => {
+    const success = await sendWhatsApp(whatsAppNumber, appointmentInfo);
+    if (success) {
+      toast.success('WhatsApp enviado com sucesso', {
+        description: `Enviado para ${whatsAppNumber}`,
+        icon: <MessageSquare className="h-4 w-4" />
+      });
+    } else {
+      toast.error('Erro ao enviar WhatsApp', {
+        description: 'Tente novamente mais tarde'
+      });
+    }
   };
 
-  const handleSendEmail = (email: string, appointmentInfo: string) => {
-    // Simulação de envio de email
-    toast.success('Email enviado com sucesso', {
-      description: `Enviado para ${email}`,
-      icon: <Mail className="h-4 w-4" />
-    });
-    console.log(`Simulando envio de email para ${email}: ${appointmentInfo}`);
+  const handleSendEmail = async (email: string, appointmentInfo: string) => {
+    const success = await sendEmail(email, "Informações sobre sua consulta", appointmentInfo);
+    if (success) {
+      toast.success('Email enviado com sucesso', {
+        description: `Enviado para ${email}`,
+        icon: <Mail className="h-4 w-4" />
+      });
+    } else {
+      toast.error('Erro ao enviar email', {
+        description: 'Tente novamente mais tarde'
+      });
+    }
   };
 
   const filteredAppointments = patient.appointments.filter(appointment => {
@@ -159,7 +170,7 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
                               onConfirmAppointment(patient.id, index);
                               const appointmentInfo = `Consulta de ${appointment.service} confirmada para ${date} às ${time}`;
                               handleSendEmail(patient.email, appointmentInfo);
-                              handleSendSMS(patient.phone, appointmentInfo);
+                              handleSendWhatsApp(patient.whatsApp, appointmentInfo);
                             }}
                           >
                             <CheckCircle className="mr-1 h-4 w-4" /> Confirmar
@@ -180,7 +191,7 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
                         onClick={() => {
                           const appointmentInfo = `Lembrete: Sua consulta de ${appointment.service} está agendada para ${date} às ${time}`;
                           handleSendEmail(patient.email, appointmentInfo);
-                          handleSendSMS(patient.phone, appointmentInfo);
+                          handleSendWhatsApp(patient.whatsApp, appointmentInfo);
                         }}
                       >
                         <Send className="mr-1 h-4 w-4" /> Enviar Lembrete

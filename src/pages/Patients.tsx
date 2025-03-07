@@ -35,7 +35,7 @@ const Patients = () => {
       id: 'PT-1001',
       name: 'Alexandre Silva',
       email: 'alexandre@exemplo.com',
-      phone: '(11) 98765-4321',
+      whatsApp: '(11) 98765-4321', // Changed from phone to whatsApp
       birthDate: '1985-06-15',
       appointments: [
         { date: '2023-10-15', time: '14:00', status: 'completed', service: 'Fisioterapia Ortopédica' },
@@ -46,7 +46,7 @@ const Patients = () => {
       id: 'PT-1002',
       name: 'Maria Santos',
       email: 'maria@exemplo.com',
-      phone: '(11) 98765-4322',
+      whatsApp: '(11) 98765-4322', // Changed from phone to whatsApp
       birthDate: '1990-03-22',
       appointments: [
         { date: '2023-11-10', time: '15:30', status: 'scheduled', service: 'Fisioterapia Neurológica' }
@@ -56,7 +56,7 @@ const Patients = () => {
       id: 'PT-1003',
       name: 'David Costa',
       email: 'david@exemplo.com',
-      phone: '(11) 98765-4323',
+      whatsApp: '(11) 98765-4323', // Changed from phone to whatsApp
       birthDate: '1978-11-08',
       appointments: []
     },
@@ -64,7 +64,7 @@ const Patients = () => {
       id: 'PT-1004',
       name: 'Ana Beatriz',
       email: 'ana@exemplo.com',
-      phone: '(11) 98765-4324',
+      whatsApp: '(11) 98765-4324', // Changed from phone to whatsApp
       birthDate: '1982-09-12',
       appointments: [
         { date: '2023-09-20', time: '09:00', status: 'completed', service: 'Terapia Manual' },
@@ -76,7 +76,7 @@ const Patients = () => {
       id: 'PT-1005',
       name: 'Carlos Eduardo',
       email: 'carlos@exemplo.com',
-      phone: '(11) 98765-4325',
+      whatsApp: '(11) 98765-4325', // Changed from phone to whatsApp
       birthDate: '1975-04-28',
       appointments: [
         { date: '2023-11-12', time: '16:00', status: 'scheduled', service: 'Fisioterapia Ortopédica' }
@@ -86,7 +86,7 @@ const Patients = () => {
       id: 'PT-1006',
       name: 'Isabela Martins',
       email: 'isabela@exemplo.com',
-      phone: '(11) 98765-4326',
+      whatsApp: '(11) 98765-4326', // Changed from phone to whatsApp
       birthDate: '1978-11-08',
       appointments: []
     }
@@ -118,7 +118,7 @@ const Patients = () => {
             id: `PT-${1000 + updatedPatients.length + 1}`,
             name: pendingAppointment.name,
             email: pendingAppointment.email,
-            phone: pendingAppointment.phone,
+            whatsApp: pendingAppointment.phone || pendingAppointment.whatsApp || '', // Support both old and new format
             birthDate: pendingAppointment.birthDate || new Date().toISOString().split('T')[0], // Data padrão se não for fornecida
             appointments: pendingAppointment.appointments
           };
@@ -213,7 +213,7 @@ const Patients = () => {
     
     setPatients(updatedPatients);
     toast.success('Consulta confirmada com sucesso', {
-      description: 'O paciente receberá um SMS e email com a confirmação'
+      description: 'O paciente receberá um WhatsApp e email com a confirmação'
     });
   };
 
@@ -260,7 +260,7 @@ const Patients = () => {
   const filteredPatients = patients.filter(patient => 
     patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    patient.phone.includes(searchTerm)
+    patient.whatsApp.includes(searchTerm) // Changed from phone to whatsApp
   );
 
   return (
@@ -297,7 +297,7 @@ const Patients = () => {
               </div>
               <input
                 type="text"
-                placeholder="Buscar pacientes por nome, email ou telefone..."
+                placeholder="Buscar pacientes por nome, email ou WhatsApp..."
                 className="pl-10 pr-4 py-2 w-full border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -332,7 +332,7 @@ const Patients = () => {
                   key={patient.id}
                   name={patient.name}
                   email={patient.email}
-                  phone={patient.phone}
+                  whatsApp={patient.whatsApp} // Changed from phone to whatsApp
                   birthDate={patient.birthDate}
                   patientId={patient.id}
                   appointmentsCount={patient.appointments.length}
