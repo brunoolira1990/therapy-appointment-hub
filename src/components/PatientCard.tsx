@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Edit, Trash2, Phone, Mail, Calendar, ClipboardList, Clock } from 'lucide-react';
+import { Edit, Trash2, Phone, Mail, Calendar, ClipboardList, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface PatientCardProps {
   name: string;
@@ -10,6 +10,7 @@ interface PatientCardProps {
   birthDate: string;
   patientId: string;
   appointmentsCount: number;
+  appointments?: any[];  // Add appointments array
   hasPendingAppointment?: boolean;
   className?: string;
   onEdit?: () => void;
@@ -24,6 +25,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
   birthDate,
   patientId,
   appointmentsCount,
+  appointments = [],
   hasPendingAppointment = false,
   className,
   onEdit,
@@ -38,6 +40,11 @@ const PatientCard: React.FC<PatientCardProps> = ({
       year: 'numeric'
     }).format(date);
   };
+
+  // Count appointments by status
+  const pendingCount = appointments?.filter(a => a.status === 'pending').length || 0;
+  const scheduledCount = appointments?.filter(a => a.status === 'scheduled').length || 0;
+  const completedCount = appointments?.filter(a => a.status === 'completed').length || 0;
 
   return (
     <div
@@ -104,6 +111,27 @@ const PatientCard: React.FC<PatientCardProps> = ({
             <span>Nascido em {formatDate(birthDate)}</span>
           </div>
         </div>
+
+        {/* Appointment Status Summary */}
+        {appointmentsCount > 0 && (
+          <div className="mt-4 flex gap-2">
+            {pendingCount > 0 && (
+              <div className="px-2 py-1 bg-amber-50 text-amber-700 text-xs rounded-full flex items-center">
+                <Clock size={12} className="mr-1" /> {pendingCount} pendente{pendingCount !== 1 ? 's' : ''}
+              </div>
+            )}
+            {scheduledCount > 0 && (
+              <div className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full flex items-center">
+                <Calendar size={12} className="mr-1" /> {scheduledCount} agendada{scheduledCount !== 1 ? 's' : ''}
+              </div>
+            )}
+            {completedCount > 0 && (
+              <div className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full flex items-center">
+                <CheckCircle size={12} className="mr-1" /> {completedCount} concluída{completedCount !== 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Action Bar */}

@@ -9,12 +9,15 @@ import Button from '@/components/Button';
 import Footer from '@/components/Footer';
 import { toast } from 'sonner';
 import PatientFormDialog from '@/components/PatientFormDialog';
+import AppointmentDetailsDialog from '@/components/AppointmentDetailsDialog';
 
 const Patients = () => {
   const { user, isAuthenticated } = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState<any>(null);
+  const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
   
   // Redirecionar para login se não estiver autenticado
   if (!isAuthenticated) {
@@ -176,18 +179,75 @@ const Patients = () => {
   };
 
   const handleViewAppointments = (patient) => {
-    // Aqui mostraria as consultas do paciente
-    const pendingCount = patient.appointments.filter(a => a.status === 'pending').length;
-    const scheduledCount = patient.appointments.filter(a => a.status === 'scheduled').length;
-    const completedCount = patient.appointments.filter(a => a.status === 'completed').length;
+    setSelectedPatient(patient);
+    setIsAppointmentDialogOpen(true);
+  };
+
+  // Confirmar uma consulta pendente
+  const handleConfirmAppointment = (patientId: string, appointmentIndex: number) => {
+    const updatedPatients = patients.map(patient => {
+      if (patient.id === patientId) {
+        const updatedAppointments = [...patient.appointments];
+        if (updatedAppointments[appointmentIndex]) {
+          updatedAppointments[appointmentIndex] = {
+            ...updatedAppointments[appointmentIndex],
+            status: 'scheduled'
+          };
+        }
+        
+        // Atualize o paciente selecionado se estiver aberto no dialog
+        if (selectedPatient && selectedPatient.id === patientId) {
+          setSelectedPatient({
+            ...patient,
+            appointments: updatedAppointments
+          });
+        }
+        
+        return {
+          ...patient,
+          appointments: updatedAppointments
+        };
+      }
+      return patient;
+    });
     
-    let message = `${patient.name} tem ${patient.appointments.length} consultas.`;
-    if (pendingCount > 0) {
-      message += ` (${pendingCount} pendentes)`;
-    }
+    setPatients(updatedPatients);
+    toast.success('Consulta confirmada com sucesso', {
+      description: 'O paciente receberá um SMS e email com a confirmação'
+    });
+  };
+
+  // Cancelar uma consulta pendente
+  const handleCancelAppointment = (patientId: string, appointmentIndex: number) => {
+    const updatedPatients = patients.map(patient => {
+      if (patient.id === patientId) {
+        const updatedAppointments = [...patient.appointments];
+        if (updatedAppointments[appointmentIndex]) {
+          updatedAppointments[appointmentIndex] = {
+            ...updatedAppointments[appointmentIndex],
+            status: 'cancelled'
+          };
+        }
+        
+        // Atualize o paciente selecionado se estiver aberto no dialog
+        if (selectedPatient && selectedPatient.id === patientId) {
+          setSelectedPatient({
+            ...patient,
+            appointments: updatedAppointments
+          });
+        }
+        
+        return {
+          ...patient,
+          appointments: updatedAppointments
+        };
+      }
+      return patient;
+    });
     
-    toast('Consultas do paciente', {
-      description: message
+    setPatients(updatedPatients);
+    toast.success('Consulta cancelada', {
+      description: 'O paciente será notificado sobre o cancelamento'
     });
   };
 
@@ -276,6 +336,7 @@ const Patients = () => {
                   birthDate={patient.birthDate}
                   patientId={patient.id}
                   appointmentsCount={patient.appointments.length}
+                  appointments={patient.appointments}
                   hasPendingAppointment={patientHasPendingAppointment(patient)}
                   onEdit={() => handleEditPatient(patient)}
                   onDelete={() => handleDeletePatient(patient.id)}
@@ -298,6 +359,14 @@ const Patients = () => {
         onClose={() => setIsFormOpen(false)}
         onSubmit={handleFormSubmit}
         initialData={editingPatient}
+      />
+      
+      <AppointmentDetailsDialog
+        isOpen={isAppointmentDialogOpen}
+        onClose={() => setIsAppointmentDialogOpen(false)}
+        patient={selectedPatient}
+        onConfirmAppointment={handleConfirmAppointment}
+        onCancelAppointment={handleCancelAppointment}
       />
       
       <Footer />
