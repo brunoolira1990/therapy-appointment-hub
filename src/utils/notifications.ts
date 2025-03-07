@@ -16,15 +16,37 @@ const EMAIL_CONFIG = {
   }
 };
 
+// Função para formatar o número de WhatsApp brasileiro para o formato internacional
+const formatBrazilianWhatsApp = (whatsAppNumber: string): string => {
+  // Remove todos os caracteres não numéricos
+  const digits = whatsAppNumber.replace(/\D/g, '');
+  
+  // Se já começar com +55, não precisa adicionar
+  if (digits.startsWith('55')) {
+    return `+${digits}`;
+  }
+  
+  // Verifica se é um número brasileiro válido (com ou sem o 9 na frente)
+  if (digits.length === 10 || digits.length === 11) {
+    return `+55${digits}`;
+  }
+  
+  // Se não está em um formato reconhecido, retorna como está
+  return whatsAppNumber;
+};
+
 // Simula o envio de uma mensagem de WhatsApp
 export const sendWhatsApp = (whatsAppNumber: string, message: string): Promise<boolean> => {
+  // Formata o número para o padrão internacional
+  const formattedNumber = formatBrazilianWhatsApp(whatsAppNumber);
+  
   // Em um ambiente real, aqui haveria uma chamada para a API do WhatsApp Business
-  console.log(`Enviando WhatsApp para ${whatsAppNumber}: ${message}`);
+  console.log(`Enviando WhatsApp para ${formattedNumber}: ${message}`);
   
   // Simulando um tempo de resposta da API
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log(`WhatsApp enviado com sucesso para ${whatsAppNumber}`);
+      console.log(`WhatsApp enviado com sucesso para ${formattedNumber}`);
       resolve(true);
     }, 800);
   });

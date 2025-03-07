@@ -18,7 +18,7 @@ const PatientFormDialog: React.FC<PatientFormDialogProps> = ({
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
+    whatsApp: '',
     birthDate: '',
   });
 
@@ -29,14 +29,14 @@ const PatientFormDialog: React.FC<PatientFormDialogProps> = ({
         setFormData({
           name: initialData.name || '',
           email: initialData.email || '',
-          phone: initialData.phone || '',
+          whatsApp: initialData.whatsApp || '',
           birthDate: initialData.birthDate || '',
         });
       } else {
         setFormData({
           name: '',
           email: '',
-          phone: '',
+          whatsApp: '',
           birthDate: '',
         });
       }
@@ -45,7 +45,35 @@ const PatientFormDialog: React.FC<PatientFormDialogProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Format Brazilian phone number as user types
+    if (name === 'whatsApp') {
+      // Remove non-digit characters
+      let digits = value.replace(/\D/g, '');
+      
+      // Format according to Brazilian phone number pattern
+      if (digits.length <= 2) {
+        setFormData(prev => ({ ...prev, [name]: digits }));
+      } else if (digits.length <= 7) {
+        setFormData(prev => ({ 
+          ...prev, 
+          [name]: `(${digits.slice(0, 2)}) ${digits.slice(2)}` 
+        }));
+      } else if (digits.length <= 11) {
+        setFormData(prev => ({ 
+          ...prev, 
+          [name]: `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}` 
+        }));
+      } else {
+        // Limit to 11 digits (Brazilian standard: 2 for area code + 9 for number)
+        setFormData(prev => ({ 
+          ...prev, 
+          [name]: `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}` 
+        }));
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -102,18 +130,22 @@ const PatientFormDialog: React.FC<PatientFormDialogProps> = ({
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="phone" className="text-sm font-medium">
-              Telefone
+            <label htmlFor="whatsApp" className="text-sm font-medium">
+              WhatsApp
             </label>
             <input
-              id="phone"
-              name="phone"
+              id="whatsApp"
+              name="whatsApp"
               type="tel"
               required
-              value={formData.phone}
+              value={formData.whatsApp}
               onChange={handleChange}
+              placeholder="(DD) XXXXX-XXXX"
               className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
+            <p className="text-xs text-muted-foreground">
+              Formato brasileiro: (XX) XXXXX-XXXX
+            </p>
           </div>
 
           <div className="space-y-2">

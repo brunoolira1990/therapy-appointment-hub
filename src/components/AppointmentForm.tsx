@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import Button from './Button';
@@ -27,7 +28,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [whatsApp, setWhatsApp] = useState('');
   const [notes, setNotes] = useState('');
   
   // Dados de exemplo
@@ -83,10 +84,29 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     return timeSlot ? timeSlot.time : '';
   };
 
+  const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Remove non-digit characters
+    let digits = value.replace(/\D/g, '');
+    
+    // Format according to Brazilian phone number pattern
+    if (digits.length <= 2) {
+      setWhatsApp(digits);
+    } else if (digits.length <= 7) {
+      setWhatsApp(`(${digits.slice(0, 2)}) ${digits.slice(2)}`);
+    } else if (digits.length <= 11) {
+      setWhatsApp(`(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`);
+    } else {
+      // Limit to 11 digits (Brazilian standard: 2 for area code + 9 for number)
+      setWhatsApp(`(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedDate || !selectedService || !selectedTimeSlot || !name || !email || !phone) {
+    if (!selectedDate || !selectedService || !selectedTimeSlot || !name || !email || !whatsApp) {
       toast.error('Por favor, preencha todos os campos obrigatórios');
       return;
     }
@@ -96,7 +116,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     const appointmentData = {
       name,
       email,
-      phone,
+      whatsApp,
       selectedDate,
       selectedService,
       selectedTimeSlot,
@@ -110,7 +130,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     const patientAppointment = {
       name,
       email,
-      phone,
+      whatsApp,
       birthDate: '', // Este campo precisará ser preenchido na página de pacientes
       appointments: [
         {
@@ -140,7 +160,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     setSelectedTimeSlot('');
     setName('');
     setEmail('');
-    setPhone('');
+    setWhatsApp('');
     setNotes('');
     
     // Redirecionar para página de pacientes (ou página de confirmação)
@@ -260,14 +280,19 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
                 required
               />
               
-              <input
-                type="tel"
-                placeholder="Número de Telefone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="tel"
+                  placeholder="WhatsApp (DD) XXXXX-XXXX"
+                  value={whatsApp}
+                  onChange={handleWhatsAppChange}
+                  className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  required
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Formato brasileiro: (XX) XXXXX-XXXX
+                </p>
+              </div>
             </div>
             
             <textarea
