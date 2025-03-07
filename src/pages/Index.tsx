@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight, Calendar, UserCheck, Stethoscope, FileHeart, ShieldCheck, MoveHorizontal, Activity, Clock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -7,6 +6,7 @@ import ServiceCard from '@/components/ServiceCard';
 import AppointmentForm from '@/components/AppointmentForm';
 import Button from '@/components/Button';
 import Footer from '@/components/Footer';
+import DoctorBio from '@/components/DoctorBio';
 
 const Index = () => {
   // Sample reviews
@@ -102,6 +102,9 @@ const Index = () => {
             </div>
           </div>
         </section>
+        
+        {/* Doctor Bio Section */}
+        <DoctorBio />
         
         {/* Booking Section */}
         <section className="py-20">
