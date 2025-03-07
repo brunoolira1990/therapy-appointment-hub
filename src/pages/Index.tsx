@@ -5,33 +5,10 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import ServiceCard from '@/components/ServiceCard';
 import AppointmentForm from '@/components/AppointmentForm';
-import PatientCard from '@/components/PatientCard';
 import Button from '@/components/Button';
 import Footer from '@/components/Footer';
 
 const Index = () => {
-  // Sample patient data
-  const featuredPatients = [
-    {
-      name: 'Alexandre Silva',
-      email: 'alexandre@exemplo.com',
-      phone: '(11) 98765-4321',
-      birthDate: '1985-06-15'
-    },
-    {
-      name: 'Maria Santos',
-      email: 'maria@exemplo.com',
-      phone: '(11) 98765-4322',
-      birthDate: '1990-03-22'
-    },
-    {
-      name: 'David Costa',
-      email: 'david@exemplo.com',
-      phone: '(11) 98765-4323',
-      birthDate: '1978-11-08'
-    }
-  ];
-  
   // Sample reviews
   const testimonials = [
     {
@@ -179,57 +156,8 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Patients Section */}
-        <section className="py-20 bg-secondary/30">
-          <div className="container-wide">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
-              <div>
-                <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
-                  Gestão de Pacientes
-                </span>
-                <h2 className="text-3xl md:text-4xl font-bold">Gerencie Seus Pacientes</h2>
-              </div>
-              <div className="mt-4 md:mt-0">
-                <Button
-                  variant="primary"
-                  size="md"
-                  icon={<UserCheck size={16} />}
-                  iconPosition="left"
-                >
-                  Adicionar Novo Paciente
-                </Button>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredPatients.map((patient, index) => (
-                <PatientCard
-                  key={index}
-                  name={patient.name}
-                  email={patient.email}
-                  phone={patient.phone}
-                  birthDate={patient.birthDate}
-                  onEdit={() => console.log(`Editar paciente: ${patient.name}`)}
-                  onDelete={() => console.log(`Excluir paciente: ${patient.name}`)}
-                />
-              ))}
-            </div>
-            
-            <div className="text-center mt-12">
-              <Button
-                variant="outline"
-                size="lg"
-                icon={<ArrowRight size={18} />}
-                iconPosition="right"
-              >
-                Ver Todos os Pacientes
-              </Button>
-            </div>
-          </div>
-        </section>
-        
         {/* Testimonials Section */}
-        <section className="py-20 overflow-hidden">
+        <section className="py-20 overflow-hidden bg-secondary/30">
           <div className="container-narrow">
             <div className="text-center mb-12">
               <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
