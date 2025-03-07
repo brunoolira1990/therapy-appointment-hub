@@ -11,7 +11,7 @@ const EMAIL_CONFIG = {
   port: 465,
   secure: true,
   auth: {
-    user: 'contato@tatyanelira.com.br', // Substitua pelo email correto
+    user: 'contato@tatyanelira.com.br',
     pass: 'Tatyane@Tatyane'
   }
 };
@@ -37,36 +37,46 @@ const formatBrazilianWhatsApp = (whatsAppNumber: string): string => {
 
 // Simula o envio de uma mensagem de WhatsApp
 export const sendWhatsApp = (whatsAppNumber: string, message: string): Promise<boolean> => {
-  // Formata o número para o padrão internacional
-  const formattedNumber = formatBrazilianWhatsApp(whatsAppNumber);
-  
-  // Em um ambiente real, aqui haveria uma chamada para a API do WhatsApp Business
-  console.log(`Enviando WhatsApp para ${formattedNumber}: ${message}`);
-  
-  // Simulando um tempo de resposta da API
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`WhatsApp enviado com sucesso para ${formattedNumber}`);
-      resolve(true);
-    }, 800);
-  });
+  try {
+    // Formata o número para o padrão internacional
+    const formattedNumber = formatBrazilianWhatsApp(whatsAppNumber);
+    
+    // Em um ambiente real, aqui haveria uma chamada para a API do WhatsApp Business
+    console.log(`Enviando WhatsApp para ${formattedNumber}: ${message}`);
+    
+    // Simulando um tempo de resposta da API
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`WhatsApp enviado com sucesso para ${formattedNumber}`);
+        resolve(true);
+      }, 800);
+    });
+  } catch (error) {
+    console.error('Erro ao enviar WhatsApp:', error);
+    return Promise.resolve(false);
+  }
 };
 
 // Simula o envio de um email usando as configurações fornecidas
 export const sendEmail = (email: string, subject: string, message: string): Promise<boolean> => {
-  // Em um ambiente real, aqui haveria uma chamada usando nodemailer ou similar
-  // com as configurações fornecidas
-  console.log(`Enviando email para ${email} usando o servidor ${EMAIL_CONFIG.host}`);
-  console.log(`Assunto: ${subject}`);
-  console.log(`Mensagem: ${message}`);
-  
-  // Simulando um tempo de resposta do servidor de email
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Email enviado com sucesso para ${email}`);
-      resolve(true);
-    }, 1000);
-  });
+  try {
+    // Em um ambiente real, aqui haveria uma chamada usando nodemailer ou similar
+    // com as configurações fornecidas
+    console.log(`Enviando email para ${email} usando o servidor ${EMAIL_CONFIG.host}`);
+    console.log(`Assunto: ${subject}`);
+    console.log(`Mensagem: ${message}`);
+    
+    // Simulando um tempo de resposta do servidor de email
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`Email enviado com sucesso para ${email}`);
+        resolve(true);
+      }, 1000);
+    });
+  } catch (error) {
+    console.error('Erro ao enviar email:', error);
+    return Promise.resolve(false);
+  }
 };
 
 // Formata mensagem para consultas confirmadas

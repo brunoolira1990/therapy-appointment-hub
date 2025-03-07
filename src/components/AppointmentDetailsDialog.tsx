@@ -8,7 +8,13 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, CheckCircle, XCircle, Send, AlertTriangle, Mail, MessageSquare } from "lucide-react";
-import { sendWhatsApp, sendEmail } from "@/utils/notifications";
+import { 
+  sendWhatsApp, 
+  sendEmail, 
+  formatConfirmationMessage,
+  formatReminderMessage,
+  formatCancellationMessage
+} from "@/utils/notifications";
 
 interface Appointment {
   id?: string;
@@ -23,7 +29,7 @@ interface Patient {
   id: string;
   name: string;
   email: string;
-  whatsApp: string; // Changed from phone to whatsApp
+  whatsApp: string;
   birthDate: string;
   appointments: Appointment[];
 }
@@ -77,11 +83,20 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
     }
   };
 
-  const handleSendWhatsApp = async (whatsAppNumber: string, appointmentInfo: string) => {
-    const success = await sendWhatsApp(whatsAppNumber, appointmentInfo);
+  const handleSendWhatsApp = async (appointment: Appointment) => {
+    const { date, time } = formatAppointmentDateTime(appointment.date, appointment.time);
+    
+    let message = "";
+    if (appointment.status === 'scheduled') {
+      message = formatConfirmationMessage(patient.name, appointment.service, date, time);
+    } else {
+      message = formatReminderMessage(patient.name, appointment.service, date, time);
+    }
+    
+    const success = await sendWhatsApp(patient.whatsApp, message);
     if (success) {
       toast.success('WhatsApp enviado com sucesso', {
-        description: `Enviado para ${whatsAppNumber}`,
+        description: `Mensagem enviada para ${patient.whatsApp}`,
         icon: <MessageSquare className="h-4 w-4" />
       });
     } else {
@@ -91,11 +106,24 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
     }
   };
 
-  const handleSendEmail = async (email: string, appointmentInfo: string) => {
-    const success = await sendEmail(email, "Informações sobre sua consulta", appointmentInfo);
+  const handleSendEmail = async (appointment: Appointment) => {
+    const { date, time } = formatAppointmentDateTime(appointment.date, appointment.time);
+    
+    let message = "";
+    let subject = "";
+    
+    if (appointment.status === 'scheduled') {
+      subject = `Confirmação de Consulta - ${appointment.service}`;
+      message = formatConfirmationMessage(patient.name, appointment.service, date, time);
+    } else {
+      subject = `Lembrete de Consulta - ${appointment.service}`;
+      message = formatReminderMessage(patient.name, appointment.service, date, time);
+    }
+    
+    const success = await sendEmail(patient.email, subject, message);
     if (success) {
       toast.success('Email enviado com sucesso', {
-        description: `Enviado para ${email}`,
+        description: `Email enviado para ${patient.email}`,
         icon: <Mail className="h-4 w-4" />
       });
     } else {
@@ -103,6 +131,48 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
         description: 'Tente novamente mais tarde'
       });
     }
+  };
+
+  const handleConfirm = (index: number) => {
+    const appointment = patient.appointments[index];
+    const { date, time } = formatAppointmentDateTime(appointment.date, appointment.time);
+    
+    onConfirmAppointment(patient.id, index);
+    
+    // Send confirmation messages
+    const message = formatConfirmationMessage(patient.name, appointment.service, date, time);
+    const subject = `Confirmação de Consulta - ${appointment.service}`;
+    
+    sendEmail(patient.email, subject, message);
+    sendWhatsApp(patient.whatsApp, message);
+  };
+
+  const handleCancel = (index: number) => {
+    const appointment = patient.appointments[index];
+    const { date, time } = formatAppointmentDateTime(appointment.date, appointment.time);
+    
+    onCancelAppointment(patient.id, index);
+    
+    // Send cancellation messages
+    const message = formatCancellationMessage(patient.name, appointment.service, date, time);
+    const subject = `Cancelamento de Consulta - ${appointment.service}`;
+    
+    sendEmail(patient.email, subject, message);
+    sendWhatsApp(patient.whatsApp, message);
+  };
+
+  const sendReminder = (appointment: Appointment) => {
+    const { date, time } = formatAppointmentDateTime(appointment.date, appointment.time);
+    const message = formatReminderMessage(patient.name, appointment.service, date, time);
+    const subject = `Lembrete de Consulta - ${appointment.service}`;
+    
+    sendEmail(patient.email, subject, message);
+    sendWhatsApp(patient.whatsApp, message);
+    
+    toast.success('Lembrete enviado', {
+      description: 'O paciente foi notificado por WhatsApp e email',
+      icon: <Send className="h-4 w-4" />
+    });
   };
 
   const filteredAppointments = patient.appointments.filter(appointment => {
@@ -166,36 +236,29 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
                             size="sm" 
                             variant="default"
                             className="bg-green-600 hover:bg-green-700"
-                            onClick={() => {
-                              onConfirmAppointment(patient.id, index);
-                              const appointmentInfo = `Consulta de ${appointment.service} confirmada para ${date} às ${time}`;
-                              handleSendEmail(patient.email, appointmentInfo);
-                              handleSendWhatsApp(patient.whatsApp, appointmentInfo);
-                            }}
+                            onClick={() => handleConfirm(index)}
                           >
                             <CheckCircle className="mr-1 h-4 w-4" /> Confirmar
                           </Button>
                           <Button 
                             size="sm" 
                             variant="destructive"
-                            onClick={() => onCancelAppointment(patient.id, index)}
+                            onClick={() => handleCancel(index)}
                           >
                             <XCircle className="mr-1 h-4 w-4" /> Recusar
                           </Button>
                         </>
                       )}
                       
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => {
-                          const appointmentInfo = `Lembrete: Sua consulta de ${appointment.service} está agendada para ${date} às ${time}`;
-                          handleSendEmail(patient.email, appointmentInfo);
-                          handleSendWhatsApp(patient.whatsApp, appointmentInfo);
-                        }}
-                      >
-                        <Send className="mr-1 h-4 w-4" /> Enviar Lembrete
-                      </Button>
+                      {(appointment.status === 'scheduled' || appointment.status === 'pending') && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => sendReminder(appointment)}
+                        >
+                          <Send className="mr-1 h-4 w-4" /> Enviar Lembrete
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );
