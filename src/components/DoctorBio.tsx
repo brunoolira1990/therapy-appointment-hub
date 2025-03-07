@@ -27,7 +27,7 @@ const DoctorBio: React.FC<DoctorBioProps> = ({ className }) => {
             <div className="absolute -top-4 -left-4 w-full h-full rounded-2xl bg-primary/10 animate-pulse-slow"></div>
             <div className="glass-card p-3 rounded-2xl relative z-10">
               <img 
-                src="/doctor-profile.jpg" 
+                src="/tatyane.png" 
                 alt="Dra. Tatyane Prado de Lira" 
                 className="w-full h-auto rounded-xl object-cover" 
               />

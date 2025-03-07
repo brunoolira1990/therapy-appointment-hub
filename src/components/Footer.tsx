@@ -19,11 +19,11 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
           <div>
             <div className="flex items-center space-x-2 mb-6">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <span className="text-white font-heading font-bold text-xl">FT</span>
+                <span className="text-white font-heading font-bold text-xl">TL</span>
               </div>
               <div className="font-heading font-medium text-lg">
-                <span className="text-primary">Fisio</span>
-                <span className="text-foreground">Hub</span>
+                <span className="text-primary">Tatyane</span>
+                <span className="text-foreground">Lira</span>
               </div>
             </div>
             
@@ -89,7 +89,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
               <li className="flex items-center">
                 <Mail size={18} className="mr-3 text-primary" />
                 <a href="mailto:contato@fisiohub.com.br" className="text-muted-foreground hover:text-primary transition-colors">
-                  contato@fisiohub.com.br
+                  contato@tatyanelira.com.br
                 </a>
               </li>
               <li className="flex items-start">
@@ -139,7 +139,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            &copy; {currentYear} FisioHub. Todos os direitos reservados.
+            &copy; {currentYear} Dra Tatyane Lira. Todos os direitos reservados.
           </p>
           
           <div className="flex space-x-6">
