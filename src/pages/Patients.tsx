@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
-import { ArrowRight, UserCheck, UserPlus, Search } from 'lucide-react';
+import { ArrowRight, UserCheck, UserPlus, Search, Clock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import PatientCard from '@/components/PatientCard';
 import Button from '@/components/Button';
@@ -84,10 +84,56 @@ const Patients = () => {
       name: 'Isabela Martins',
       email: 'isabela@exemplo.com',
       phone: '(11) 98765-4326',
-      birthDate: '1995-11-17',
+      birthDate: '1978-11-08',
       appointments: []
     }
   ]);
+
+  // Verificar se há agendamentos pendentes no localStorage
+  useEffect(() => {
+    const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
+    
+    if (pendingAppointments.length > 0) {
+      // Atualizar os pacientes existentes ou adicionar novos
+      const updatedPatients = [...patients];
+      
+      pendingAppointments.forEach((pendingAppointment: any) => {
+        // Verificar se o paciente já existe (por email)
+        const existingPatientIndex = updatedPatients.findIndex(
+          p => p.email.toLowerCase() === pendingAppointment.email.toLowerCase()
+        );
+        
+        if (existingPatientIndex >= 0) {
+          // Adicionar o novo agendamento ao paciente existente
+          updatedPatients[existingPatientIndex].appointments = [
+            ...updatedPatients[existingPatientIndex].appointments,
+            ...pendingAppointment.appointments
+          ];
+        } else {
+          // Criar um novo paciente com o agendamento pendente
+          const newPatient = {
+            id: `PT-${1000 + updatedPatients.length + 1}`,
+            name: pendingAppointment.name,
+            email: pendingAppointment.email,
+            phone: pendingAppointment.phone,
+            birthDate: pendingAppointment.birthDate || new Date().toISOString().split('T')[0], // Data padrão se não for fornecida
+            appointments: pendingAppointment.appointments
+          };
+          
+          updatedPatients.push(newPatient);
+          
+          toast.info(`Novo paciente ${pendingAppointment.name} adicionado com agendamento pendente`, {
+            description: 'O paciente deve confirmar suas informações.',
+            duration: 5000
+          });
+        }
+      });
+      
+      setPatients(updatedPatients);
+      // Limpar os agendamentos pendentes do localStorage
+      localStorage.removeItem('pendingAppointments');
+    }
+  }, []);
 
   const handleAddPatient = () => {
     setEditingPatient(null);
@@ -131,9 +177,23 @@ const Patients = () => {
 
   const handleViewAppointments = (patient) => {
     // Aqui mostraria as consultas do paciente
+    const pendingCount = patient.appointments.filter(a => a.status === 'pending').length;
+    const scheduledCount = patient.appointments.filter(a => a.status === 'scheduled').length;
+    const completedCount = patient.appointments.filter(a => a.status === 'completed').length;
+    
+    let message = `${patient.name} tem ${patient.appointments.length} consultas.`;
+    if (pendingCount > 0) {
+      message += ` (${pendingCount} pendentes)`;
+    }
+    
     toast('Consultas do paciente', {
-      description: `${patient.name} tem ${patient.appointments.length} consultas.`
+      description: message
     });
+  };
+
+  // Verificar se o paciente tem agendamentos pendentes
+  const patientHasPendingAppointment = (patient) => {
+    return patient.appointments.some(apt => apt.status === 'pending');
   };
 
   // Filtrar pacientes com base no termo de pesquisa
@@ -185,6 +245,16 @@ const Patients = () => {
             </div>
           </div>
           
+          {/* Filtro para agendamentos pendentes */}
+          <div className="mb-6">
+            <div className="inline-flex items-center px-3 py-1 rounded-lg bg-amber-100 text-amber-800">
+              <Clock size={14} className="mr-2" />
+              <span className="text-sm">
+                Pacientes com agendamentos pendentes: {patients.filter(patientHasPendingAppointment).length}
+              </span>
+            </div>
+          </div>
+          
           {filteredPatients.length === 0 ? (
             <div className="text-center py-12">
               <UserCheck size={48} className="mx-auto text-muted-foreground mb-4" />
@@ -206,6 +276,7 @@ const Patients = () => {
                   birthDate={patient.birthDate}
                   patientId={patient.id}
                   appointmentsCount={patient.appointments.length}
+                  hasPendingAppointment={patientHasPendingAppointment(patient)}
                   onEdit={() => handleEditPatient(patient)}
                   onDelete={() => handleDeletePatient(patient.id)}
                   onViewAppointments={() => handleViewAppointments(patient)}

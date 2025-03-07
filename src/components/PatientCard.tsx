@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Edit, Trash2, Phone, Mail, Calendar, ClipboardList } from 'lucide-react';
+import { Edit, Trash2, Phone, Mail, Calendar, ClipboardList, Clock } from 'lucide-react';
 
 interface PatientCardProps {
   name: string;
@@ -10,6 +10,7 @@ interface PatientCardProps {
   birthDate: string;
   patientId: string;
   appointmentsCount: number;
+  hasPendingAppointment?: boolean;
   className?: string;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -23,6 +24,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
   birthDate,
   patientId,
   appointmentsCount,
+  hasPendingAppointment = false,
   className,
   onEdit,
   onDelete,
@@ -44,6 +46,14 @@ const PatientCard: React.FC<PatientCardProps> = ({
         className
       )}
     >
+      {hasPendingAppointment && (
+        <div className="absolute top-3 right-3 flex items-center justify-center">
+          <span className="px-2 py-1 bg-amber-100 text-amber-800 text-xs font-medium rounded-full flex items-center">
+            <Clock size={12} className="mr-1" /> Pendente
+          </span>
+        </div>
+      )}
+      
       <div className="p-6">
         {/* Avatar & Name */}
         <div className="flex items-start justify-between mb-4">

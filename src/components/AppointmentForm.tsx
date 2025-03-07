@@ -1,8 +1,9 @@
-
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import Button from './Button';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface Service {
   id: string;
@@ -20,6 +21,7 @@ interface AppointmentFormProps {
 }
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedService, setSelectedService] = useState<string>('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
@@ -71,10 +73,27 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     }).format(date);
   };
   
+  const getServiceNameById = (id: string) => {
+    const service = services.find(service => service.id === id);
+    return service ? service.name : '';
+  };
+  
+  const getTimeBySlotId = (id: string) => {
+    const timeSlot = timeSlots.find(slot => slot.id === id);
+    return timeSlot ? timeSlot.time : '';
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Processa envio do formulário
-    console.log({
+    
+    if (!selectedDate || !selectedService || !selectedTimeSlot || !name || !email || !phone) {
+      toast.error('Por favor, preencha todos os campos obrigatórios');
+      return;
+    }
+    
+    // Formatar os dados do agendamento
+    const formattedDate = selectedDate ? selectedDate.toISOString().split('T')[0] : '';
+    const appointmentData = {
       name,
       email,
       phone,
@@ -82,12 +101,40 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
       selectedService,
       selectedTimeSlot,
       notes
+    };
+    
+    // Log dos dados para debug
+    console.log(appointmentData);
+    
+    // Criar um objeto de paciente com o agendamento
+    const patientAppointment = {
+      name,
+      email,
+      phone,
+      birthDate: '', // Este campo precisará ser preenchido na página de pacientes
+      appointments: [
+        {
+          date: formattedDate,
+          time: getTimeBySlotId(selectedTimeSlot),
+          status: 'pending',
+          service: getServiceNameById(selectedService),
+          notes: notes
+        }
+      ]
+    };
+    
+    // Em um aplicativo real, isso seria salvo no backend
+    // Como estamos trabalhando com dados de exemplo, iremos armazenar temporariamente no localStorage
+    const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
+    pendingAppointments.push(patientAppointment);
+    localStorage.setItem('pendingAppointments', JSON.stringify(pendingAppointments));
+    
+    // Mostrar mensagem de sucesso
+    toast.success('Solicitação de consulta enviada com sucesso!', {
+      description: 'Você será redirecionado para a página de confirmação.'
     });
     
-    // Aqui você normalmente enviaria esses dados para o backend
-    alert('Solicitação de consulta enviada. Entraremos em contato para confirmar.');
-    
-    // Reseta formulário
+    // Resetar formulário
     setSelectedDate(null);
     setSelectedService('');
     setSelectedTimeSlot('');
@@ -95,6 +142,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     setEmail('');
     setPhone('');
     setNotes('');
+    
+    // Redirecionar para página de pacientes (ou página de confirmação)
+    setTimeout(() => {
+      navigate('/patients');
+    }, 2000);
   };
   
   return (
