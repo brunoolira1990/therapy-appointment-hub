@@ -1,16 +1,19 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Edit, Trash2, Phone, Mail, Calendar } from 'lucide-react';
+import { Edit, Trash2, Phone, Mail, Calendar, ClipboardList } from 'lucide-react';
 
 interface PatientCardProps {
   name: string;
   email: string;
   phone: string;
   birthDate: string;
+  patientId: string;
+  appointmentsCount: number;
   className?: string;
   onEdit?: () => void;
   onDelete?: () => void;
+  onViewAppointments?: () => void;
 }
 
 const PatientCard: React.FC<PatientCardProps> = ({
@@ -18,9 +21,12 @@ const PatientCard: React.FC<PatientCardProps> = ({
   email,
   phone,
   birthDate,
+  patientId,
+  appointmentsCount,
   className,
   onEdit,
   onDelete,
+  onViewAppointments,
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -47,6 +53,12 @@ const PatientCard: React.FC<PatientCardProps> = ({
             </div>
             <div className="ml-3">
               <h3 className="font-bold text-lg">{name}</h3>
+              <div className="flex items-center mt-1">
+                <ClipboardList size={14} className="text-primary mr-1" />
+                <span className="text-xs text-muted-foreground">
+                  {appointmentsCount} {appointmentsCount === 1 ? 'consulta' : 'consultas'}
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex space-x-1">
@@ -87,9 +99,12 @@ const PatientCard: React.FC<PatientCardProps> = ({
       {/* Action Bar */}
       <div className="border-t border-border px-6 py-3 bg-secondary/40 flex justify-between items-center">
         <span className="text-xs text-muted-foreground">
-          ID Paciente: #PT-{Math.floor(1000 + Math.random() * 9000)}
+          ID Paciente: {patientId}
         </span>
-        <button className="text-sm font-medium text-primary hover:underline">
+        <button 
+          className="text-sm font-medium text-primary hover:underline"
+          onClick={onViewAppointments}
+        >
           Ver Consultas
         </button>
       </div>
