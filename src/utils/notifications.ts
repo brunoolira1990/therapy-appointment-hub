@@ -93,3 +93,66 @@ export const formatReminderMessage = (patientName: string, serviceName: string, 
 export const formatCancellationMessage = (patientName: string, serviceName: string, date: string, time: string): string => {
   return `Olá ${patientName}, infelizmente sua consulta de ${serviceName} agendada para ${date} às ${time} foi cancelada. Entre em contato conosco para reagendar. - FisioHub`;
 };
+
+// Função de conveniência para enviar notificações de lembrete
+export const sendAppointmentReminder = async (
+  patientName: string,
+  patientEmail: string,
+  patientWhatsApp: string,
+  serviceName: string,
+  date: string,
+  time: string
+): Promise<{email: boolean, whatsApp: boolean}> => {
+  const message = formatReminderMessage(patientName, serviceName, date, time);
+  const subject = `Lembrete de Consulta - ${serviceName}`;
+  
+  const emailResult = await sendEmail(patientEmail, subject, message);
+  const whatsAppResult = await sendWhatsApp(patientWhatsApp, message);
+  
+  return {
+    email: emailResult,
+    whatsApp: whatsAppResult
+  };
+};
+
+// Função de conveniência para enviar notificações de confirmação
+export const sendAppointmentConfirmation = async (
+  patientName: string,
+  patientEmail: string,
+  patientWhatsApp: string,
+  serviceName: string,
+  date: string,
+  time: string
+): Promise<{email: boolean, whatsApp: boolean}> => {
+  const message = formatConfirmationMessage(patientName, serviceName, date, time);
+  const subject = `Confirmação de Consulta - ${serviceName}`;
+  
+  const emailResult = await sendEmail(patientEmail, subject, message);
+  const whatsAppResult = await sendWhatsApp(patientWhatsApp, message);
+  
+  return {
+    email: emailResult,
+    whatsApp: whatsAppResult
+  };
+};
+
+// Função de conveniência para enviar notificações de cancelamento
+export const sendAppointmentCancellation = async (
+  patientName: string,
+  patientEmail: string,
+  patientWhatsApp: string,
+  serviceName: string,
+  date: string,
+  time: string
+): Promise<{email: boolean, whatsApp: boolean}> => {
+  const message = formatCancellationMessage(patientName, serviceName, date, time);
+  const subject = `Cancelamento de Consulta - ${serviceName}`;
+  
+  const emailResult = await sendEmail(patientEmail, subject, message);
+  const whatsAppResult = await sendWhatsApp(patientWhatsApp, message);
+  
+  return {
+    email: emailResult,
+    whatsApp: whatsAppResult
+  };
+};
