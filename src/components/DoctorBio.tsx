@@ -15,7 +15,7 @@ const DoctorBio: React.FC<DoctorBioProps> = ({ className }) => {
           <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
             Conheça Nossa Especialista
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Dra. Fernanda Silva</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Dra. Tatyane Prado de Lira</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Fisioterapeuta especializada com mais de 10 anos de experiência em reabilitação física e tratamentos inovadores.
           </p>
@@ -28,7 +28,7 @@ const DoctorBio: React.FC<DoctorBioProps> = ({ className }) => {
             <div className="glass-card p-3 rounded-2xl relative z-10">
               <img 
                 src="/doctor-profile.jpg" 
-                alt="Dra. Fernanda Silva" 
+                alt="Dra. Tatyane Prado de Lira" 
                 className="w-full h-auto rounded-xl object-cover" 
               />
             </div>
@@ -48,7 +48,7 @@ const DoctorBio: React.FC<DoctorBioProps> = ({ className }) => {
             <h3 className="text-2xl font-bold mb-4">Especialista em Fisioterapia Ortopédica e Neurológica</h3>
             
             <p className="text-muted-foreground">
-              A Dra. Fernanda Silva é formada pela Universidade Federal do Rio de Janeiro (UFRJ) com especialização 
+              A Dra. Tatyane Prado de Lira é formada pela Universidade Federal do Rio de Janeiro (UFRJ) com especialização 
               em Fisioterapia Ortopédica pela USP e Neurológica pela UNIFESP.
             </p>
             
