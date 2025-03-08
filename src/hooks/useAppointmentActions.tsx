@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCircle, Mail, MessageSquare } from "lucide-react";
+import { CheckCircle, Mail, MessageSquare, Send } from "lucide-react";
 import { 
   sendWhatsApp, 
   sendEmail, 
