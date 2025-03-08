@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import Button from './Button';
+import { Button } from './ui/button';
 import { ArrowRight } from 'lucide-react';
 
 interface ServiceCardProps {
@@ -36,10 +36,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <Button 
         variant="ghost" 
         className="px-0 hover:bg-transparent hover:text-primary"
-        icon={<ArrowRight size={16} />}
-        iconPosition="right"
       >
         Saiba mais
+        <ArrowRight size={16} className="ml-2" />
       </Button>
       
       {/* Subtle Gradient Overlay */}
