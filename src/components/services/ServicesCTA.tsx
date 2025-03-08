@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 interface ServicesCTAProps {
   onScheduleClick: () => void;
@@ -8,6 +10,12 @@ interface ServicesCTAProps {
 }
 
 const ServicesCTA: React.FC<ServicesCTAProps> = ({ onScheduleClick, onContactClick }) => {
+  const navigate = useNavigate();
+  
+  const handleScheduleClick = () => {
+    scrollToBookingSection(navigate);
+  };
+
   return (
     <section className="py-16 bg-primary/5">
       <div className="container-narrow text-center">
@@ -18,7 +26,7 @@ const ServicesCTA: React.FC<ServicesCTAProps> = ({ onScheduleClick, onContactCli
           alcançar seus objetivos de saúde e bem-estar.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button size="lg" onClick={onScheduleClick}>
+          <Button size="lg" onClick={handleScheduleClick}>
             Agendar Consulta
           </Button>
           <Button variant="outline" size="lg" onClick={onContactClick}>

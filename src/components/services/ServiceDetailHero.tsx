@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ServiceDetailProps, getIconComponent } from '@/services/api';
+import { useNavigate } from 'react-router-dom';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 interface ServiceDetailHeroProps {
   service: ServiceDetailProps;
@@ -11,6 +13,12 @@ interface ServiceDetailHeroProps {
 }
 
 const ServiceDetailHero: React.FC<ServiceDetailHeroProps> = ({ service, onScheduleClick }) => {
+  const navigate = useNavigate();
+  
+  const handleScheduleClick = () => {
+    scrollToBookingSection(navigate);
+  };
+  
   return (
     <section className={`py-16 ${service.color}`}>
       <div className="container-wide">
@@ -35,7 +43,7 @@ const ServiceDetailHero: React.FC<ServiceDetailHeroProps> = ({ service, onSchedu
               {service.description}
             </p>
             
-            <Button onClick={onScheduleClick}>
+            <Button onClick={handleScheduleClick}>
               Agendar Consulta
             </Button>
           </div>

@@ -10,6 +10,7 @@ import ServiceDetailContent from '@/components/services/ServiceDetailContent';
 import RelatedServices from '@/components/services/RelatedServices';
 import ServiceLoading from '@/components/services/ServiceLoading';
 import ServiceNotFound from '@/components/services/ServiceNotFound';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 const ServiceDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -61,7 +62,7 @@ const ServiceDetail = () => {
   }, [id, navigate, toast]);
 
   const handleScheduleClick = () => {
-    navigate('/#booking-section');
+    scrollToBookingSection(navigate);
   };
 
   const handleContactClick = () => {

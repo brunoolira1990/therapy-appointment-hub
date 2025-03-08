@@ -3,6 +3,8 @@ import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 interface ServiceDetailContentProps {
   title: string;
@@ -15,6 +17,12 @@ const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({
   onScheduleClick, 
   onContactClick 
 }) => {
+  const navigate = useNavigate();
+  
+  const handleScheduleClick = () => {
+    scrollToBookingSection(navigate);
+  };
+  
   return (
     <section className="py-16">
       <div className="container-narrow">
@@ -45,7 +53,7 @@ const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({
             </h3>
           </div>
           <div className="flex gap-4">
-            <Button onClick={onScheduleClick}>
+            <Button onClick={handleScheduleClick}>
               Agendar Consulta
             </Button>
             <Button variant="outline" onClick={onContactClick}>

@@ -4,6 +4,8 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ServiceDetailProps, getIconComponent } from '@/services/api';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 interface ServicesDetailedProps {
   services: ServiceDetailProps[];
@@ -16,6 +18,12 @@ const ServicesDetailed: React.FC<ServicesDetailedProps> = ({
   isLoading, 
   onScheduleClick 
 }) => {
+  const navigate = useNavigate();
+  
+  const handleScheduleClick = () => {
+    scrollToBookingSection(navigate);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -60,7 +68,7 @@ const ServicesDetailed: React.FC<ServicesDetailedProps> = ({
                   <Button 
                     variant="ghost" 
                     className="px-0 hover:bg-transparent hover:text-primary"
-                    onClick={onScheduleClick}
+                    onClick={handleScheduleClick}
                   >
                     Agendar Consulta
                     <ArrowRight size={16} className="ml-2" />

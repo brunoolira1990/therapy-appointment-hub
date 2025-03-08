@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { ArrowRight, Calendar } from 'lucide-react';
 import Button from './Button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 interface HeroProps {
   className?: string;
@@ -12,11 +12,8 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ className }) => {
   const navigate = useNavigate();
   
-  const scrollToBookingForm = () => {
-    const bookingSection = document.getElementById('booking-section');
-    if (bookingSection) {
-      bookingSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleBookingClick = () => {
+    scrollToBookingSection(navigate);
   };
 
   const handleExploreServices = () => {
@@ -57,7 +54,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
               size="lg"
               icon={<Calendar size={18} />}
               iconPosition="left"
-              onClick={scrollToBookingForm}
+              onClick={handleBookingClick}
             >
               Agendar uma Consulta
             </Button>

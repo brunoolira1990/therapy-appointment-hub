@@ -1,17 +1,14 @@
-
 import React from 'react';
 import { Calendar, MessageSquare } from 'lucide-react';
 import Button from '@/components/Button';
 import { useNavigate } from 'react-router-dom';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 const CTASection: React.FC = () => {
   const navigate = useNavigate();
   
-  const scrollToBookingForm = () => {
-    const bookingSection = document.getElementById('booking-section');
-    if (bookingSection) {
-      bookingSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleBookingClick = () => {
+    scrollToBookingSection(navigate);
   };
 
   const handleContactClick = () => {
@@ -32,7 +29,7 @@ const CTASection: React.FC = () => {
               size="lg"
               icon={<Calendar size={18} />}
               iconPosition="left"
-              onClick={scrollToBookingForm}
+              onClick={handleBookingClick}
             >
               Agendar uma Consulta
             </Button>

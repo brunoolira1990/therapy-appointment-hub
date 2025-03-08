@@ -9,6 +9,7 @@ import ServicesHero from '@/components/services/ServicesHero';
 import ServicesOverview from '@/components/services/ServicesOverview';
 import ServicesDetailed from '@/components/services/ServicesDetailed';
 import ServicesCTA from '@/components/services/ServicesCTA';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 const Services = () => {
   const [services, setServices] = useState<ServiceDetailProps[]>([]);
@@ -38,7 +39,7 @@ const Services = () => {
   }, [toast]);
 
   const handleScheduleClick = () => {
-    navigate('/#booking-section');
+    scrollToBookingSection(navigate);
   };
 
   const handleContactClick = () => {

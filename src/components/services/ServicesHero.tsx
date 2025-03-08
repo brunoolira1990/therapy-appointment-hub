@@ -2,12 +2,13 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { scrollToBookingSection } from '@/utils/navigation';
 
 const ServicesHero = () => {
   const navigate = useNavigate();
 
   const handleScheduleClick = () => {
-    navigate('/#booking-section');
+    scrollToBookingSection(navigate);
   };
 
   return (
