@@ -6,6 +6,8 @@ import { getAvailableTimeSlotsForDay } from '@/utils/timeSlotUtils';
 import { services } from '@/utils/serviceUtils';
 import { handleWhatsAppChange } from '@/utils/formUtils';
 import { submitAppointment, AppointmentFormData } from '@/utils/appointmentSubmission';
+import { validateAppointmentForm } from '@/utils/formValidation';
+import { toast } from 'sonner';
 
 export const useAppointmentForm = () => {
   const navigate = useNavigate();
@@ -17,6 +19,10 @@ export const useAppointmentForm = () => {
   const [whatsApp, setWhatsApp] = useState('');
   const [notes, setNotes] = useState('');
   
+  // Form validation state
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
   const resetTimeSlot = () => {
     setSelectedTimeSlot('');
   };
@@ -29,11 +35,34 @@ export const useAppointmentForm = () => {
     setEmail('');
     setWhatsApp('');
     setNotes('');
+    setErrors({});
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const validateForm = (): boolean => {
+    const { isValid, errors: validationErrors } = validateAppointmentForm(
+      selectedDate,
+      selectedService,
+      selectedTimeSlot,
+      name,
+      email,
+      whatsApp
+    );
+
+    setErrors(validationErrors);
+    return isValid;
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (validateForm()) {
+      setShowConfirmation(true);
+    } else {
+      toast.error('Por favor, corrija os erros no formulário antes de continuar');
+    }
+  };
+
+  const handleConfirmAppointment = async () => {
     const formData: AppointmentFormData = {
       selectedDate,
       selectedService,
@@ -44,7 +73,12 @@ export const useAppointmentForm = () => {
       notes
     };
     
+    setShowConfirmation(false);
     await submitAppointment(formData, navigate, resetForm);
+  };
+
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
   
   // Get available time slots for the selected date
@@ -63,6 +97,15 @@ export const useAppointmentForm = () => {
       whatsApp,
       notes
     },
+    validation: {
+      errors,
+      validateForm
+    },
+    confirmation: {
+      showConfirmation,
+      handleConfirmAppointment,
+      handleCancelConfirmation
+    },
     setters: {
       setSelectedDate,
       setSelectedService,
@@ -75,7 +118,7 @@ export const useAppointmentForm = () => {
       handleWhatsAppChange: (e: React.ChangeEvent<HTMLInputElement>) => 
         handleWhatsAppChange(e, setWhatsApp),
       resetTimeSlot,
-      handleSubmit
+      handleSubmit: handleFormSubmit
     },
     data: {
       services,

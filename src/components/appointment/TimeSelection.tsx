@@ -13,13 +13,15 @@ interface TimeSelectionProps {
   availableTimeSlots: TimeSlot[];
   selectedTimeSlot: string;
   setSelectedTimeSlot: (id: string) => void;
+  error?: string;
 }
 
 const TimeSelection: React.FC<TimeSelectionProps> = ({
   selectedDate,
   availableTimeSlots,
   selectedTimeSlot,
-  setSelectedTimeSlot
+  setSelectedTimeSlot,
+  error
 }) => {
   if (!selectedDate) return null;
 
@@ -40,7 +42,8 @@ const TimeSelection: React.FC<TimeSelectionProps> = ({
                 'border rounded-lg py-2 px-3 cursor-pointer text-center transition-all',
                 selectedTimeSlot === slot.id
                   ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                  : 'border-border hover:border-primary/30'
+                  : 'border-border hover:border-primary/30',
+                error && !selectedTimeSlot ? 'border-destructive' : ''
               )}
             >
               <div className="text-sm">{slot.time}</div>
@@ -51,6 +54,9 @@ const TimeSelection: React.FC<TimeSelectionProps> = ({
         <p className="text-amber-600">
           Não há horários disponíveis nesta data. Por favor, selecione outra data.
         </p>
+      )}
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
       )}
     </div>
   );

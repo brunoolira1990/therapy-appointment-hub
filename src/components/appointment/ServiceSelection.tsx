@@ -12,12 +12,14 @@ interface ServiceSelectionProps {
   services: Service[];
   selectedService: string;
   setSelectedService: (id: string) => void;
+  error?: string;
 }
 
 const ServiceSelection: React.FC<ServiceSelectionProps> = ({
   services,
   selectedService,
-  setSelectedService
+  setSelectedService,
+  error
 }) => {
   return (
     <div className="space-y-3">
@@ -33,7 +35,8 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
               'border rounded-xl p-4 cursor-pointer transition-all',
               selectedService === service.id
                 ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                : 'border-border hover:border-primary/30'
+                : 'border-border hover:border-primary/30',
+              error && !selectedService ? 'border-destructive' : ''
             )}
           >
             <div className="font-medium">{service.name}</div>
@@ -43,6 +46,9 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
           </div>
         ))}
       </div>
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
-
 import React from 'react';
-import Button from '../Button';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ContactFormProps {
   name: string;
@@ -12,6 +12,11 @@ interface ContactFormProps {
   notes: string;
   setNotes: (notes: string) => void;
   handleSubmit: (e: React.FormEvent) => void;
+  errors: {
+    name?: string;
+    email?: string;
+    whatsApp?: string;
+  };
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({
@@ -23,7 +28,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
   handleWhatsAppChange,
   notes,
   setNotes,
-  handleSubmit
+  handleSubmit,
+  errors
 }) => {
   return (
     <div className="space-y-4">
@@ -32,24 +38,40 @@ const ContactForm: React.FC<ContactFormProps> = ({
       </label>
       
       <div className="space-y-3">
-        <input
-          type="text"
-          placeholder="Nome Completo"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-          required
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
           <input
-            type="email"
-            placeholder="Endereço de Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+            type="text"
+            placeholder="Nome Completo"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={cn(
+              "w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all",
+              errors.name ? "border-destructive focus:ring-destructive/20" : ""
+            )}
             required
           />
+          {errors.name && (
+            <p className="text-sm text-destructive mt-1">{errors.name}</p>
+          )}
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <input
+              type="email"
+              placeholder="Endereço de Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={cn(
+                "w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all",
+                errors.email ? "border-destructive focus:ring-destructive/20" : ""
+              )}
+              required
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive mt-1">{errors.email}</p>
+            )}
+          </div>
           
           <div className="relative">
             <input
@@ -57,11 +79,17 @@ const ContactForm: React.FC<ContactFormProps> = ({
               placeholder="WhatsApp (DD) XXXXX-XXXX"
               value={whatsApp}
               onChange={handleWhatsAppChange}
-              className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+              className={cn(
+                "w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all",
+                errors.whatsApp ? "border-destructive focus:ring-destructive/20" : ""
+              )}
               required
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Formato brasileiro: (XX) XXXXX-XXXX
+            <p className={cn(
+              "text-xs mt-1",
+              errors.whatsApp ? "text-destructive" : "text-muted-foreground"
+            )}>
+              {errors.whatsApp || "Formato brasileiro: (XX) XXXXX-XXXX"}
             </p>
           </div>
         </div>
@@ -76,9 +104,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
       
       <Button
         type="submit"
-        variant="primary"
+        variant="default"
         size="lg"
-        fullWidth
+        className="w-full"
       >
         Solicitar Agendamento
       </Button>

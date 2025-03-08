@@ -9,6 +9,7 @@ interface DateSelectionProps {
   setSelectedDate: (date: Date) => void;
   resetTimeSlot: () => void;
   formatDate: (date: Date) => string;
+  error?: string;
 }
 
 const DateSelection: React.FC<DateSelectionProps> = ({
@@ -16,7 +17,8 @@ const DateSelection: React.FC<DateSelectionProps> = ({
   selectedDate,
   setSelectedDate,
   resetTimeSlot,
-  formatDate
+  formatDate,
+  error
 }) => {
   return (
     <div className="space-y-3">
@@ -37,7 +39,8 @@ const DateSelection: React.FC<DateSelectionProps> = ({
                 'flex-shrink-0 w-28 border rounded-xl p-3 cursor-pointer text-center transition-all',
                 selectedDate && selectedDate.toDateString() === date.toDateString()
                   ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                  : 'border-border hover:border-primary/30'
+                  : 'border-border hover:border-primary/30',
+                error && !selectedDate ? 'border-destructive' : ''
               )}
             >
               <div className="font-medium">{formatDate(date).split(',')[0]}</div>
@@ -49,6 +52,9 @@ const DateSelection: React.FC<DateSelectionProps> = ({
         <p className="text-amber-600">
           Não há datas disponíveis para agendamento no momento.
         </p>
+      )}
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
       )}
     </div>
   );

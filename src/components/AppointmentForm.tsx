@@ -9,6 +9,7 @@ import DateSelection from './appointment/DateSelection';
 import TimeSelection from './appointment/TimeSelection';
 import ContactForm from './appointment/ContactForm';
 import AppointmentFormHeader from './appointment/AppointmentFormHeader';
+import AppointmentConfirmation from './appointment/AppointmentConfirmation';
 
 interface AppointmentFormProps {
   className?: string;
@@ -17,6 +18,8 @@ interface AppointmentFormProps {
 const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
   const {
     formData,
+    validation,
+    confirmation,
     setters,
     handlers,
     data
@@ -31,6 +34,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     whatsApp,
     notes
   } = formData;
+  
+  const { errors } = validation;
+  
+  const {
+    showConfirmation,
+    handleConfirmAppointment,
+    handleCancelConfirmation
+  } = confirmation;
   
   const {
     setSelectedDate,
@@ -67,6 +78,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           services={services}
           selectedService={selectedService}
           setSelectedService={setSelectedService}
+          error={errors.service}
         />
         
         {/* Date Selection Component */}
@@ -76,6 +88,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           setSelectedDate={setSelectedDate}
           resetTimeSlot={resetTimeSlot}
           formatDate={formatDate}
+          error={errors.date}
         />
         
         {/* Time Selection Component */}
@@ -84,6 +97,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           availableTimeSlots={availableTimeSlots}
           selectedTimeSlot={selectedTimeSlot}
           setSelectedTimeSlot={setSelectedTimeSlot}
+          error={errors.timeSlot}
         />
         
         {/* Contact Form Component */}
@@ -97,8 +111,28 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           notes={notes}
           setNotes={setNotes}
           handleSubmit={handleSubmit}
+          errors={{
+            name: errors.name,
+            email: errors.email,
+            whatsApp: errors.whatsApp
+          }}
         />
       </form>
+      
+      {/* Confirmation Dialog */}
+      <AppointmentConfirmation
+        open={showConfirmation}
+        onConfirm={handleConfirmAppointment}
+        onCancel={handleCancelConfirmation}
+        appointmentData={{
+          selectedDate,
+          selectedService,
+          selectedTimeSlot,
+          name,
+          email,
+          whatsApp
+        }}
+      />
     </div>
   );
 };
