@@ -1,7 +1,15 @@
 
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const ServicesHero = () => {
+  const navigate = useNavigate();
+
+  const handleScheduleClick = () => {
+    navigate('/#booking-section');
+  };
+
   return (
     <section className="py-16 md:py-24 bg-secondary/30">
       <div className="container-wide">
@@ -14,6 +22,9 @@ const ServicesHero = () => {
             Oferecemos uma ampla gama de tratamentos fisioterapêuticos adaptados às suas necessidades específicas, 
             com abordagens modernas e personalizadas para sua reabilitação e bem-estar.
           </p>
+          <Button onClick={handleScheduleClick}>
+            Agendar Consulta
+          </Button>
         </div>
       </div>
     </section>
