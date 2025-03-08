@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import Button from './Button';
@@ -6,6 +7,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { sendAppointmentConfirmation } from '@/utils/notifications';
 
 interface Service {
   id: string;
@@ -70,7 +72,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     return timeSlots.filter(slot => !bookedTimes.includes(slot.time));
   };
   
-  const generateDateOptions = () => {
+  const generateAvailableDateOptions = () => {
     const dates = [];
     const today = new Date();
     
@@ -80,7 +82,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
       
       // Pula fins de semana (0 = Domingo, 6 = Sábado)
       if (date.getDay() !== 0 && date.getDay() !== 6) {
-        dates.push(date);
+        // Verifica se há pelo menos um horário disponível neste dia
+        const availableSlots = getAvailableTimeSlotsForDay(date);
+        if (availableSlots.length > 0) {
+          dates.push(date);
+        }
       }
     }
     
@@ -124,7 +130,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!selectedDate || !selectedService || !selectedTimeSlot || !name || !email || !whatsApp) {
@@ -133,7 +139,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     }
     
     // Formatar os dados do agendamento
-    const formattedDate = selectedDate ? selectedDate.toISOString().split('T')[0] : '';
+    const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
+    const formattedDatePtBR = selectedDate ? format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) : '';
+    const appointmentTime = getTimeBySlotId(selectedTimeSlot);
+    const serviceName = getServiceNameById(selectedService);
+    
     const appointmentData = {
       name,
       email,
@@ -156,9 +166,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
       appointments: [
         {
           date: formattedDate,
-          time: getTimeBySlotId(selectedTimeSlot),
+          time: appointmentTime,
           status: 'pending',
-          service: getServiceNameById(selectedService),
+          service: serviceName,
           notes: notes
         }
       ]
@@ -169,6 +179,24 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
     pendingAppointments.push(patientAppointment);
     localStorage.setItem('pendingAppointments', JSON.stringify(pendingAppointments));
+    
+    // Enviar notificações
+    try {
+      const notificationResult = await sendAppointmentConfirmation(
+        name,
+        email,
+        whatsApp,
+        serviceName,
+        formattedDatePtBR,
+        appointmentTime
+      );
+      
+      if (notificationResult.email || notificationResult.whatsApp) {
+        console.log('Notificações enviadas com sucesso!');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar notificações:', error);
+    }
     
     // Mostrar mensagem de sucesso
     toast.success('Solicitação de consulta enviada com sucesso!', {
@@ -189,6 +217,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
       navigate('/patients');
     }, 2000);
   };
+  
+  // Lista de datas disponíveis
+  const availableDates = generateAvailableDateOptions();
   
   // Obtenha os horários disponíveis para a data selecionada
   const availableTimeSlots = selectedDate ? getAvailableTimeSlotsForDay(selectedDate) : [];
@@ -229,32 +260,38 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           </div>
         </div>
         
-        {/* Seleção de Data */}
+        {/* Seleção de Data - Mostrar apenas datas disponíveis */}
         <div className="space-y-3">
           <label className="block text-sm font-medium flex items-center">
             <CalendarIcon size={16} className="mr-1 text-primary" />
             Selecione a Data
           </label>
-          <div className="flex overflow-x-auto pb-2 space-x-2 no-scrollbar">
-            {generateDateOptions().map((date, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  setSelectedDate(date);
-                  setSelectedTimeSlot(''); // Reset time slot when date changes
-                }}
-                className={cn(
-                  'flex-shrink-0 w-28 border rounded-xl p-3 cursor-pointer text-center transition-all',
-                  selectedDate && selectedDate.toDateString() === date.toDateString()
-                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                    : 'border-border hover:border-primary/30'
-                )}
-              >
-                <div className="font-medium">{formatDate(date).split(',')[0]}</div>
-                <div className="text-sm mt-1">{formatDate(date).split(',')[1]}</div>
-              </div>
-            ))}
-          </div>
+          {availableDates.length > 0 ? (
+            <div className="flex overflow-x-auto pb-2 space-x-2 no-scrollbar">
+              {availableDates.map((date, index) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    setSelectedDate(date);
+                    setSelectedTimeSlot(''); // Reset time slot when date changes
+                  }}
+                  className={cn(
+                    'flex-shrink-0 w-28 border rounded-xl p-3 cursor-pointer text-center transition-all',
+                    selectedDate && selectedDate.toDateString() === date.toDateString()
+                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                      : 'border-border hover:border-primary/30'
+                  )}
+                >
+                  <div className="font-medium">{formatDate(date).split(',')[0]}</div>
+                  <div className="text-sm mt-1">{formatDate(date).split(',')[1]}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-amber-600">
+              Não há datas disponíveis para agendamento no momento.
+            </p>
+          )}
         </div>
         
         {/* Seleção de Horário - Apenas mostra horários disponíveis */}
