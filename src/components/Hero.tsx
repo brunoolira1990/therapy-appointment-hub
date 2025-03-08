@@ -3,17 +3,24 @@ import React from 'react';
 import { ArrowRight, Calendar } from 'lucide-react';
 import Button from './Button';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroProps {
   className?: string;
 }
 
 const Hero: React.FC<HeroProps> = ({ className }) => {
+  const navigate = useNavigate();
+  
   const scrollToBookingForm = () => {
     const bookingSection = document.getElementById('booking-section');
     if (bookingSection) {
       bookingSection.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleExploreServices = () => {
+    navigate('/services');
   };
 
   return (
@@ -59,6 +66,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
               size="lg"
               icon={<ArrowRight size={18} />}
               iconPosition="right"
+              onClick={handleExploreServices}
             >
               Explorar Serviços
             </Button>

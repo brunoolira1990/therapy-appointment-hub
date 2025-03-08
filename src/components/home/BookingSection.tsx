@@ -1,12 +1,22 @@
 
 import React from 'react';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, CheckCircle } from 'lucide-react';
 import AppointmentForm from '@/components/AppointmentForm';
 
 const BookingSection: React.FC = () => {
   return (
-    <section id="booking-section" className="py-20">
+    <section id="booking-section" className="py-20 bg-slate-50">
       <div className="container-wide">
+        <div className="text-center mb-12">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
+            Agendamento Simplificado
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold">Comece Sua Jornada de Recuperação Hoje</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-4">
+            Preencha o formulário abaixo e um membro da nossa equipe entrará em contato para confirmar seu agendamento.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Text Column */}
           <div className="flex flex-col justify-center">
@@ -28,9 +38,7 @@ const BookingSection: React.FC = () => {
               ].map((item, index) => (
                 <li key={index} className="flex items-center">
                   <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m5 12 5 5L20 7" />
-                    </svg>
+                    <CheckCircle className="h-3.5 w-3.5 text-primary" />
                   </div>
                   <span>{item}</span>
                 </li>
