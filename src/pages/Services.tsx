@@ -8,11 +8,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { fetchServices, getIconComponent, type ServiceDetailProps } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 const Services = () => {
   const [services, setServices] = useState<ServiceDetailProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadServices = async () => {
@@ -34,6 +36,14 @@ const Services = () => {
 
     loadServices();
   }, [toast]);
+
+  const handleScheduleClick = () => {
+    navigate('/#booking-section');
+  };
+
+  const handleContactClick = () => {
+    navigate('/contact');
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -131,6 +141,7 @@ const Services = () => {
                         <Button 
                           variant="ghost" 
                           className="px-0 hover:bg-transparent hover:text-primary"
+                          onClick={handleScheduleClick}
                         >
                           Agendar Consulta
                           <ArrowRight size={16} className="ml-2" />
@@ -170,10 +181,10 @@ const Services = () => {
               alcançar seus objetivos de saúde e bem-estar.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg">
+              <Button size="lg" onClick={handleScheduleClick}>
                 Agendar Consulta
               </Button>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" onClick={handleContactClick}>
                 Fale Conosco
               </Button>
             </div>

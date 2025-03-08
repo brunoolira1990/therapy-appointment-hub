@@ -58,6 +58,14 @@ const ServiceDetail = () => {
     }
   }, [id, navigate, toast]);
 
+  const handleScheduleClick = () => {
+    navigate('/#booking-section');
+  };
+
+  const handleContactClick = () => {
+    navigate('/contact');
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -93,7 +101,7 @@ const ServiceDetail = () => {
                       {service.description}
                     </p>
                     
-                    <Button>
+                    <Button onClick={handleScheduleClick}>
                       Agendar Consulta
                     </Button>
                   </div>
@@ -147,10 +155,10 @@ const ServiceDetail = () => {
                     </h3>
                   </div>
                   <div className="flex gap-4">
-                    <Button>
+                    <Button onClick={handleScheduleClick}>
                       Agendar Consulta
                     </Button>
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={handleContactClick}>
                       Fale Conosco
                     </Button>
                   </div>
