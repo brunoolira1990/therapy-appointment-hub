@@ -1,13 +1,17 @@
 
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock } from 'lucide-react';
-import Button from './Button';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 import { sendAppointmentConfirmation } from '@/utils/notifications';
+
+// Import refactored components
+import ServiceSelection from './appointment/ServiceSelection';
+import DateSelection from './appointment/DateSelection';
+import TimeSelection from './appointment/TimeSelection';
+import ContactForm from './appointment/ContactForm';
 
 interface Service {
   id: string;
@@ -130,6 +134,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     }
   };
 
+  const resetTimeSlot = () => {
+    setSelectedTimeSlot('');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -234,161 +242,42 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
       </div>
       
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
-        {/* Seleção de Serviço */}
-        <div className="space-y-3">
-          <label className="block text-sm font-medium">
-            Selecione o Serviço
-          </label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {services.map((service) => (
-              <div
-                key={service.id}
-                onClick={() => setSelectedService(service.id)}
-                className={cn(
-                  'border rounded-xl p-4 cursor-pointer transition-all',
-                  selectedService === service.id
-                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                    : 'border-border hover:border-primary/30'
-                )}
-              >
-                <div className="font-medium">{service.name}</div>
-                <div className="text-sm text-muted-foreground mt-1">
-                  {service.description}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Service Selection Component */}
+        <ServiceSelection
+          services={services}
+          selectedService={selectedService}
+          setSelectedService={setSelectedService}
+        />
         
-        {/* Seleção de Data - Mostrar apenas datas disponíveis */}
-        <div className="space-y-3">
-          <label className="block text-sm font-medium flex items-center">
-            <CalendarIcon size={16} className="mr-1 text-primary" />
-            Selecione a Data
-          </label>
-          {availableDates.length > 0 ? (
-            <div className="flex overflow-x-auto pb-2 space-x-2 no-scrollbar">
-              {availableDates.map((date, index) => (
-                <div
-                  key={index}
-                  onClick={() => {
-                    setSelectedDate(date);
-                    setSelectedTimeSlot(''); // Reset time slot when date changes
-                  }}
-                  className={cn(
-                    'flex-shrink-0 w-28 border rounded-xl p-3 cursor-pointer text-center transition-all',
-                    selectedDate && selectedDate.toDateString() === date.toDateString()
-                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                      : 'border-border hover:border-primary/30'
-                  )}
-                >
-                  <div className="font-medium">{formatDate(date).split(',')[0]}</div>
-                  <div className="text-sm mt-1">{formatDate(date).split(',')[1]}</div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-amber-600">
-              Não há datas disponíveis para agendamento no momento.
-            </p>
-          )}
-        </div>
+        {/* Date Selection Component */}
+        <DateSelection
+          availableDates={availableDates}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          resetTimeSlot={resetTimeSlot}
+          formatDate={formatDate}
+        />
         
-        {/* Seleção de Horário - Apenas mostra horários disponíveis */}
-        {selectedDate && (
-          <div className="space-y-3">
-            <label className="block text-sm font-medium flex items-center">
-              <Clock size={16} className="mr-1 text-primary" />
-              Selecione o Horário
-            </label>
-            
-            {availableTimeSlots.length > 0 ? (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
-                {availableTimeSlots.map((slot) => (
-                  <div
-                    key={slot.id}
-                    onClick={() => setSelectedTimeSlot(slot.id)}
-                    className={cn(
-                      'border rounded-lg py-2 px-3 cursor-pointer text-center transition-all',
-                      selectedTimeSlot === slot.id
-                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                        : 'border-border hover:border-primary/30'
-                    )}
-                  >
-                    <div className="text-sm">{slot.time}</div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-amber-600">
-                Não há horários disponíveis nesta data. Por favor, selecione outra data.
-              </p>
-            )}
-          </div>
-        )}
+        {/* Time Selection Component */}
+        <TimeSelection
+          selectedDate={selectedDate}
+          availableTimeSlots={availableTimeSlots}
+          selectedTimeSlot={selectedTimeSlot}
+          setSelectedTimeSlot={setSelectedTimeSlot}
+        />
         
-        {/* Informações de Contato */}
-        <div className="space-y-4">
-          <label className="block text-sm font-medium">
-            Suas Informações
-          </label>
-          
-          <div className="space-y-3">
-            <input
-              type="text"
-              placeholder="Nome Completo"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-              required
-            />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input
-                type="email"
-                placeholder="Endereço de Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                required
-              />
-              
-              <div className="relative">
-                <input
-                  type="tel"
-                  placeholder="WhatsApp (DD) XXXXX-XXXX"
-                  value={whatsApp}
-                  onChange={handleWhatsAppChange}
-                  className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                  required
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Formato brasileiro: (XX) XXXXX-XXXX
-                </p>
-              </div>
-            </div>
-            
-            <textarea
-              placeholder="Observações Adicionais (Opcional)"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-input bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none h-24"
-            />
-          </div>
-        </div>
-        
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          fullWidth
-        >
-          Solicitar Agendamento
-        </Button>
-        
-        <p className="text-xs text-center text-muted-foreground mt-3">
-          Ao enviar este formulário, você concorda com nossos Termos de Serviço e Política de Privacidade.
-        </p>
+        {/* Contact Form Component */}
+        <ContactForm
+          name={name}
+          setName={setName}
+          email={email}
+          setEmail={setEmail}
+          whatsApp={whatsApp}
+          handleWhatsAppChange={handleWhatsAppChange}
+          notes={notes}
+          setNotes={setNotes}
+          handleSubmit={handleSubmit}
+        />
       </form>
     </div>
   );
