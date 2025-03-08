@@ -4,6 +4,13 @@ import { Calendar } from 'lucide-react';
 import Button from '@/components/Button';
 
 const CTASection: React.FC = () => {
+  const scrollToBookingForm = () => {
+    const bookingSection = document.getElementById('booking-section');
+    if (bookingSection) {
+      bookingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="py-16 bg-primary/5 relative overflow-hidden">
       <div className="container-narrow relative z-10">
@@ -18,6 +25,7 @@ const CTASection: React.FC = () => {
               size="lg"
               icon={<Calendar size={18} />}
               iconPosition="left"
+              onClick={scrollToBookingForm}
             >
               Agendar uma Consulta
             </Button>

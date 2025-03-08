@@ -9,6 +9,13 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ className }) => {
+  const scrollToBookingForm = () => {
+    const bookingSection = document.getElementById('booking-section');
+    if (bookingSection) {
+      bookingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className={cn('relative pt-32 pb-20 overflow-hidden', className)}>
       {/* Background Gradient */}
@@ -43,6 +50,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
               size="lg"
               icon={<Calendar size={18} />}
               iconPosition="left"
+              onClick={scrollToBookingForm}
             >
               Agendar uma Consulta
             </Button>

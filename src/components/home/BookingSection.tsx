@@ -5,7 +5,7 @@ import AppointmentForm from '@/components/AppointmentForm';
 
 const BookingSection: React.FC = () => {
   return (
-    <section className="py-20">
+    <section id="booking-section" className="py-20">
       <div className="container-wide">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Text Column */}
