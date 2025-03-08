@@ -23,16 +23,16 @@ const DoctorBio: React.FC<DoctorBioProps> = ({ className }) => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Foto da Doutora */}
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-full h-full rounded-2xl bg-primary/10 animate-pulse-slow"></div>
-            <div className="glass-card p-3 rounded-2xl relative z-10">
+          <div className="relative z-10">
+            <div className="absolute -top-4 -left-4 w-full h-full rounded-2xl bg-primary/10 animate-pulse-slow -z-10"></div>
+            <div className="glass-card p-3 rounded-2xl relative">
               <img 
                 src="/tatyane.png" 
                 alt="Dra. Tatyane Prado de Lira" 
                 className="w-full h-auto rounded-xl object-cover" 
               />
             </div>
-            <div className="absolute -bottom-4 -right-4 bg-white shadow-subtle rounded-xl p-3 flex items-center space-x-2">
+            <div className="absolute -bottom-4 -right-4 bg-white shadow-subtle rounded-xl p-3 flex items-center space-x-2 z-20">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                 <Award size={20} />
               </div>
