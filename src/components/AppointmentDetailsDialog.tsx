@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -40,6 +39,7 @@ interface AppointmentDetailsDialogProps {
   patient: Patient | null;
   onConfirmAppointment: (patientId: string, appointmentIndex: number) => void;
   onCancelAppointment: (patientId: string, appointmentIndex: number) => void;
+  onCompleteAppointment?: (patientId: string, appointmentIndex: number) => void;
 }
 
 const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
@@ -47,7 +47,8 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
   onClose,
   patient,
   onConfirmAppointment,
-  onCancelAppointment
+  onCancelAppointment,
+  onCompleteAppointment
 }) => {
   const [activeTab, setActiveTab] = useState('all');
 
@@ -159,6 +160,21 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
     
     sendEmail(patient.email, subject, message);
     sendWhatsApp(patient.whatsApp, message);
+    
+    toast.success('Consulta cancelada', {
+      description: 'O paciente foi notificado por email e WhatsApp',
+    });
+  };
+
+  const handleComplete = (index: number) => {
+    if (onCompleteAppointment) {
+      onCompleteAppointment(patient.id, index);
+      
+      toast.success('Consulta marcada como concluída', {
+        description: 'O horário foi liberado na agenda',
+        icon: <CheckCircle className="h-4 w-4" />
+      });
+    }
   };
 
   const sendReminder = (appointment: Appointment) => {
@@ -246,6 +262,26 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
                             onClick={() => handleCancel(index)}
                           >
                             <XCircle className="mr-1 h-4 w-4" /> Recusar
+                          </Button>
+                        </>
+                      )}
+                      
+                      {appointment.status === 'scheduled' && (
+                        <>
+                          <Button 
+                            size="sm" 
+                            variant="default"
+                            className="bg-green-600 hover:bg-green-700"
+                            onClick={() => handleComplete(index)}
+                          >
+                            <CheckCircle className="mr-1 h-4 w-4" /> Marcar como Concluída
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => handleCancel(index)}
+                          >
+                            <XCircle className="mr-1 h-4 w-4" /> Cancelar
                           </Button>
                         </>
                       )}
