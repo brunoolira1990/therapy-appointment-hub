@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Calendar, Users, Clipboard, Home, LogOut } from 'lucide-react';
@@ -28,17 +27,20 @@ const Navbar: React.FC = () => {
     navigate('/');
   };
 
-  const navLinks = [
+  // Define base navigation links
+  let navLinks = [
     { name: 'Início', path: '/', icon: <Home size={18} /> },
     { name: 'Serviços', path: '/services', icon: <Clipboard size={18} /> },
   ];
 
-  // Adiciona o link de pacientes apenas para usuários admin (doutora)
+  // Add additional links for authenticated admin users
   if (isAuthenticated && user?.role === 'admin') {
-    navLinks.push({ name: 'Pacientes', path: '/patients', icon: <Users size={18} /> });
+    navLinks = [
+      ...navLinks,
+      { name: 'Pacientes', path: '/patients', icon: <Users size={18} /> },
+      { name: 'Agenda', path: '/schedule', icon: <Calendar size={18} /> },
+    ];
   }
-
-  navLinks.push({ name: 'Agenda', path: '/schedule', icon: <Calendar size={18} /> });
 
   return (
     <header
