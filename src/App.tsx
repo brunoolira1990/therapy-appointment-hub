@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Patients from "./pages/Patients";
 import Schedule from "./pages/Schedule";
 import Services from "./pages/Services";
+import ServiceDetail from "./pages/ServiceDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               } 
             />
             <Route path="/services" element={<Services />} />
+            <Route path="/services/:id" element={<ServiceDetail />} />
             <Route 
               path="/schedule" 
               element={

@@ -10,7 +10,7 @@ interface ServiceCardProps {
   description: string;
   icon: React.ReactNode;
   className?: string;
-  id?: string; // Add an optional id for routing
+  id?: string; // ID for routing to individual service page
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({
