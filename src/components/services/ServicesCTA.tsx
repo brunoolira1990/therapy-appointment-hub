@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { scrollToBookingSection } from '@/utils/navigation';
+import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
 
 interface ServicesCTAProps {
   onScheduleClick: () => void;
@@ -11,9 +11,10 @@ interface ServicesCTAProps {
 
 const ServicesCTA: React.FC<ServicesCTAProps> = ({ onScheduleClick, onContactClick }) => {
   const navigate = useNavigate();
+  const { openAppointmentForm } = useAppointmentForm();
   
   const handleScheduleClick = () => {
-    scrollToBookingSection(navigate);
+    openAppointmentForm();
   };
 
   return (

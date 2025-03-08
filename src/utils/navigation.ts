@@ -1,4 +1,6 @@
 
+import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
+
 /**
  * Scrolls to the booking section on the homepage
  * If not on the homepage, navigates to the homepage first
@@ -15,4 +17,27 @@ export const scrollToBookingSection = (navigate: any) => {
     // If not, navigate to homepage with booking section hash
     navigate('/#booking-section');
   }
+};
+
+/**
+ * Opens the appointment form popup dialog
+ */
+export const openAppointmentDialog = () => {
+  // This is just a placeholder. The actual function will be 
+  // handled by the AppointmentFormContext when components use it
+  console.log('Opening appointment dialog');
+};
+
+/**
+ * Convenience hook for handling appointments
+ * Provides methods for opening the form dialog or scrolling to the form section
+ */
+export const useAppointmentNavigation = () => {
+  const { openAppointmentForm } = useAppointmentForm();
+  
+  return {
+    openAppointmentForm,
+    scrollToBookingSection,
+    // You can add more appointment-related navigation functions here
+  };
 };
