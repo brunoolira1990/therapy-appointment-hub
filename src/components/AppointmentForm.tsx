@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import Button from './Button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface Service {
   id: string;
@@ -39,6 +40,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     { id: '4', name: 'Terapia Neurológica', description: 'Tratamento para condições neurológicas' }
   ];
   
+  // Horários disponíveis
   const timeSlots: TimeSlot[] = [
     { id: '1', time: '09:00' },
     { id: '2', time: '10:00' },
@@ -48,6 +50,25 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     { id: '6', time: '15:00' },
     { id: '7', time: '16:00' }
   ];
+  
+  // Exemplo de consultas agendadas (em produção viria de uma API)
+  const bookedAppointments = [
+    { date: '2023-09-10', time: '09:00' },
+    { date: '2023-09-10', time: '14:00' },
+    { date: '2023-09-11', time: '10:00' },
+  ];
+  
+  // Função para verificar horários disponíveis para uma data específica
+  const getAvailableTimeSlotsForDay = (date: Date): TimeSlot[] => {
+    if (!date) return [];
+    
+    const dateString = format(date, 'yyyy-MM-dd');
+    const bookedTimes = bookedAppointments
+      .filter(appointment => appointment.date === dateString)
+      .map(appointment => appointment.time);
+    
+    return timeSlots.filter(slot => !bookedTimes.includes(slot.time));
+  };
   
   const generateDateOptions = () => {
     const dates = [];
@@ -169,6 +190,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
     }, 2000);
   };
   
+  // Obtenha os horários disponíveis para a data selecionada
+  const availableTimeSlots = selectedDate ? getAvailableTimeSlotsForDay(selectedDate) : [];
+  
   return (
     <div className={cn('glass-card rounded-2xl overflow-hidden', className)}>
       <div className="bg-primary px-6 py-4 text-primary-foreground">
@@ -215,7 +239,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
             {generateDateOptions().map((date, index) => (
               <div
                 key={index}
-                onClick={() => setSelectedDate(date)}
+                onClick={() => {
+                  setSelectedDate(date);
+                  setSelectedTimeSlot(''); // Reset time slot when date changes
+                }}
                 className={cn(
                   'flex-shrink-0 w-28 border rounded-xl p-3 cursor-pointer text-center transition-all',
                   selectedDate && selectedDate.toDateString() === date.toDateString()
@@ -230,29 +257,38 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ className }) => {
           </div>
         </div>
         
-        {/* Seleção de Horário */}
-        <div className="space-y-3">
-          <label className="block text-sm font-medium flex items-center">
-            <Clock size={16} className="mr-1 text-primary" />
-            Selecione o Horário
-          </label>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
-            {timeSlots.map((slot) => (
-              <div
-                key={slot.id}
-                onClick={() => setSelectedTimeSlot(slot.id)}
-                className={cn(
-                  'border rounded-lg py-2 px-3 cursor-pointer text-center transition-all',
-                  selectedTimeSlot === slot.id
-                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                    : 'border-border hover:border-primary/30'
-                )}
-              >
-                <div className="text-sm">{slot.time}</div>
+        {/* Seleção de Horário - Apenas mostra horários disponíveis */}
+        {selectedDate && (
+          <div className="space-y-3">
+            <label className="block text-sm font-medium flex items-center">
+              <Clock size={16} className="mr-1 text-primary" />
+              Selecione o Horário
+            </label>
+            
+            {availableTimeSlots.length > 0 ? (
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
+                {availableTimeSlots.map((slot) => (
+                  <div
+                    key={slot.id}
+                    onClick={() => setSelectedTimeSlot(slot.id)}
+                    className={cn(
+                      'border rounded-lg py-2 px-3 cursor-pointer text-center transition-all',
+                      selectedTimeSlot === slot.id
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                        : 'border-border hover:border-primary/30'
+                    )}
+                  >
+                    <div className="text-sm">{slot.time}</div>
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <p className="text-amber-600">
+                Não há horários disponíveis nesta data. Por favor, selecione outra data.
+              </p>
+            )}
           </div>
-        </div>
+        )}
         
         {/* Informações de Contato */}
         <div className="space-y-4">

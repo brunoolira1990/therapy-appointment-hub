@@ -22,6 +22,17 @@ interface Appointment {
   notes?: string;
 }
 
+// Horários disponíveis para agendamento
+const AVAILABLE_TIME_SLOTS = [
+  { id: '1', time: '09:00' },
+  { id: '2', time: '10:00' },
+  { id: '3', time: '11:00' },
+  { id: '4', time: '13:00' },
+  { id: '5', time: '14:00' },
+  { id: '6', time: '15:00' },
+  { id: '7', time: '16:00' }
+];
+
 // Dummy data for demonstration - would come from an API in production
 const DUMMY_APPOINTMENTS: Appointment[] = [
   {
@@ -71,6 +82,17 @@ const DUMMY_APPOINTMENTS: Appointment[] = [
   }
 ];
 
+// Função para verificar horários disponíveis para uma data específica
+const getAvailableTimeSlotsForDay = (appointments: Appointment[], date: Date): typeof AVAILABLE_TIME_SLOTS => {
+  const dateString = format(date, 'yyyy-MM-dd');
+  const bookedTimes = appointments
+    .filter(appointment => appointment.date === dateString && 
+           (appointment.status === 'scheduled' || appointment.status === 'pending'))
+    .map(appointment => appointment.time);
+  
+  return AVAILABLE_TIME_SLOTS.filter(slot => !bookedTimes.includes(slot.time));
+};
+
 // Function to get appointments for a specific day
 const getAppointmentsForDay = (appointments: Appointment[], date: Date): Appointment[] => {
   const dateString = format(date, 'yyyy-MM-dd');
@@ -90,6 +112,7 @@ const Schedule: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
+  const [showAvailableSlots, setShowAvailableSlots] = useState(false);
   
   // Get days in current month
   const daysInMonth = eachDayOfInterval({
@@ -110,12 +133,24 @@ const Schedule: React.FC = () => {
   // Function to handle date selection
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-    setIsDetailsOpen(true);
+    
+    // Se a data tiver horários disponíveis, mostra o diálogo de horários disponíveis
+    const availableSlots = getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, date);
+    if (availableSlots.length > 0) {
+      setShowAvailableSlots(true);
+    } else {
+      setIsDetailsOpen(true);
+    }
   };
   
   // Get appointments for selected date
   const selectedDateAppointments = selectedDate 
     ? getAppointmentsForDay(DUMMY_APPOINTMENTS, selectedDate) 
+    : [];
+  
+  // Get available time slots for selected date
+  const availableTimeSlots = selectedDate
+    ? getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, selectedDate)
     : [];
   
   // Filter appointments based on active tab
@@ -180,44 +215,43 @@ const Schedule: React.FC = () => {
                 {/* Days of the month */}
                 {daysInMonth.map((day, i) => {
                   const appointments = getAppointmentsForDay(DUMMY_APPOINTMENTS, day);
+                  const availableSlots = getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, day);
                   const isCurrentDay = isToday(day);
                   const isCurrentMonth = isSameMonth(day, currentMonth);
                   const isSelected = selectedDate && isSameDay(day, selectedDate);
+                  const hasAvailableSlots = availableSlots.length > 0;
                   
                   return (
                     <button
                       key={i}
                       onClick={() => handleDateSelect(day)}
+                      disabled={!hasAvailableSlots}
                       className={cn(
                         "relative h-14 rounded-md flex flex-col items-center justify-center text-sm",
                         !isCurrentMonth && "text-muted-foreground opacity-50",
                         isCurrentDay && "bg-primary/10 text-primary",
                         isSelected && "bg-primary text-primary-foreground",
-                        !isSelected && !isCurrentDay && "hover:bg-muted"
+                        !isSelected && !isCurrentDay && hasAvailableSlots && "hover:bg-muted",
+                        !hasAvailableSlots && "opacity-50 cursor-not-allowed"
                       )}
                     >
                       <span>{format(day, 'd')}</span>
                       
-                      {appointments.length > 0 && (
+                      {hasAvailableSlots && (
                         <div className="absolute bottom-1 flex space-x-0.5">
-                          {appointments.length <= 3 ? (
-                            appointments.map((apt, j) => (
+                          {availableSlots.length <= 3 ? (
+                            availableSlots.map((slot, j) => (
                               <div
                                 key={j}
-                                className={cn(
-                                  "w-1.5 h-1.5 rounded-full",
-                                  apt.status === 'pending' ? "bg-amber-400" : 
-                                  apt.status === 'scheduled' ? "bg-blue-400" : 
-                                  apt.status === 'completed' ? "bg-green-400" : "bg-red-400"
-                                )}
+                                className="w-1.5 h-1.5 rounded-full bg-green-400"
                               />
                             ))
                           ) : (
                             <>
-                              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                              <span className="text-[10px] text-muted-foreground ml-0.5">+{appointments.length - 3}</span>
+                              <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                              <span className="text-[10px] text-muted-foreground ml-0.5">+{availableSlots.length - 3}</span>
                             </>
                           )}
                         </div>
@@ -229,20 +263,8 @@ const Schedule: React.FC = () => {
               
               <div className="mt-6 flex items-center justify-center space-x-6 text-xs text-muted-foreground">
                 <div className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-amber-400 mr-1.5" />
-                  <span>Pendente</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-blue-400 mr-1.5" />
-                  <span>Agendada</span>
-                </div>
-                <div className="flex items-center">
                   <div className="w-2 h-2 rounded-full bg-green-400 mr-1.5" />
-                  <span>Concluída</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-red-400 mr-1.5" />
-                  <span>Cancelada</span>
+                  <span>Horários Disponíveis</span>
                 </div>
               </div>
             </div>
@@ -301,6 +323,41 @@ const Schedule: React.FC = () => {
           </div>
         </div>
       </main>
+      
+      {/* Available Time Slots Dialog */}
+      <Dialog open={showAvailableSlots} onOpenChange={setShowAvailableSlots}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedDate && format(selectedDate, "EEEE, dd 'de' MMMM", { locale: ptBR })}
+            </DialogTitle>
+            <DialogDescription>
+              Horários disponíveis para agendamento
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            {availableTimeSlots.map((slot) => (
+              <Button
+                key={slot.id}
+                variant="outline"
+                className="text-center py-6"
+                onClick={() => {
+                  // Aqui você poderia redirecionar para o formulário de agendamento
+                  // ou abrir um diálogo de confirmação
+                  setShowAvailableSlots(false);
+                }}
+              >
+                {slot.time}
+              </Button>
+            ))}
+          </div>
+          
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setShowAvailableSlots(false)}>Fechar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
       {/* Daily Appointments Dialog */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
@@ -405,3 +462,4 @@ const Schedule: React.FC = () => {
 };
 
 export default Schedule;
+

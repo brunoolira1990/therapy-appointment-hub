@@ -1,4 +1,3 @@
-
 /**
  * Este arquivo contém funções para simulação de envio de notificações
  * Em um ambiente de produção, estas funções seriam substituídas por 
@@ -11,7 +10,7 @@ const EMAIL_CONFIG = {
   port: 465,
   secure: true,
   auth: {
-    user: 'contato@tatyanelira.com.br',
+    user: 'tatyane@tatyanelira.com.br',
     pass: 'Tatyane@Tatyane'
   }
 };
@@ -63,6 +62,7 @@ export const sendEmail = (email: string, subject: string, message: string): Prom
     // Em um ambiente real, aqui haveria uma chamada usando nodemailer ou similar
     // com as configurações fornecidas
     console.log(`Enviando email para ${email} usando o servidor ${EMAIL_CONFIG.host}`);
+    console.log(`De: ${EMAIL_CONFIG.auth.user}`);
     console.log(`Assunto: ${subject}`);
     console.log(`Mensagem: ${message}`);
     
