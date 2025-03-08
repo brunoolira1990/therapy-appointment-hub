@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { validateEmail, validatePhone } from '@/utils/formValidation';
+import { isValidEmail, isValidWhatsApp } from '@/utils/formValidation';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
@@ -31,11 +31,11 @@ const ContactForm = () => {
     
     if (!email.trim()) {
       newErrors.email = 'Email é obrigatório';
-    } else if (!validateEmail(email)) {
+    } else if (!isValidEmail(email)) {
       newErrors.email = 'Email inválido';
     }
     
-    if (phone.trim() && !validatePhone(phone)) {
+    if (phone.trim() && !isValidWhatsApp(phone)) {
       newErrors.phone = 'Telefone inválido';
     }
     
