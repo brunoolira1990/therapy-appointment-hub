@@ -16,6 +16,10 @@ const ServicesCTA: React.FC<ServicesCTAProps> = ({ onScheduleClick, onContactCli
   const handleScheduleClick = () => {
     openAppointmentForm();
   };
+  
+  const handleContactClick = () => {
+    navigate('/contact');
+  };
 
   return (
     <section className="py-16 bg-primary/5">
@@ -30,7 +34,7 @@ const ServicesCTA: React.FC<ServicesCTAProps> = ({ onScheduleClick, onContactCli
           <Button size="lg" onClick={handleScheduleClick}>
             Agendar Consulta
           </Button>
-          <Button variant="outline" size="lg" onClick={onContactClick}>
+          <Button variant="outline" size="lg" onClick={handleContactClick}>
             Fale Conosco
           </Button>
         </div>

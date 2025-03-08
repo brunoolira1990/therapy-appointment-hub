@@ -2,7 +2,6 @@
 import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
 
@@ -22,6 +21,10 @@ const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({
   
   const handleScheduleClick = () => {
     openAppointmentForm();
+  };
+  
+  const handleContactClick = () => {
+    navigate('/contact');
   };
   
   return (
@@ -57,7 +60,7 @@ const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({
             <Button onClick={handleScheduleClick}>
               Agendar Consulta
             </Button>
-            <Button variant="outline" onClick={onContactClick}>
+            <Button variant="outline" onClick={handleContactClick}>
               Fale Conosco
             </Button>
           </div>
