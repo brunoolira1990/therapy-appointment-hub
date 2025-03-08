@@ -3,12 +3,14 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ServiceCardProps {
   title: string;
   description: string;
   icon: React.ReactNode;
   className?: string;
+  id?: string; // Add an optional id for routing
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({
@@ -16,13 +18,25 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   description,
   icon,
   className,
+  id,
 }) => {
+  const navigate = useNavigate();
+  
+  const handleViewService = () => {
+    if (id) {
+      navigate(`/services/${id}`);
+    } else {
+      navigate('/services');
+    }
+  };
+  
   return (
     <div 
       className={cn(
-        'group relative p-6 rounded-2xl glass-card hover-card overflow-hidden',
+        'group relative p-6 rounded-2xl glass-card hover-card overflow-hidden cursor-pointer',
         className
       )}
+      onClick={handleViewService}
     >
       {/* Icon Container */}
       <div className="w-12 h-12 mb-6 rounded-xl bg-primary/10 flex items-center justify-center text-primary transition-colors group-hover:bg-primary group-hover:text-white">
@@ -36,6 +50,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <Button 
         variant="ghost" 
         className="px-0 hover:bg-transparent hover:text-primary"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleViewService();
+        }}
       >
         Saiba mais
         <ArrowRight size={16} className="ml-2" />
