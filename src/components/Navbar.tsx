@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, Calendar, Users, Clipboard, Home, LogOut } from 'lucide-react';
+import { Menu, X, Calendar, Users, Clipboard, Home, LogOut, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Button from './Button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -102,11 +103,11 @@ const Navbar: React.FC = () => {
             <Button
               variant="primary"
               size="md"
-              icon={<Calendar size={16} />}
+              icon={<ShieldCheck size={16} />}
               iconPosition="left"
               onClick={() => navigate('/login')}
             >
-              Agendar Consulta
+              Acessar Portal Admin
             </Button>
           )}
         </div>
@@ -192,11 +193,14 @@ const Navbar: React.FC = () => {
                   variant="primary"
                   size="lg"
                   fullWidth
-                  icon={<Calendar size={18} />}
+                  icon={<ShieldCheck size={18} />}
                   iconPosition="left"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={() => {
+                    navigate('/login');
+                    setIsMobileMenuOpen(false);
+                  }}
                 >
-                  Agendar Consulta
+                  Acessar Portal Admin
                 </Button>
               </>
             )}
