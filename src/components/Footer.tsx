@@ -88,7 +88,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="mr-3 text-primary" />
-                <a href="mailto:contato@fisiohub.com.br" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="mailto:contato@tatyanelira.com.br" className="text-muted-foreground hover:text-primary transition-colors">
                   contato@tatyanelira.com.br
                 </a>
               </li>
