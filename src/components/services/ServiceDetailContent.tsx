@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { scrollToBookingSection } from '@/utils/navigation';
+import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
 
 interface ServiceDetailContentProps {
   title: string;
@@ -18,9 +18,10 @@ const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({
   onContactClick 
 }) => {
   const navigate = useNavigate();
+  const { openAppointmentForm } = useAppointmentForm();
   
   const handleScheduleClick = () => {
-    scrollToBookingSection(navigate);
+    openAppointmentForm();
   };
   
   return (

@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
-import { scrollToBookingSection } from '@/utils/navigation';
 
 const ServicesHero = () => {
   const navigate = useNavigate();

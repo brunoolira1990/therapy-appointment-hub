@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ServiceDetailProps, getIconComponent } from '@/services/api';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
-import { scrollToBookingSection } from '@/utils/navigation';
+import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
 
 interface ServicesDetailedProps {
   services: ServiceDetailProps[];
@@ -19,9 +19,10 @@ const ServicesDetailed: React.FC<ServicesDetailedProps> = ({
   onScheduleClick 
 }) => {
   const navigate = useNavigate();
+  const { openAppointmentForm } = useAppointmentForm();
   
   const handleScheduleClick = () => {
-    scrollToBookingSection(navigate);
+    openAppointmentForm();
   };
 
   if (isLoading) {

@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ServiceDetailProps, getIconComponent } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
-import { scrollToBookingSection } from '@/utils/navigation';
+import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
 
 interface ServiceDetailHeroProps {
   service: ServiceDetailProps;
@@ -14,9 +14,10 @@ interface ServiceDetailHeroProps {
 
 const ServiceDetailHero: React.FC<ServiceDetailHeroProps> = ({ service, onScheduleClick }) => {
   const navigate = useNavigate();
+  const { openAppointmentForm } = useAppointmentForm();
   
   const handleScheduleClick = () => {
-    scrollToBookingSection(navigate);
+    openAppointmentForm();
   };
   
   return (

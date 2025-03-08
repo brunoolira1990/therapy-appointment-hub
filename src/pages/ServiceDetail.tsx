@@ -10,7 +10,8 @@ import ServiceDetailContent from '@/components/services/ServiceDetailContent';
 import RelatedServices from '@/components/services/RelatedServices';
 import ServiceLoading from '@/components/services/ServiceLoading';
 import ServiceNotFound from '@/components/services/ServiceNotFound';
-import { scrollToBookingSection } from '@/utils/navigation';
+import AppointmentFormDialog from '@/components/AppointmentFormDialog';
+import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
 
 const ServiceDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,7 @@ const ServiceDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isFormOpen, closeAppointmentForm } = useAppointmentForm();
 
   useEffect(() => {
     const loadService = async () => {
@@ -62,7 +64,8 @@ const ServiceDetail = () => {
   }, [id, navigate, toast]);
 
   const handleScheduleClick = () => {
-    scrollToBookingSection(navigate);
+    // This function will be passed down but not directly used
+    // Components will use the AppointmentFormContext instead
   };
 
   const handleContactClick = () => {
@@ -95,6 +98,11 @@ const ServiceDetail = () => {
           <ServiceNotFound />
         )}
       </main>
+      
+      <AppointmentFormDialog 
+        open={isFormOpen} 
+        onOpenChange={closeAppointmentForm} 
+      />
       
       <Footer />
     </div>

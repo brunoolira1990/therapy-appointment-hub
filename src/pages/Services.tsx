@@ -9,13 +9,15 @@ import ServicesHero from '@/components/services/ServicesHero';
 import ServicesOverview from '@/components/services/ServicesOverview';
 import ServicesDetailed from '@/components/services/ServicesDetailed';
 import ServicesCTA from '@/components/services/ServicesCTA';
-import { scrollToBookingSection } from '@/utils/navigation';
+import AppointmentFormDialog from '@/components/AppointmentFormDialog';
+import { useAppointmentForm } from '@/contexts/AppointmentFormContext';
 
 const Services = () => {
   const [services, setServices] = useState<ServiceDetailProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isFormOpen, closeAppointmentForm } = useAppointmentForm();
 
   useEffect(() => {
     const loadServices = async () => {
@@ -39,7 +41,8 @@ const Services = () => {
   }, [toast]);
 
   const handleScheduleClick = () => {
-    scrollToBookingSection(navigate);
+    // This function will be passed down but not directly used
+    // Components will use the AppointmentFormContext instead
   };
 
   const handleContactClick = () => {
@@ -63,6 +66,11 @@ const Services = () => {
           onContactClick={handleContactClick} 
         />
       </main>
+      
+      <AppointmentFormDialog 
+        open={isFormOpen} 
+        onOpenChange={closeAppointmentForm} 
+      />
       
       <Footer />
     </div>
