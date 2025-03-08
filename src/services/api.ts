@@ -1,5 +1,6 @@
 
 import { ArrowRight, MoveHorizontal, Activity, Stethoscope, FileHeart, UserCheck, ShieldCheck } from 'lucide-react';
+import React from 'react';
 
 // This is a simulation of data that would come from a database
 // In a real application, this would be an API call to your backend
@@ -111,21 +112,21 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
 };
 
 // Helper function to map icon names to actual React components
-export const getIconComponent = (iconName: string, size = 24) => {
+export const getIconComponent = (iconName: string, size = 24): React.ReactNode => {
   switch (iconName) {
     case 'MoveHorizontal':
-      return <MoveHorizontal size={size} />;
+      return React.createElement(MoveHorizontal, { size });
     case 'Activity':
-      return <Activity size={size} />;
+      return React.createElement(Activity, { size });
     case 'Stethoscope':
-      return <Stethoscope size={size} />;
+      return React.createElement(Stethoscope, { size });
     case 'FileHeart':
-      return <FileHeart size={size} />;
+      return React.createElement(FileHeart, { size });
     case 'UserCheck':
-      return <UserCheck size={size} />;
+      return React.createElement(UserCheck, { size });
     case 'ShieldCheck':
-      return <ShieldCheck size={size} />;
+      return React.createElement(ShieldCheck, { size });
     default:
-      return <MoveHorizontal size={size} />;
+      return React.createElement(MoveHorizontal, { size });
   }
 };
