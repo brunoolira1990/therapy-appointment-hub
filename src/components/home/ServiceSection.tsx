@@ -3,8 +3,11 @@ import React from 'react';
 import { ArrowRight, MoveHorizontal, Activity, Stethoscope, FileHeart, UserCheck, ShieldCheck } from 'lucide-react';
 import ServiceCard from '@/components/ServiceCard';
 import Button from '@/components/Button';
+import { useNavigate } from 'react-router-dom';
 
 const ServiceSection: React.FC = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-20 bg-secondary/30">
       <div className="container-wide">
@@ -68,7 +71,7 @@ const ServiceSection: React.FC = () => {
             size="lg"
             icon={<ArrowRight size={18} />}
             iconPosition="right"
-            onClick={() => window.location.href = '/services'}
+            onClick={() => navigate('/services')}
           >
             Ver Todos os Serviços
           </Button>

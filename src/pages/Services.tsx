@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -79,6 +78,7 @@ const Services = () => {
                   {services.slice(0, 3).map((service) => (
                     <ServiceCard
                       key={service.id}
+                      id={service.id}
                       title={service.title}
                       description={service.description.substring(0, 120) + "..."}
                       icon={getIconComponent(service.icon)}
@@ -89,6 +89,7 @@ const Services = () => {
                   {services.slice(3, 6).map((service) => (
                     <ServiceCard
                       key={service.id}
+                      id={service.id}
                       title={service.title}
                       description={service.description.substring(0, 120) + "..."}
                       icon={getIconComponent(service.icon)}
