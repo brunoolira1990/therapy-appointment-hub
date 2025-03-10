@@ -1,6 +1,10 @@
 
 # Instruções para Deployment no Plesk Windows
 
+## Arquivos Essenciais para Download
+- [web.config](/public/web.config) - Configurações do IIS para roteamento e tipos MIME
+- [app.js](/public/app.js) - Arquivo necessário para evitar erros no IIS
+
 ## Requisitos
 - Plesk para Windows com suporte ao IIS
 - Módulo URL Rewrite instalado no IIS
@@ -61,4 +65,3 @@ No Plesk, certifique-se que:
 - [ ] Site configurado como aplicação .NET no IIS
 - [ ] URL Rewrite instalado no servidor
 - [ ] Testadas várias rotas da aplicação para confirmar funcionamento
-
