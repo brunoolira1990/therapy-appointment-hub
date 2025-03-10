@@ -1,15 +1,25 @@
-
 # Instruções para Deployment no Plesk Windows
 
 ## Requisitos
-- Plesk para Windows com suporte a Node.js
+- Plesk para Windows com suporte ao IIS
+- Módulo URL Rewrite instalado no IIS
 - Git (opcional, para deployment via Git)
 
-## Método 1: Upload Manual
-1. Execute `npm run build` localmente
-2. Faça upload da pasta `dist` para o diretório raiz do seu domínio no Plesk
+## Método 1: Upload Manual via Gerenciador de Arquivos
+1. Execute `npm run build` localmente para gerar a pasta `dist`
+2. Acesse o Painel Plesk > Seu Domínio > Gerenciador de Arquivos
+3. Navegue até a pasta raiz do domínio (geralmente `httpdocs` ou `wwwroot`)
+4. Faça upload do conteúdo da pasta `dist` para esta pasta
+5. Certifique-se de fazer upload do arquivo `web.config` para a raiz do site
+6. Importante: Após o upload, verifique se o conteúdo foi para a raiz e não dentro de uma subpasta `dist`
 
-## Método 2: Deployment via Git (Recomendado)
+## Configuração após o Upload
+1. No Plesk, vá para Domínios > seu-dominio.com > Configurações de Hospedagem
+2. Em "Documento Padrão", adicione `index.html` como primeira opção
+3. Verifique se o site está configurado como Aplicação .NET (Versão 4.x ou superior)
+4. Se necessário, reinicie o IIS pelo Painel do Plesk (Ferramentas & Configurações > IIS)
+
+## Método 2: Deployment via Git (Alternativa)
 1. No painel Plesk, acesse seu domínio
 2. Vá para a seção Git (ou Ferramentas & Configurações > Git)
 3. Crie um novo repositório ou conecte a um existente
@@ -33,5 +43,17 @@ No Plesk, certifique-se que:
 3. A aplicação está configurada como uma aplicação .NET no IIS
 
 ## Solução de Problemas
-- Se as rotas não funcionarem, verifique se o módulo URL Rewrite está instalado no IIS
-- Para problemas com API, verifique os logs do IIS no Plesk
+- Se as rotas não funcionarem após upload, verifique se:
+  1. O arquivo `web.config` está na raiz do site
+  2. O módulo URL Rewrite está instalado no IIS
+  3. As permissões de arquivos estão corretas
+- Para verificar os logs de erro, acesse o Painel Plesk > Domínios > seu-dominio.com > Logs
+
+## Checklist Final de Deployment
+- [ ] Pasta `dist` gerada localmente com `npm run build`
+- [ ] Conteúdo da pasta `dist` enviado para a raiz do site no Plesk
+- [ ] Arquivo `web.config` presente na raiz
+- [ ] `index.html` configurado como documento padrão
+- [ ] Site configurado como aplicação .NET no IIS
+- [ ] URL Rewrite instalado no servidor
+- [ ] Testadas várias rotas da aplicação para confirmar funcionamento
