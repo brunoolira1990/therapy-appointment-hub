@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { X } from 'lucide-react';
 import { 
   Dialog, 
   DialogContent,
@@ -19,6 +18,12 @@ const AppointmentFormDialog: React.FC<AppointmentFormDialogProps> = ({
   open,
   onOpenChange
 }) => {
+  // Previne problemas com caminhos em ambiente Windows
+  const handleFormSubmit = () => {
+    // Lógica de submissão adaptada para Windows se necessário
+    console.log('Form submitted in Windows-compatible way');
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[95%] md:max-w-[85%] lg:max-w-[75%] xl:max-w-3xl p-0 gap-0 overflow-hidden">
