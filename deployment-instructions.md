@@ -3,7 +3,7 @@
 
 ## Arquivos Essenciais para Download
 - [web.config](/public/web.config) - Configurações do IIS para roteamento e tipos MIME
-- [app.js](/public/app.js) - Arquivo necessário para evitar erros no IIS
+- [app.js](/app.js) - Arquivo necessário para evitar erros no IIS (deve estar na raiz do site)
 
 ## Requisitos
 - Plesk para Windows com suporte ao IIS
@@ -17,7 +17,7 @@
 4. Faça upload do conteúdo da pasta `dist` para esta pasta
 5. Certifique-se de fazer upload do arquivo `web.config` para a raiz do site
 6. Importante: Após o upload, verifique se o conteúdo foi para a raiz e não dentro de uma subpasta `dist`
-7. **Importante:** Certifique-se de que o arquivo `app.js` esteja presente na raiz do site (incluído na pasta `public`)
+7. **Importante:** Certifique-se de que o arquivo `app.js` esteja presente na raiz do site (diretamente em `httpdocs`, não dentro de outras pastas)
 
 ## Configuração após o Upload
 1. No Plesk, vá para Domínios > seu-dominio.com > Configurações de Hospedagem
@@ -41,12 +41,14 @@
    - Executar `npm install`
    - Executar `npm run build`
    - Definir o diretório raiz do documento para a pasta `dist`
+7. **Importante:** Certifique-se de copiar manualmente o arquivo `app.js` para a raiz do site após o deploy
 
 ## Configuração do IIS
 No Plesk, certifique-se que:
 1. O web.config está presente no diretório raiz
 2. O diretório raiz do documento aponta para a pasta `dist`
 3. A aplicação está configurada como uma aplicação .NET no IIS
+4. O arquivo app.js está na raiz do site (diretamente em `httpdocs`)
 
 ## Solução de Problemas
 - Se as rotas não funcionarem após upload, verifique se:
@@ -60,7 +62,7 @@ No Plesk, certifique-se que:
 - [ ] Pasta `dist` gerada localmente com `npm run build`
 - [ ] Conteúdo da pasta `dist` enviado para a raiz do site no Plesk
 - [ ] Arquivo `web.config` presente na raiz
-- [ ] Arquivo `app.js` presente na raiz
+- [ ] Arquivo `app.js` presente na raiz (diretamente em `httpdocs`)
 - [ ] `index.html` configurado como documento padrão
 - [ ] Site configurado como aplicação .NET no IIS
 - [ ] URL Rewrite instalado no servidor
