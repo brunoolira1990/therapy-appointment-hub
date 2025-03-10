@@ -1,3 +1,4 @@
+
 # Instruções para Deployment no Plesk Windows
 
 ## Requisitos
@@ -12,6 +13,7 @@
 4. Faça upload do conteúdo da pasta `dist` para esta pasta
 5. Certifique-se de fazer upload do arquivo `web.config` para a raiz do site
 6. Importante: Após o upload, verifique se o conteúdo foi para a raiz e não dentro de uma subpasta `dist`
+7. **Importante:** Certifique-se de que o arquivo `app.js` esteja presente na raiz do site (incluído na pasta `public`)
 
 ## Configuração após o Upload
 1. No Plesk, vá para Domínios > seu-dominio.com > Configurações de Hospedagem
@@ -47,13 +49,16 @@ No Plesk, certifique-se que:
   1. O arquivo `web.config` está na raiz do site
   2. O módulo URL Rewrite está instalado no IIS
   3. As permissões de arquivos estão corretas
+  4. O arquivo `app.js` está presente na raiz (mesmo que vazio)
 - Para verificar os logs de erro, acesse o Painel Plesk > Domínios > seu-dominio.com > Logs
 
 ## Checklist Final de Deployment
 - [ ] Pasta `dist` gerada localmente com `npm run build`
 - [ ] Conteúdo da pasta `dist` enviado para a raiz do site no Plesk
 - [ ] Arquivo `web.config` presente na raiz
+- [ ] Arquivo `app.js` presente na raiz
 - [ ] `index.html` configurado como documento padrão
 - [ ] Site configurado como aplicação .NET no IIS
 - [ ] URL Rewrite instalado no servidor
 - [ ] Testadas várias rotas da aplicação para confirmar funcionamento
+
