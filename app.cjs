@@ -3,6 +3,7 @@
 // Usando sintaxe CommonJS para evitar problemas com ES modules
 
 console.log("Iniciando aplicação via IIS...");
+console.log("Versão do Node:", process.version);
 
 // Verificação de disponibilidade do Express
 try {

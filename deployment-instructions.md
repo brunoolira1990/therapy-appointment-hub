@@ -12,7 +12,7 @@
 ## Instalação de Requisitos
 1. Instale Node.js no servidor, se ainda não estiver instalado
    - Baixe em [nodejs.org](https://nodejs.org/)
-   - Instale a versão LTS para Windows (recomendamos versão 16.x ou 18.x)
+   - Instale a versão LTS para Windows (recomendamos versão 18.x ou 20.x)
    - **Importante:** Execute o instalador como Administrador
 
 2. Instale os módulos IIS necessários:
@@ -28,8 +28,16 @@
    npm init -y
    npm install express@4.18.2 --save
    ```
-   - **Nota:** Se ocorrer erro, tente com a versão específica 4.18.2
-   - Caso o erro persista, verifique a conexão à internet e as permissões
+   - **IMPORTANTE:** Use exatamente a versão 4.18.2 do Express, pois versões mais recentes podem não estar disponíveis
+   - Caso ocorra erro, verifique se o Node.js está corretamente instalado
+   - Verifique a conexão à internet e as permissões do diretório
+
+## Verificação da Instalação
+1. Após instalar o Express, execute este comando para verificar se foi instalado corretamente:
+   ```
+   node -e "console.log(require('express').version)"
+   ```
+   - Deve exibir "4.18.2" se a instalação foi bem-sucedida
 
 ## Configuração no IIS
 1. Abra o IIS Manager (digite "inetmgr" na busca do Windows)
@@ -53,7 +61,7 @@
    // test-express.js
    const express = require('express');
    const app = express();
-   console.log('Express carregado com sucesso!');
+   console.log('Express carregado com sucesso! Versão:', express.version);
    ```
 2. Execute-o com: `node test-express.js`
 3. Se não aparecer erro, o Express está instalado corretamente
@@ -69,10 +77,11 @@
 
 ## Solução de Problemas Comuns
 - **Erro 500**: Verifique permissões e logs do iisnode
-- **Express não encontrado**: Certifique-se de que foi instalado corretamente
+- **Express não encontrado**: Certifique-se de que foi instalado corretamente com a versão exata 4.18.2
 - **Problemas de permissão**: Execute tudo como Administrador
 - **Node.js não encontrado**: Verifique o caminho no web.config (nodeProcessCommandLine)
 - **Timeout durante instalação**: Tente com uma conexão de internet mais estável
+- **Erro na instalação do Express**: Use o comando com versão exata `npm install express@4.18.2 --save`
 
 ## Teste Direto do Servidor
 1. Crie um arquivo `server.js` básico:
