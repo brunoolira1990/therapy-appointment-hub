@@ -1,72 +1,117 @@
 
-# Instruções para Deployment no Plesk Windows via Gerenciador de Arquivos
+# Instruções para Deployment no Heroku
 
-## Preparação de Arquivos Locais
-1. Execute `npm run build` para gerar a pasta `dist`
-2. Compacte todos os arquivos da pasta `dist` em um arquivo ZIP
+## Preparação Local
 
-## Upload de Arquivos via Plesk
-1. Acesse o Painel de Controle do Plesk
-2. Navegue até seu domínio
-3. Clique em "Gerenciador de Arquivos"
-4. Navegue até a pasta raiz do seu site (geralmente httpdocs ou public_html)
-5. Use o botão "Upload" para enviar o arquivo ZIP
-6. Extraia o arquivo ZIP diretamente no servidor usando a opção "Extrair" do Plesk
+1. Instale o Heroku CLI
+   - Baixe e instale o [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+   - Verifique a instalação com `heroku --version`
 
-## Instalação do Node.js via Plesk
-1. No Painel do Plesk, vá até "Hospedagem Node.js"
-2. Clique em "Ativar Node.js"
-3. Selecione a versão LTS mais recente (20.x)
-4. Clique em "Aplicar"
-
-## Instalação de Dependências
-1. No Gerenciador de Arquivos do Plesk:
-   - Crie um novo arquivo `package.json` (se não existir)
-   - Adicione as dependências necessárias:
-   ```json
-   {
-     "name": "seu-site",
-     "version": "1.0.0",
-     "dependencies": {
-       "express": "4.18.2"
-     }
-   }
+2. Faça login no Heroku
    ```
-2. Use o Terminal do Plesk (SSH) ou o "Node.js" no painel para instalar:
-   ```
-   npm install
+   heroku login
    ```
 
-## Configuração do Handler do Node.js
-1. No Plesk, vá até as configurações do seu domínio
-2. Em "Configurações do Node.js":
-   - Defina o "Document root" para a pasta onde estão seus arquivos
-   - Configure o "Application startup file" como `app.cjs`
-   - Defina a porta para 8080 (ou a que preferir)
-
-## Verificação da Instalação
-1. No Terminal do Plesk, verifique a instalação do Express:
+3. Prepare seu aplicativo React para produção
    ```
-   node -e "console.log(require('express').version)"
+   npm run build
    ```
-   Deve exibir "4.18.2"
 
-## Configuração de Permissões
-1. No Gerenciador de Arquivos:
-   - Selecione todos os arquivos e pastas
-   - Clique com o botão direito > "Permissões"
-   - Configure as permissões para 755 para pastas e 644 para arquivos
-   - Para pastas que precisam de escrita (como logs), use 775
+## Configuração do Heroku
 
-## Solução de Problemas Comuns
-- **Erro 500**: Verifique os logs no Plesk em "Log do Apache"
-- **Express não encontrado**: Verifique se o package.json está correto e reinstale
-- **Erro na instalação**: Use a versão exata do Express (4.18.2)
-- **Problemas de permissão**: Ajuste as permissões via Gerenciador de Arquivos
-- **Node.js não encontrado**: Verifique se está ativado nas configurações do domínio
+1. Crie um novo aplicativo Heroku (se ainda não tiver um)
+   ```
+   heroku create nome-do-seu-app
+   ```
 
-## Verificação Final
-1. Acesse seu site através do navegador
-2. Verifique os logs do Node.js no Plesk para identificar possíveis erros
-3. Se necessário, reinicie o serviço Node.js através do painel do Plesk
+2. Adicione um arquivo Procfile na raiz do projeto
+   ```
+   echo "web: node app.cjs" > Procfile
+   ```
+
+3. Configure o buildpack do Node.js
+   ```
+   heroku buildpacks:set heroku/nodejs
+   ```
+
+4. Verifique se seu package.json contém:
+   - A dependência do Express: `"express": "4.18.2"`
+   - A versão do Node.js nos engines: `"engines": { "node": "20.x" }`
+   - Um script start: `"start": "node app.cjs"`
+
+## Deployment
+
+1. Adicione todos os arquivos ao Git
+   ```
+   git add .
+   ```
+
+2. Faça commit das alterações
+   ```
+   git commit -m "Preparando para deploy no Heroku"
+   ```
+
+3. Faça push para o Heroku
+   ```
+   git push heroku main
+   ```
+   (ou `git push heroku master` se você estiver usando a branch master)
+
+4. Abra o aplicativo no navegador
+   ```
+   heroku open
+   ```
+
+## Verificação e Solução de Problemas
+
+1. Para ver os logs do aplicativo:
+   ```
+   heroku logs --tail
+   ```
+
+2. Para verificar o status do aplicativo:
+   ```
+   heroku ps
+   ```
+
+3. Se encontrar problemas:
+   - Verifique se o Procfile está configurado corretamente
+   - Confirme que o app.cjs está servindo os arquivos estáticos da pasta dist
+   - Verifique se as versões do Node.js e Express são compatíveis
+   - Assegure-se de que todas as dependências necessárias estão listadas no package.json
+
+4. Para reiniciar o aplicativo:
+   ```
+   heroku restart
+   ```
+
+## Configurações Adicionais (se necessário)
+
+1. Para adicionar variáveis de ambiente:
+   ```
+   heroku config:set NOME_DA_VARIAVEL=valor
+   ```
+
+2. Para configurar um domínio personalizado:
+   ```
+   heroku domains:add www.seudominio.com
+   ```
+
+3. Para habilitar HTTPS automático:
+   ```
+   heroku features:enable http-session-affinity
+   ```
+
+## Manutenção
+
+1. Para atualizar seu aplicativo, faça as alterações localmente, commit e:
+   ```
+   git push heroku main
+   ```
+
+2. Para escalar seu aplicativo:
+   ```
+   heroku ps:scale web=2
+   ```
+   (aumenta para 2 dynos - note que isso pode gerar custos adicionais)
 
