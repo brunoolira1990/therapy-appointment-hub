@@ -1,0 +1,7 @@
+
+{
+  "name": "tatyane-lira-site",
+  "type": "commonjs",
+  "private": true,
+  "description": "Package.json raiz para configurar o IIS para usar CommonJS"
+}
