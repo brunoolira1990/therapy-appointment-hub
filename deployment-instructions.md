@@ -12,10 +12,24 @@
 ## Instalação de Requisitos
 1. Instale Node.js no servidor, se ainda não estiver instalado
    - Baixe em [nodejs.org](https://nodejs.org/)
-   - Instale a versão LTS para Windows
+   - Instale a versão LTS para Windows (recomendamos versão 16.x ou 18.x)
+   - **Importante:** Execute o instalador como Administrador
+
 2. Instale os módulos IIS necessários:
    - URL Rewrite: Baixe de [IIS URL Rewrite](https://www.iis.net/downloads/microsoft/url-rewrite)
    - IISNode: Baixe de [GitHub iisnode](https://github.com/Azure/iisnode/releases)
+   - **Importante:** Execute os instaladores como Administrador
+
+## Instalação de Dependências do Projeto
+1. Abra o Prompt de Comando como Administrador (crucial)
+2. Navegue até a pasta do site (`cd C:\inetpub\wwwroot\seu-site` ou pasta específica)
+3. Execute os seguintes comandos:
+   ```
+   npm init -y
+   npm install express@4.18.2 --save
+   ```
+   - **Nota:** Se ocorrer erro, tente com a versão específica 4.18.2
+   - Caso o erro persista, verifique a conexão à internet e as permissões
 
 ## Configuração no IIS
 1. Abra o IIS Manager (digite "inetmgr" na busca do Windows)
@@ -31,12 +45,18 @@
 4. Conceda permissões de: Leitura, Escrita, Modificar e Listar conteúdo
 5. Clique em "Aplicar" e "OK"
 6. Crie uma pasta chamada "iisnode" dentro da pasta do site e dê as mesmas permissões
+7. **Importante:** Dê permissões completas ao usuário NETWORK SERVICE também
 
-## Instalação do Express (em caso de erro)
-1. Abra o Prompt de Comando como Administrador
-2. Navegue até a pasta do site (`cd C:\inetpub\wwwroot\seu-site`)
-3. Execute o comando: `npm init -y`
-4. Em seguida: `npm install express --save`
+## Teste de Arquivo Express
+1. Após instalar o Express, crie um arquivo de teste simples para verificar:
+   ```javascript
+   // test-express.js
+   const express = require('express');
+   const app = express();
+   console.log('Express carregado com sucesso!');
+   ```
+2. Execute-o com: `node test-express.js`
+3. Se não aparecer erro, o Express está instalado corretamente
 
 ## Reiniciar o IIS
 1. No IIS Manager, clique com o botão direito no servidor > Reiniciar
@@ -45,8 +65,22 @@
 ## Verificar os Logs
 1. Verifique os logs na pasta "iisnode" dentro do diretório do site
 2. Caso não existam logs, verifique novamente as permissões da pasta
+3. Use o Event Viewer (Visualizador de Eventos) do Windows para verificar erros do IIS
 
 ## Solução de Problemas Comuns
-- **Erro 500**: Verifique permissões e logs
-- **Erro 404**: Verifique o arquivo web.config e regras de rewrite
+- **Erro 500**: Verifique permissões e logs do iisnode
+- **Express não encontrado**: Certifique-se de que foi instalado corretamente
+- **Problemas de permissão**: Execute tudo como Administrador
 - **Node.js não encontrado**: Verifique o caminho no web.config (nodeProcessCommandLine)
+- **Timeout durante instalação**: Tente com uma conexão de internet mais estável
+
+## Teste Direto do Servidor
+1. Crie um arquivo `server.js` básico:
+   ```javascript
+   const http = require('http');
+   http.createServer((req, res) => {
+     res.writeHead(200, {'Content-Type': 'text/plain'});
+     res.end('Servidor Node.js está funcionando!');
+   }).listen(8080);
+   ```
+2. Execute com `node server.js` para verificar se o Node.js está funcionando
