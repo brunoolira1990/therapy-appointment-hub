@@ -1,95 +1,72 @@
 
-# Instruções para Deployment no Plesk Windows via Acesso Remoto
+# Instruções para Deployment no Plesk Windows via Gerenciador de Arquivos
 
 ## Preparação de Arquivos Locais
 1. Execute `npm run build` para gerar a pasta `dist`
-2. Copie todos os arquivos da pasta `dist` para a raiz do diretório do site
+2. Compacte todos os arquivos da pasta `dist` em um arquivo ZIP
 
-## Acessando o Servidor via Área de Trabalho Remota
-1. Conecte-se ao seu servidor VPS usando Área de Trabalho Remota
-2. Use as credenciais fornecidas pelo seu provedor de hospedagem
+## Upload de Arquivos via Plesk
+1. Acesse o Painel de Controle do Plesk
+2. Navegue até seu domínio
+3. Clique em "Gerenciador de Arquivos"
+4. Navegue até a pasta raiz do seu site (geralmente httpdocs ou public_html)
+5. Use o botão "Upload" para enviar o arquivo ZIP
+6. Extraia o arquivo ZIP diretamente no servidor usando a opção "Extrair" do Plesk
 
-## Instalação de Requisitos
-1. Instale Node.js no servidor, se ainda não estiver instalado
-   - Baixe em [nodejs.org](https://nodejs.org/)
-   - Instale a versão LTS para Windows (recomendamos versão 18.x ou 20.x)
-   - **Importante:** Execute o instalador como Administrador
+## Instalação do Node.js via Plesk
+1. No Painel do Plesk, vá até "Hospedagem Node.js"
+2. Clique em "Ativar Node.js"
+3. Selecione a versão LTS mais recente (20.x)
+4. Clique em "Aplicar"
 
-2. Instale os módulos IIS necessários:
-   - URL Rewrite: Baixe de [IIS URL Rewrite](https://www.iis.net/downloads/microsoft/url-rewrite)
-   - IISNode: Baixe de [GitHub iisnode](https://github.com/Azure/iisnode/releases)
-   - **Importante:** Execute os instaladores como Administrador
-
-## Instalação de Dependências do Projeto
-1. Abra o Prompt de Comando como Administrador (crucial)
-2. Navegue até a pasta do site (`cd C:\inetpub\wwwroot\seu-site` ou pasta específica)
-3. Execute os seguintes comandos:
+## Instalação de Dependências
+1. No Gerenciador de Arquivos do Plesk:
+   - Crie um novo arquivo `package.json` (se não existir)
+   - Adicione as dependências necessárias:
+   ```json
+   {
+     "name": "seu-site",
+     "version": "1.0.0",
+     "dependencies": {
+       "express": "4.18.2"
+     }
+   }
    ```
-   npm init -y
-   npm install express@4.18.2 --save
+2. Use o Terminal do Plesk (SSH) ou o "Node.js" no painel para instalar:
    ```
-   - **IMPORTANTE:** Use exatamente a versão 4.18.2 do Express, pois versões mais recentes podem não estar disponíveis
-   - Caso ocorra erro, verifique se o Node.js está corretamente instalado
-   - Verifique a conexão à internet e as permissões do diretório
+   npm install
+   ```
+
+## Configuração do Handler do Node.js
+1. No Plesk, vá até as configurações do seu domínio
+2. Em "Configurações do Node.js":
+   - Defina o "Document root" para a pasta onde estão seus arquivos
+   - Configure o "Application startup file" como `app.cjs`
+   - Defina a porta para 8080 (ou a que preferir)
 
 ## Verificação da Instalação
-1. Após instalar o Express, execute este comando para verificar se foi instalado corretamente:
+1. No Terminal do Plesk, verifique a instalação do Express:
    ```
    node -e "console.log(require('express').version)"
    ```
-   - Deve exibir "4.18.2" se a instalação foi bem-sucedida
+   Deve exibir "4.18.2"
 
-## Configuração no IIS
-1. Abra o IIS Manager (digite "inetmgr" na busca do Windows)
-2. Localize seu site no painel esquerdo
-3. Clique com o botão direito no site e selecione "Adicionar Aplicativo..."
-   - Alias: / (raiz)
-   - Caminho físico: Pasta onde estão os arquivos do site
-
-## Configuração de Permissões (CRUCIAL)
-1. Navegue até a pasta do site no Explorador de Arquivos
-2. Clique com o botão direito na pasta > Propriedades > Segurança > Editar
-3. Adicione o usuário do Pool de Aplicativos (tipicamente "IIS AppPool\DefaultAppPool")
-4. Conceda permissões de: Leitura, Escrita, Modificar e Listar conteúdo
-5. Clique em "Aplicar" e "OK"
-6. Crie uma pasta chamada "iisnode" dentro da pasta do site e dê as mesmas permissões
-7. **Importante:** Dê permissões completas ao usuário NETWORK SERVICE também
-
-## Teste de Arquivo Express
-1. Após instalar o Express, crie um arquivo de teste simples para verificar:
-   ```javascript
-   // test-express.js
-   const express = require('express');
-   const app = express();
-   console.log('Express carregado com sucesso! Versão:', express.version);
-   ```
-2. Execute-o com: `node test-express.js`
-3. Se não aparecer erro, o Express está instalado corretamente
-
-## Reiniciar o IIS
-1. No IIS Manager, clique com o botão direito no servidor > Reiniciar
-2. Alternativamente, execute `iisreset` no Prompt de Comando como administrador
-
-## Verificar os Logs
-1. Verifique os logs na pasta "iisnode" dentro do diretório do site
-2. Caso não existam logs, verifique novamente as permissões da pasta
-3. Use o Event Viewer (Visualizador de Eventos) do Windows para verificar erros do IIS
+## Configuração de Permissões
+1. No Gerenciador de Arquivos:
+   - Selecione todos os arquivos e pastas
+   - Clique com o botão direito > "Permissões"
+   - Configure as permissões para 755 para pastas e 644 para arquivos
+   - Para pastas que precisam de escrita (como logs), use 775
 
 ## Solução de Problemas Comuns
-- **Erro 500**: Verifique permissões e logs do iisnode
-- **Express não encontrado**: Certifique-se de que foi instalado corretamente com a versão exata 4.18.2
-- **Problemas de permissão**: Execute tudo como Administrador
-- **Node.js não encontrado**: Verifique o caminho no web.config (nodeProcessCommandLine)
-- **Timeout durante instalação**: Tente com uma conexão de internet mais estável
-- **Erro na instalação do Express**: Use o comando com versão exata `npm install express@4.18.2 --save`
+- **Erro 500**: Verifique os logs no Plesk em "Log do Apache"
+- **Express não encontrado**: Verifique se o package.json está correto e reinstale
+- **Erro na instalação**: Use a versão exata do Express (4.18.2)
+- **Problemas de permissão**: Ajuste as permissões via Gerenciador de Arquivos
+- **Node.js não encontrado**: Verifique se está ativado nas configurações do domínio
 
-## Teste Direto do Servidor
-1. Crie um arquivo `server.js` básico:
-   ```javascript
-   const http = require('http');
-   http.createServer((req, res) => {
-     res.writeHead(200, {'Content-Type': 'text/plain'});
-     res.end('Servidor Node.js está funcionando!');
-   }).listen(8080);
-   ```
-2. Execute com `node server.js` para verificar se o Node.js está funcionando
+## Verificação Final
+1. Acesse seu site através do navegador
+2. Verifique os logs do Node.js no Plesk para identificar possíveis erros
+3. Se necessário, reinicie o serviço Node.js através do painel do Plesk
+
