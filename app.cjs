@@ -1,11 +1,11 @@
 
-// Servidor Express para hospedar a aplicação React no Heroku
+// Servidor Express para hospedar a aplicação React na KingHost
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000; // A KingHost pode definir sua própria porta
 
 // Log de inicialização
 console.log(`Iniciando servidor na porta ${PORT}`);
@@ -45,5 +45,5 @@ app.use((err, req, res, next) => {
 // Iniciar o servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Acesse: http://localhost:${PORT}`);
 });
-
