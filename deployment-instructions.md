@@ -1,20 +1,48 @@
 
 # Instruções para Deployment na KingHost
 
-## Preparação Local
+## Opção 1: Deployment via Git
 
-1. Prepare seu aplicativo React para produção
+1. Preparação Local
    ```
    npm run build
    ```
 
-2. Verifique se o arquivo `app.cjs` está na raiz do projeto para servir a aplicação
+2. Configuração do Git na KingHost
+   - Acesse o Painel de Controle da KingHost
+   - Ative o Git para seu domínio (se disponível)
+   - Obtenha as credenciais Git e URL do repositório remoto
 
-## Upload para KingHost
+3. Configuração do Repositório Local
+   ```
+   # Adicione o repositório remoto da KingHost
+   git remote add kinghost [URL_REPOSITÓRIO_FORNECIDO_PELA_KINGHOST]
+   
+   # Verifique se foi adicionado corretamente
+   git remote -v
+   ```
 
-1. Acesse o Painel de Controle da KingHost
-   - Faça login em sua conta KingHost
-   - Navegue até o painel de controle
+4. Deploy via Git
+   ```
+   # Certifique-se de que todos os arquivos estão commitados
+   git add .
+   git commit -m "Deploy para KingHost"
+   
+   # Envie para o repositório da KingHost
+   git push kinghost main
+   ```
+
+5. Configuração do Node.js
+   - Acesse o Painel da KingHost
+   - Configure o Node.js para versão 20.x
+   - Defina o arquivo inicial como `app.cjs`
+
+## Opção 2: Deployment via Gerenciador de Arquivos
+
+1. Preparação Local
+   ```
+   npm run build
+   ```
 
 2. Configure Node.js 
    - Acesse a seção de Configurações ou Aplicativos
@@ -61,10 +89,16 @@
 
 ## Manutenção
 
-1. Para atualizar seu aplicativo:
-   - Faça as alterações localmente
-   - Execute `npm run build` para gerar uma nova versão da pasta `dist`
-   - Repita o processo de upload apenas para a pasta `dist` atualizada
+1. Para atualizar seu aplicativo via Git:
+   ```
+   # Faça as alterações localmente
+   npm run build
+   
+   # Commit e push para a KingHost
+   git add .
+   git commit -m "Atualização da aplicação"
+   git push kinghost main
+   ```
 
 2. Para reiniciar a aplicação:
    - Use o painel da KingHost para reiniciar os serviços Node.js
