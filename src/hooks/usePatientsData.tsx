@@ -4,68 +4,8 @@ import { toast } from 'sonner';
 import { Patient } from '@/types/patient';
 
 export const usePatientsData = () => {
-  // Dados de amostra de pacientes
-  const [patients, setPatients] = useState<Patient[]>([
-    {
-      id: 'PT-1001',
-      name: 'Alexandre Silva',
-      email: 'alexandre@exemplo.com',
-      whatsApp: '(11) 98765-4321',
-      birthDate: '1985-06-15',
-      appointments: [
-        { date: '2023-10-15', time: '14:00', status: 'completed', service: 'Fisioterapia Ortopédica' },
-        { date: '2023-11-05', time: '10:00', status: 'scheduled', service: 'Avaliação de Rotina' }
-      ]
-    },
-    {
-      id: 'PT-1002',
-      name: 'Maria Santos',
-      email: 'maria@exemplo.com',
-      whatsApp: '(11) 98765-4322',
-      birthDate: '1990-03-22',
-      appointments: [
-        { date: '2023-11-10', time: '15:30', status: 'scheduled', service: 'Fisioterapia Neurológica' }
-      ]
-    },
-    {
-      id: 'PT-1003',
-      name: 'David Costa',
-      email: 'david@exemplo.com',
-      whatsApp: '(11) 98765-4323',
-      birthDate: '1978-11-08',
-      appointments: []
-    },
-    {
-      id: 'PT-1004',
-      name: 'Ana Beatriz',
-      email: 'ana@exemplo.com',
-      whatsApp: '(11) 98765-4324',
-      birthDate: '1982-09-12',
-      appointments: [
-        { date: '2023-09-20', time: '09:00', status: 'completed', service: 'Terapia Manual' },
-        { date: '2023-10-25', time: '11:00', status: 'completed', service: 'Fisioterapia Esportiva' },
-        { date: '2023-11-15', time: '09:00', status: 'scheduled', service: 'Avaliação de Rotina' }
-      ]
-    },
-    {
-      id: 'PT-1005',
-      name: 'Carlos Eduardo',
-      email: 'carlos@exemplo.com',
-      whatsApp: '(11) 98765-4325',
-      birthDate: '1975-04-28',
-      appointments: [
-        { date: '2023-11-12', time: '16:00', status: 'scheduled', service: 'Fisioterapia Ortopédica' }
-      ]
-    },
-    {
-      id: 'PT-1006',
-      name: 'Isabela Martins',
-      email: 'isabela@exemplo.com',
-      whatsApp: '(11) 98765-4326',
-      birthDate: '1978-11-08',
-      appointments: []
-    }
-  ]);
+  // Iniciando com lista vazia de pacientes
+  const [patients, setPatients] = useState<Patient[]>([]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
