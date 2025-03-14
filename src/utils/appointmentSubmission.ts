@@ -6,6 +6,7 @@ import { sendAppointmentConfirmation } from './notifications';
 import { getServiceNameById } from './serviceUtils';
 import { getTimeBySlotId } from './timeSlotUtils';
 import { formatDatePtBR } from './dateUtils';
+import { addPatient, addAppointment } from '@/services/database';
 
 export interface AppointmentFormData {
   selectedDate: Date | null;
@@ -46,57 +47,103 @@ export const submitAppointment = async (
   // For debugging
   console.log({ ...formData, formattedDate, formattedDatePtBR, appointmentTime, serviceName });
   
-  // Create a patient object with the appointment
-  const patientAppointment = {
-    name,
-    email,
-    whatsApp,
-    birthDate: '', // This field would need to be filled on the patients page
-    appointments: [
-      {
-        date: formattedDate,
-        time: appointmentTime,
-        status: 'pending',
-        service: serviceName,
-        notes
-      }
-    ]
-  };
-  
-  // In a real app, this would be saved to a backend
-  // As we're working with example data, we'll temporarily store in localStorage
-  const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
-  pendingAppointments.push(patientAppointment);
-  localStorage.setItem('pendingAppointments', JSON.stringify(pendingAppointments));
-  
-  // Send notifications
   try {
-    const notificationResult = await sendAppointmentConfirmation(
+    // Criar novo agendamento no banco de dados
+    
+    // 1. Verificar se o paciente já existe ou adicionar novo
+    // Primeiro tente salvar no banco de dados
+    const newPatient = {
       name,
       email,
       whatsApp,
-      serviceName,
-      formattedDatePtBR,
-      appointmentTime
-    );
+      birthDate: new Date().toISOString().split('T')[0], // Data atual como fallback
+      appointments: []
+    };
     
-    if (notificationResult.email || notificationResult.whatsApp) {
-      console.log('Notifications sent successfully!');
+    const patient = await addPatient(newPatient);
+    
+    // 2. Adicionar o agendamento ao paciente
+    const appointment = {
+      date: formattedDate,
+      time: appointmentTime,
+      status: 'pending',
+      service: serviceName,
+      notes
+    };
+    
+    await addAppointment(patient.id, appointment);
+    
+    // Enviar notificações
+    try {
+      const notificationResult = await sendAppointmentConfirmation(
+        name,
+        email,
+        whatsApp,
+        serviceName,
+        formattedDatePtBR,
+        appointmentTime
+      );
+      
+      if (notificationResult.email || notificationResult.whatsApp) {
+        console.log('Notifications sent successfully!');
+      }
+    } catch (notificationError) {
+      console.error('Error sending notifications:', notificationError);
     }
+    
+    // Mostrar mensagem de sucesso
+    toast.success('Agendamento enviado com sucesso!', {
+      description: 'Você será redirecionado para a página de confirmação.'
+    });
+    
+    // Resetar formulário
+    resetForm();
+    
+    // Redirecionar para a página de pacientes
+    setTimeout(() => {
+      navigate('/patients');
+    }, 2000);
   } catch (error) {
-    console.error('Error sending notifications:', error);
+    console.error('Error saving appointment:', error);
+    
+    // Fallback para localStorage em caso de erro na conexão com o banco
+    toast.error('Erro ao conectar ao banco de dados', {
+      description: 'Salvando localmente por enquanto'
+    });
+    
+    // Criar um objeto de paciente com o agendamento
+    const patientAppointment = {
+      name,
+      email,
+      whatsApp,
+      birthDate: '',
+      appointments: [
+        {
+          date: formattedDate,
+          time: appointmentTime,
+          status: 'pending',
+          service: serviceName,
+          notes
+        }
+      ]
+    };
+    
+    // Salvar no localStorage como fallback
+    const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
+    pendingAppointments.push(patientAppointment);
+    localStorage.setItem('pendingAppointments', JSON.stringify(pendingAppointments));
+    
+    // Ainda mostrar mensagem de sucesso e redirecionar
+    toast.success('Agendamento enviado com sucesso!', {
+      description: 'Você será redirecionado para a página de confirmação.'
+    });
+    
+    // Resetar formulário
+    resetForm();
+    
+    // Redirecionar para a página de pacientes
+    setTimeout(() => {
+      navigate('/patients');
+    }, 2000);
   }
-  
-  // Show success message
-  toast.success('Appointment request sent successfully!', {
-    description: 'You will be redirected to the confirmation page.'
-  });
-  
-  // Reset form
-  resetForm();
-  
-  // Redirect to patients page (or confirmation page)
-  setTimeout(() => {
-    navigate('/patients');
-  }, 2000);
 };

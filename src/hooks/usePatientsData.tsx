@@ -12,6 +12,7 @@ export const usePatientsData = () => {
     setEditingPatient,
     selectedPatient,
     setSelectedPatient,
+    isLoading,
     handleAddPatient,
     handleEditPatient,
     handleDeletePatient,
@@ -31,7 +32,7 @@ export const usePatientsData = () => {
     handleCancelAppointment
   } = useAppointmentManagement(patients, setPatients, selectedPatient, setSelectedPatient);
 
-  // Carrega agendamentos pendentes do localStorage
+  // Carrega agendamentos pendentes do localStorage e migra para o banco
   usePendingAppointments(patients, setPatients);
 
   return {
@@ -45,6 +46,7 @@ export const usePatientsData = () => {
     setSelectedPatient,
     filteredPatients,
     patientHasPendingAppointment,
+    isLoading,
     handleAddPatient,
     handleEditPatient,
     handleDeletePatient,
