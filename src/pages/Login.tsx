@@ -51,7 +51,7 @@ const Login = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1">
-                Email
+                Usuário
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
@@ -60,12 +60,12 @@ const Login = () => {
                 <input
                   id="email"
                   name="email"
-                  type="email"
-                  autoComplete="email"
+                  type="text"
+                  autoComplete="username"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="dra@fisiohub.com"
+                  placeholder="tatyanelira"
                   className="block w-full pl-10 pr-3 py-2 border border-border rounded-md shadow-sm focus:ring-primary focus:border-primary bg-background"
                 />
               </div>
@@ -113,8 +113,8 @@ const Login = () => {
             <div className="text-center text-sm">
               <p className="text-muted-foreground mt-4">
                 Para demonstração: <br />
-                <span className="font-medium">Email: dra@fisiohub.com</span><br />
-                <span className="font-medium">Senha: fisio123</span>
+                <span className="font-medium">Usuário: tatyanelira</span><br />
+                <span className="font-medium">Senha: Fisio@2000</span>
               </p>
             </div>
           </form>

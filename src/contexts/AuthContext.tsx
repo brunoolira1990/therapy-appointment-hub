@@ -31,12 +31,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    // Simulando validação de credenciais (em produção usaria uma API)
-    // Apenas para demonstração, aceitando apenas "dra@fisiohub.com" e senha "fisio123"
-    if (username === 'dra@fisiohub.com' && password === 'fisio123') {
+    // Validação de credenciais atualizada
+    if (username === 'tatyanelira' && password === 'Fisio@2000') {
       const user = {
         id: '1',
-        name: 'Dra. Fernanda',
+        name: 'Tatyane Lira',
         role: 'admin' as const,
       };
       setUser(user);
