@@ -1,4 +1,3 @@
-
 import { Pool } from 'pg';
 import { Patient, Appointment } from '@/types/patient';
 
@@ -211,7 +210,8 @@ export const migrateLocalStorageToDatabase = async (): Promise<void> => {
             name: pendingAppointment.name,
             email: pendingAppointment.email,
             whatsApp: pendingAppointment.whatsApp || pendingAppointment.phone || '',
-            birthDate: pendingAppointment.birthDate || new Date().toISOString().split('T')[0]
+            birthDate: pendingAppointment.birthDate || new Date().toISOString().split('T')[0],
+            appointments: [] // Add the missing appointments property
           };
           
           const patient = await addPatient(newPatient);
