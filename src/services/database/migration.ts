@@ -1,12 +1,29 @@
 
+import { Patient, Appointment } from '@/types/patient';
 import { addPatient } from './patients';
 import { addAppointment } from './appointments';
+import { pgPool, isBrowser } from './init';
 
 // Função para migrar dados do localStorage para o sistema atual
 export const migrateLocalStorageToDatabase = async (): Promise<void> => {
   try {
     // Buscar agendamentos pendentes do localStorage antigo
-    const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
+    const pendingAppointmentsKey = 'pendingAppointments';
+    let pendingAppointments: any[] = [];
+    
+    if (isBrowser && localStorage.getItem(pendingAppointmentsKey)) {
+      pendingAppointments = JSON.parse(localStorage.getItem(pendingAppointmentsKey) || '[]');
+    } else if (!isBrowser && pgPool) {
+      // Verificar se existe uma tabela para migração no PostgreSQL
+      const { rows } = await pgPool.query(
+        "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'pending_appointments')"
+      );
+      
+      if (rows[0].exists) {
+        const result = await pgPool.query('SELECT * FROM pending_appointments');
+        pendingAppointments = result.rows;
+      }
+    }
     
     for (const pendingAppointment of pendingAppointments) {
       try {
@@ -32,8 +49,16 @@ export const migrateLocalStorageToDatabase = async (): Promise<void> => {
       }
     }
     
-    // Limpar localStorage antigo
-    localStorage.removeItem('pendingAppointments');
+    // Limpar dados antigos
+    if (isBrowser) {
+      localStorage.removeItem(pendingAppointmentsKey);
+    } else if (!isBrowser && pgPool) {
+      try {
+        await pgPool.query('DROP TABLE IF EXISTS pending_appointments');
+      } catch (dropError) {
+        console.error('Error dropping old table:', dropError);
+      }
+    }
   } catch (error) {
     console.error('Error migrating data:', error);
     throw error;

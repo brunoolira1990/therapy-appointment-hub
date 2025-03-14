@@ -1,18 +1,11 @@
 
 import { Patient, Appointment } from '@/types/patient';
 import { getPatients } from './patients';
-import { saveLocalPatients } from './init';
+import { saveLocalPatients, pgPool, isBrowser } from './init';
 
 // Funções para gerenciar agendamentos
 export const addAppointment = async (patientId: string, appointment: Omit<Appointment, 'id'>): Promise<Appointment> => {
   try {
-    const patients = await getPatients();
-    const patientIndex = patients.findIndex(p => p.id === patientId);
-    
-    if (patientIndex === -1) {
-      throw new Error('Patient not found');
-    }
-    
     // Gerar ID para o agendamento
     const appointmentId = Date.now().toString();
     
@@ -21,8 +14,27 @@ export const addAppointment = async (patientId: string, appointment: Omit<Appoin
       ...appointment
     };
     
-    patients[patientIndex].appointments.push(newAppointment);
-    saveLocalPatients(patients);
+    // Navegador: usa localStorage
+    if (isBrowser) {
+      const patients = await getPatients();
+      const patientIndex = patients.findIndex(p => p.id === patientId);
+      
+      if (patientIndex === -1) {
+        throw new Error('Patient not found');
+      }
+      
+      patients[patientIndex].appointments.push(newAppointment);
+      saveLocalPatients(patients);
+    } 
+    // Servidor: usa PostgreSQL
+    else if (pgPool) {
+      await pgPool.query(
+        `INSERT INTO appointments (id, patient_id, date, service, status, notes)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [newAppointment.id, patientId, newAppointment.date, newAppointment.service, 
+         newAppointment.status, newAppointment.notes]
+      );
+    }
     
     return newAppointment;
   } catch (error) {
@@ -33,21 +45,31 @@ export const addAppointment = async (patientId: string, appointment: Omit<Appoin
 
 export const updateAppointmentStatus = async (appointmentId: string, status: string): Promise<void> => {
   try {
-    const patients = await getPatients();
-    let updated = false;
-    
-    for (const patient of patients) {
-      const appointmentIndex = patient.appointments.findIndex(apt => apt.id === appointmentId);
+    // Navegador: usa localStorage
+    if (isBrowser) {
+      const patients = await getPatients();
+      let updated = false;
       
-      if (appointmentIndex !== -1) {
-        patient.appointments[appointmentIndex].status = status;
-        updated = true;
-        break;
+      for (const patient of patients) {
+        const appointmentIndex = patient.appointments.findIndex(apt => apt.id === appointmentId);
+        
+        if (appointmentIndex !== -1) {
+          patient.appointments[appointmentIndex].status = status;
+          updated = true;
+          break;
+        }
       }
-    }
-    
-    if (updated) {
-      saveLocalPatients(patients);
+      
+      if (updated) {
+        saveLocalPatients(patients);
+      }
+    } 
+    // Servidor: usa PostgreSQL
+    else if (pgPool) {
+      await pgPool.query(
+        'UPDATE appointments SET status = $1 WHERE id = $2',
+        [status, appointmentId]
+      );
     }
   } catch (error) {
     console.error('Error updating appointment status:', error);
