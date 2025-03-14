@@ -4,6 +4,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
+// Polyfill para o objeto process.env para evitar erros
+window.process = { env: {} };
+
 // Verifica se estamos em produção e configura console.log para evitar erros
 if (process.env.NODE_ENV === 'production') {
   console.log = (...args) => {

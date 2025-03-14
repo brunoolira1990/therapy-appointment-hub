@@ -1,6 +1,5 @@
 
 import { Patient } from '@/types/patient';
-import { Pool } from 'pg';
 
 // Chave para o localStorage como fallback
 const localStorageKey = 'fisioApp_patients';
@@ -9,10 +8,14 @@ const localStorageKey = 'fisioApp_patients';
 const isBrowser = typeof window !== 'undefined';
 
 // Pool de conexão PostgreSQL (apenas para ambiente de servidor)
-let pgPool: Pool | null = null;
+let pgPool: any = null;
 
+// No navegador, não tentamos importar ou usar o módulo pg
 if (!isBrowser) {
   try {
+    // Importação dinâmica para evitar que o código do pg seja incluído no bundle do cliente
+    const { Pool } = require('pg');
+    
     pgPool = new Pool({
       host: process.env.PG_HOST || 'pgsql52-farm1.kinghost.net',
       user: process.env.PG_USER || 'postgres',
