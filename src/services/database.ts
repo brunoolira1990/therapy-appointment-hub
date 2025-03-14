@@ -1,235 +1,181 @@
-import { Pool } from 'pg';
+
 import { Patient, Appointment } from '@/types/patient';
 
-// Configuração da conexão com o PostgreSQL
-const pool = new Pool({
-  user: 'tatyanelira',
-  host: 'pgsql.tatyanelira.com.br',
-  database: 'tatyanelira',
-  password: 'Fisio@2000',
-  port: 5432,
-});
+// Usamos localStorage como fallback já que o PostgreSQL não funciona no navegador
+const localStorageKey = 'fisioApp_patients';
 
-// Função para inicializar o banco de dados (criar tabelas se não existirem)
-export const initializeDatabase = async () => {
-  const client = await pool.connect();
+// Inicializa o armazenamento local se não existir
+export const initializeDatabase = async (): Promise<void> => {
   try {
-    // Criar tabela de pacientes
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS patients (
-        id VARCHAR(20) PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        email VARCHAR(100) NOT NULL,
-        whatsapp VARCHAR(20) NOT NULL,
-        birth_date DATE NOT NULL
-      )
-    `);
-
-    // Criar tabela de agendamentos
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS appointments (
-        id SERIAL PRIMARY KEY,
-        patient_id VARCHAR(20) REFERENCES patients(id),
-        date DATE NOT NULL,
-        time VARCHAR(10) NOT NULL,
-        status VARCHAR(20) NOT NULL,
-        service VARCHAR(100) NOT NULL,
-        notes TEXT
-      )
-    `);
-
+    if (!localStorage.getItem(localStorageKey)) {
+      localStorage.setItem(localStorageKey, JSON.stringify([]));
+    }
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);
     throw error;
-  } finally {
-    client.release();
   }
 };
 
 // Funções para gerenciar pacientes
 export const getPatients = async (): Promise<Patient[]> => {
-  const client = await pool.connect();
   try {
-    // Buscar todos os pacientes
-    const patientsResult = await client.query('SELECT * FROM patients');
-    
-    // Pacientes sem agendamentos ainda
-    const patients: Patient[] = patientsResult.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      email: row.email,
-      whatsApp: row.whatsapp,
-      birthDate: row.birth_date,
-      appointments: []
-    }));
-
-    // Buscar agendamentos de cada paciente
-    for (const patient of patients) {
-      const appointmentsResult = await client.query(
-        'SELECT * FROM appointments WHERE patient_id = $1', 
-        [patient.id]
-      );
-      
-      patient.appointments = appointmentsResult.rows.map(row => ({
-        id: row.id.toString(),
-        date: row.date,
-        time: row.time,
-        status: row.status,
-        service: row.service,
-        notes: row.notes
-      }));
-    }
-    
+    const patients = JSON.parse(localStorage.getItem(localStorageKey) || '[]');
     return patients;
   } catch (error) {
     console.error('Error getting patients:', error);
     throw error;
-  } finally {
-    client.release();
   }
 };
 
 export const addPatient = async (patient: Omit<Patient, 'id'>): Promise<Patient> => {
-  const client = await pool.connect();
   try {
+    const patients = await getPatients();
+    
     // Gerar novo ID para o paciente
     const patientId = `PT-${1000 + Math.floor(Math.random() * 9000)}`;
     
-    // Inserir paciente no banco
-    await client.query(
-      'INSERT INTO patients (id, name, email, whatsapp, birth_date) VALUES ($1, $2, $3, $4, $5)',
-      [patientId, patient.name, patient.email, patient.whatsApp, patient.birthDate]
-    );
-    
-    return {
+    const newPatient: Patient = {
       id: patientId,
       name: patient.name,
       email: patient.email,
       whatsApp: patient.whatsApp,
       birthDate: patient.birthDate,
-      appointments: []
+      appointments: patient.appointments || []
     };
+    
+    patients.push(newPatient);
+    localStorage.setItem(localStorageKey, JSON.stringify(patients));
+    
+    return newPatient;
   } catch (error) {
     console.error('Error adding patient:', error);
     throw error;
-  } finally {
-    client.release();
   }
 };
 
 export const updatePatient = async (patient: Patient): Promise<Patient> => {
-  const client = await pool.connect();
   try {
-    await client.query(
-      'UPDATE patients SET name = $1, email = $2, whatsapp = $3, birth_date = $4 WHERE id = $5',
-      [patient.name, patient.email, patient.whatsApp, patient.birthDate, patient.id]
-    );
+    const patients = await getPatients();
+    const index = patients.findIndex(p => p.id === patient.id);
+    
+    if (index !== -1) {
+      patients[index] = patient;
+      localStorage.setItem(localStorageKey, JSON.stringify(patients));
+    }
     
     return patient;
   } catch (error) {
     console.error('Error updating patient:', error);
     throw error;
-  } finally {
-    client.release();
   }
 };
 
 export const deletePatient = async (patientId: string): Promise<void> => {
-  const client = await pool.connect();
   try {
-    // Deletar agendamentos do paciente
-    await client.query('DELETE FROM appointments WHERE patient_id = $1', [patientId]);
-    
-    // Deletar paciente
-    await client.query('DELETE FROM patients WHERE id = $1', [patientId]);
+    const patients = await getPatients();
+    const filteredPatients = patients.filter(patient => patient.id !== patientId);
+    localStorage.setItem(localStorageKey, JSON.stringify(filteredPatients));
   } catch (error) {
     console.error('Error deleting patient:', error);
     throw error;
-  } finally {
-    client.release();
   }
 };
 
 // Funções para gerenciar agendamentos
 export const addAppointment = async (patientId: string, appointment: Omit<Appointment, 'id'>): Promise<Appointment> => {
-  const client = await pool.connect();
   try {
-    const result = await client.query(
-      'INSERT INTO appointments (patient_id, date, time, status, service, notes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-      [patientId, appointment.date, appointment.time, appointment.status, appointment.service, appointment.notes]
-    );
+    const patients = await getPatients();
+    const patientIndex = patients.findIndex(p => p.id === patientId);
     
-    return {
-      id: result.rows[0].id.toString(),
+    if (patientIndex === -1) {
+      throw new Error('Patient not found');
+    }
+    
+    // Gerar ID para o agendamento
+    const appointmentId = Date.now().toString();
+    
+    const newAppointment: Appointment = {
+      id: appointmentId,
       ...appointment
     };
+    
+    patients[patientIndex].appointments.push(newAppointment);
+    localStorage.setItem(localStorageKey, JSON.stringify(patients));
+    
+    return newAppointment;
   } catch (error) {
     console.error('Error adding appointment:', error);
     throw error;
-  } finally {
-    client.release();
   }
 };
 
 export const updateAppointmentStatus = async (appointmentId: string, status: string): Promise<void> => {
-  const client = await pool.connect();
   try {
-    await client.query(
-      'UPDATE appointments SET status = $1 WHERE id = $2',
-      [status, appointmentId]
-    );
+    const patients = await getPatients();
+    let updated = false;
+    
+    for (const patient of patients) {
+      const appointmentIndex = patient.appointments.findIndex(apt => apt.id === appointmentId);
+      
+      if (appointmentIndex !== -1) {
+        patient.appointments[appointmentIndex].status = status;
+        updated = true;
+        break;
+      }
+    }
+    
+    if (updated) {
+      localStorage.setItem(localStorageKey, JSON.stringify(patients));
+    }
   } catch (error) {
     console.error('Error updating appointment status:', error);
     throw error;
-  } finally {
-    client.release();
   }
 };
 
-// Função para migrar dados do localStorage para o PostgreSQL
+// Função para migrar dados do localStorage para o sistema atual
 export const migrateLocalStorageToDatabase = async (): Promise<void> => {
   try {
-    // Buscar agendamentos pendentes do localStorage
+    // Buscar agendamentos pendentes do localStorage antigo
     const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
     
     for (const pendingAppointment of pendingAppointments) {
-      // Verificar se o paciente já existe
-      const client = await pool.connect();
       try {
-        const patientResult = await client.query(
-          'SELECT id FROM patients WHERE email = $1',
-          [pendingAppointment.email.toLowerCase()]
+        // Verificar se o paciente já existe
+        const patients = await getPatients();
+        const existingPatient = patients.find(
+          p => p.email.toLowerCase() === pendingAppointment.email.toLowerCase()
         );
         
         let patientId: string;
         
-        if (patientResult.rows.length === 0) {
+        if (!existingPatient) {
           // Criar novo paciente
           const newPatient = {
             name: pendingAppointment.name,
             email: pendingAppointment.email,
             whatsApp: pendingAppointment.whatsApp || pendingAppointment.phone || '',
             birthDate: pendingAppointment.birthDate || new Date().toISOString().split('T')[0],
-            appointments: [] // Add the missing appointments property
+            appointments: [] // Incluindo a propriedade appointments
           };
           
           const patient = await addPatient(newPatient);
           patientId = patient.id;
         } else {
-          patientId = patientResult.rows[0].id;
+          patientId = existingPatient.id;
         }
         
         // Adicionar agendamentos
         for (const apt of pendingAppointment.appointments) {
           await addAppointment(patientId, apt);
         }
-      } finally {
-        client.release();
+      } catch (innerError) {
+        console.error('Error processing pending appointment:', innerError);
       }
     }
     
-    // Limpar localStorage
+    // Limpar localStorage antigo
     localStorage.removeItem('pendingAppointments');
   } catch (error) {
     console.error('Error migrating data:', error);
