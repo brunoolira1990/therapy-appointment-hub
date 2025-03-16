@@ -14,19 +14,19 @@ const TestimonialsSection: React.FC = () => {
     {
       name: 'Maria Santos',
       role: 'Paciente em Recuperação',
-      content: "O atendimento da Dra. Tatyane foi excelente. O tratamento personalizado fez toda a diferença na minha recuperação.",
+      content: "O atendimento da Dra. Tatyane Lira foi excelente. O tratamento personalizado fez toda a diferença na minha recuperação.",
       avatar: '1'
     },
     {
       name: 'Roberto Almeida',
       role: 'Lesão Esportiva',
-      content: "Após minha lesão no joelho, a Dra. Tatyane desenvolveu um plano de tratamento que me permitiu voltar às atividades muito mais rápido do que eu esperava.",
+      content: "Após minha lesão no joelho, a Dra. Tatyane Lira desenvolveu um plano de tratamento que me permitiu voltar às atividades muito mais rápido do que eu esperava.",
       avatar: '2'
     },
     {
       name: 'Carla Oliveira',
       role: 'Paciente com Dor Crônica',
-      content: "Depois de anos com dores na coluna, finalmente encontrei alívio com os tratamentos da Dra. Tatyane. Sua abordagem multidisciplinar faz toda a diferença.",
+      content: "Depois de anos com dores na coluna, finalmente encontrei alívio com os tratamentos da Dra. Tatyane Lira. Sua abordagem multidisciplinar faz toda a diferença.",
       avatar: '3'
     }
   ];

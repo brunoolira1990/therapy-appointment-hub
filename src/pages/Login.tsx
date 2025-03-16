@@ -41,7 +41,7 @@ const Login = () => {
               <span className="text-white font-heading font-bold text-2xl">TL</span>
             </div>
           </div>
-          <h2 className="mt-6 text-3xl font-bold">Tatyane Lira</h2>
+          <h2 className="mt-6 text-3xl font-bold">Dra. Tatyane Lira</h2>
           <p className="mt-2 text-muted-foreground">
             Acesse sua área administrativa
           </p>

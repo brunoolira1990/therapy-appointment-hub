@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (username === 'tatyanelira' && password === 'Fisio@2000') {
       const user = {
         id: '1',
-        name: 'Tatyane Lira',
+        name: 'Dra. Tatyane Lira',  // Updated from 'Tatyane Lira' to 'Dra. Tatyane Lira'
         role: 'admin' as const,
       };
       setUser(user);
