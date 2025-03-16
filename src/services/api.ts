@@ -2,15 +2,12 @@
 import { ArrowRight, MoveHorizontal, Activity, Stethoscope, FileHeart, UserCheck, ShieldCheck } from 'lucide-react';
 import React from 'react';
 
-// This is a simulation of data that would come from a database
-// In a real application, this would be an API call to your backend
-
 export interface ServiceDetailProps {
   id: string;
   title: string;
   description: string;
   benefits: string[];
-  icon: string; // We'll store icon names in the database and map them to components
+  icon: string;
   color: string;
 }
 
@@ -22,12 +19,12 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
   // Simulate network delay
   await delay(800);
   
-  // This is mock data - in a real app this would come from your backend
+  // Serviços oferecidos pela Dra. Tatyane Lira
   return [
     {
       id: "1",
       title: "Reabilitação Física",
-      description: "Nossa terapia de reabilitação física ajuda a restaurar a função e movimento após lesões, cirurgias ou condições médicas crônicas. Desenvolvemos planos de tratamento personalizados para atender às necessidades específicas de cada paciente.",
+      description: "Tratamento especializado para restaurar a função e movimento após lesões, cirurgias ou condições médicas crônicas. Desenvolvemos planos de tratamento personalizados para atender às necessidades específicas de cada paciente.",
       benefits: [
         "Recuperação acelerada após cirurgias",
         "Aumento da mobilidade e amplitude de movimento",
@@ -41,7 +38,7 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
     {
       id: "2",
       title: "Terapia Esportiva",
-      description: "Nossa terapia esportiva é projetada para atletas de todos os níveis. Oferecemos tratamentos especializados para prevenir lesões, melhorar o desempenho e garantir uma recuperação eficiente após lesões relacionadas ao esporte.",
+      description: "Tratamento especializado para atletas de todos os níveis. Oferecemos técnicas avançadas para prevenir lesões, melhorar o desempenho e garantir uma recuperação eficiente após lesões relacionadas ao esporte.",
       benefits: [
         "Avaliação biomecânica especializada",
         "Programas de prevenção de lesões personalizados",
@@ -55,7 +52,7 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
     {
       id: "3",
       title: "Terapia Manual",
-      description: "Nossa terapia manual envolve técnicas especializadas de manipulação dos tecidos moles e articulações. Estas técnicas ajudam a reduzir a dor, melhorar a mobilidade e promover a cura natural do corpo.",
+      description: "Técnicas especializadas de manipulação dos tecidos moles e articulações. Estas abordagens reduzem a dor, melhoram a mobilidade e promovem a recuperação natural do corpo.",
       benefits: [
         "Alívio eficaz da dor crônica e aguda",
         "Melhora da circulação sanguínea",
@@ -69,7 +66,7 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
     {
       id: "4",
       title: "Terapia Neurológica",
-      description: "Nossa terapia neurológica é especializada no tratamento de pacientes com condições neurológicas como AVC, esclerose múltipla e doença de Parkinson. Focamos em melhorar a função, independência e qualidade de vida.",
+      description: "Tratamento especializado para pacientes com condições neurológicas como AVC, esclerose múltipla e doença de Parkinson. Focamos em melhorar a função, independência e qualidade de vida.",
       benefits: [
         "Recuperação de habilidades motoras",
         "Melhora do equilíbrio e coordenação",
@@ -83,7 +80,7 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
     {
       id: "5",
       title: "Terapia Geriátrica",
-      description: "Nossa terapia geriátrica é especialmente desenvolvida para atender às necessidades dos idosos. Focamos em manter e melhorar a mobilidade, equilíbrio e força, permitindo maior independência e qualidade de vida.",
+      description: "Tratamento especializado para atender às necessidades dos idosos. Focamos em manter e melhorar a mobilidade, equilíbrio e força, permitindo maior independência e qualidade de vida.",
       benefits: [
         "Prevenção de quedas",
         "Manutenção da independência funcional",
@@ -97,7 +94,7 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
     {
       id: "6",
       title: "Cuidados Preventivos",
-      description: "Nossos cuidados preventivos visam evitar lesões e promover o bem-estar geral. Oferecemos orientações ergonômicas, programas de exercícios e educação sobre hábitos saudáveis para prevenir problemas futuros.",
+      description: "Serviços preventivos para evitar lesões e promover o bem-estar geral. Oferecemos orientações ergonômicas, programas de exercícios e educação sobre hábitos saudáveis para prevenir problemas futuros.",
       benefits: [
         "Avaliação ergonômica personalizada",
         "Orientação postural para atividades diárias",

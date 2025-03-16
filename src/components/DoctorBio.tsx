@@ -37,8 +37,8 @@ const DoctorBio: React.FC<DoctorBioProps> = ({ className }) => {
                 <Award size={20} />
               </div>
               <div>
-                <p className="text-sm font-medium">Premiada</p>
-                <p className="text-xs text-muted-foreground">Melhor Fisioterapeuta 2023</p>
+                <p className="text-sm font-medium">Especialista</p>
+                <p className="text-xs text-muted-foreground">Fisioterapia</p>
               </div>
             </div>
           </div>
@@ -86,11 +86,11 @@ const DoctorBio: React.FC<DoctorBioProps> = ({ className }) => {
                   <Award size={20} />
                 </div>
                 <div>
-                  <h4 className="font-medium">Prêmios e Reconhecimentos</h4>
+                  <h4 className="font-medium">Reconhecimento</h4>
                   <p className="text-sm text-muted-foreground">
-                    - Prêmio Excelência em Fisioterapia 2023<br />
                     - Membro da Sociedade Brasileira de Fisioterapia<br />
-                    - Palestrante em congressos nacionais e internacionais
+                    - Palestrante em congressos nacionais e internacionais<br />
+                    - Especialista em reabilitação de alta performance
                   </p>
                 </div>
               </div>

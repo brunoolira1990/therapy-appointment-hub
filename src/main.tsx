@@ -5,7 +5,8 @@ import App from './App.tsx'
 import './index.css'
 
 // Polyfill para o objeto process.env para evitar erros
-window.process = { env: {} };
+// @ts-ignore - Ignoring the type error for this polyfill
+window.process = { env: {} } as any;
 
 // Verifica se estamos em produção e configura console.log para evitar erros
 if (process.env.NODE_ENV === 'production') {

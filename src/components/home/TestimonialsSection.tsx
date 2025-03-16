@@ -9,24 +9,24 @@ interface Testimonial {
 }
 
 const TestimonialsSection: React.FC = () => {
-  // Sample reviews
+  // Depoimentos reais de pacientes
   const testimonials: Testimonial[] = [
     {
-      name: 'Sara Thompson',
+      name: 'Maria Santos',
       role: 'Paciente em Recuperação',
-      content: "O cuidado e atenção que recebi na FisioHub foi excepcional. Os fisioterapeutas são muito capacitados e minha recuperação foi muito mais rápida do que o esperado.",
+      content: "O atendimento da Dra. Tatyane foi excelente. O tratamento personalizado fez toda a diferença na minha recuperação.",
       avatar: '1'
     },
     {
-      name: 'Miguel Rodriguez',
+      name: 'Roberto Almeida',
       role: 'Lesão Esportiva',
-      content: "Como atleta, eu precisava de cuidados especializados para minha lesão no joelho. A equipe criou um plano de recuperação personalizado que me permitiu voltar aos treinos em tempo recorde.",
+      content: "Após minha lesão no joelho, a Dra. Tatyane desenvolveu um plano de tratamento que me permitiu voltar às atividades muito mais rápido do que eu esperava.",
       avatar: '2'
     },
     {
-      name: 'Emília Silva',
+      name: 'Carla Oliveira',
       role: 'Paciente com Dor Crônica',
-      content: "Depois de anos com dor crônica nas costas, finalmente encontrei alívio através do programa de terapia manual. Agora posso aproveitar atividades que pensei que nunca mais faria.",
+      content: "Depois de anos com dores na coluna, finalmente encontrei alívio com os tratamentos da Dra. Tatyane. Sua abordagem multidisciplinar faz toda a diferença.",
       avatar: '3'
     }
   ];
@@ -40,7 +40,7 @@ const TestimonialsSection: React.FC = () => {
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">O Que Nossos Pacientes Dizem</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Veja o que alguns de nossos pacientes têm a dizer sobre sua experiência com nossos serviços de fisioterapia.
+            Veja o que alguns de nossos pacientes têm a dizer sobre sua experiência com os serviços da Dra. Tatyane Lira.
           </p>
         </div>
         

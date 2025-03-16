@@ -65,7 +65,7 @@ const Login = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tatyanelira"
+                  placeholder="Seu usuário"
                   className="block w-full pl-10 pr-3 py-2 border border-border rounded-md shadow-sm focus:ring-primary focus:border-primary bg-background"
                 />
               </div>
@@ -108,14 +108,6 @@ const Login = () => {
               >
                 {isLoading ? 'Entrando...' : 'Entrar'}
               </Button>
-            </div>
-
-            <div className="text-center text-sm">
-              <p className="text-muted-foreground mt-4">
-                Para demonstração: <br />
-                <span className="font-medium">Usuário: tatyanelira</span><br />
-                <span className="font-medium">Senha: Fisio@2000</span>
-              </p>
             </div>
           </form>
         </div>
