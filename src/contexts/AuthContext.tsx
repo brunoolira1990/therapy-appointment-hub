@@ -22,84 +22,83 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load user from localStorage
-    try {
-      const storedUser = localStorage.getItem('fisioHub_user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        console.log('User loaded from localStorage');
+    // Carrega o usuário do localStorage
+    const loadUser = () => {
+      try {
+        const storedUser = localStorage.getItem('fisioHub_user');
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+          console.log('Usuário carregado do localStorage');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar usuário do localStorage:', error);
+        localStorage.removeItem('fisioHub_user');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error loading user from localStorage:', error);
-      localStorage.removeItem('fisioHub_user');
-    } finally {
-      setIsLoading(false);
-    }
+    };
+
+    loadUser();
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    console.log('Login process started for:', username);
+    console.log('Processo de login iniciado para:', username);
     
-    try {
-      // Simplified credential validation with defensive programming
-      if (!username || !password) {
-        console.error('Username or password is empty');
-        return false;
-      }
-      
-      // Check credentials
-      if (username === 'tatyanelira' && password === 'Fisio@2000') {
-        const userData = {
-          id: '1',
-          name: 'Dra. Tatyane Lira',
-          role: 'admin' as const,
-        };
-        
-        console.log('Login successful, setting user data');
-        
-        // Set user in state
-        setUser(userData);
-        
-        // Save to localStorage with error handling
-        try {
-          localStorage.setItem('fisioHub_user', JSON.stringify(userData));
-          console.log('User data saved to localStorage');
-        } catch (storageError) {
-          console.error('Failed to save user to localStorage:', storageError);
-          // Continue even if localStorage fails
-        }
-        
-        return true;
-      }
-      
-      console.log('Invalid credentials provided');
-      return false;
-    } catch (error) {
-      console.error('Unexpected error during login:', error);
+    // Validação básica
+    if (!username || !password) {
+      console.error('Usuário ou senha está vazio');
       return false;
     }
+    
+    // Verifica credenciais
+    if (username === 'tatyanelira' && password === 'Fisio@2000') {
+      const userData = {
+        id: '1',
+        name: 'Dra. Tatyane Lira',
+        role: 'admin' as const,
+      };
+      
+      console.log('Login bem-sucedido, definindo dados do usuário');
+      
+      // Define o usuário no estado
+      setUser(userData);
+      
+      // Salva no localStorage com tratamento de erro
+      try {
+        localStorage.setItem('fisioHub_user', JSON.stringify(userData));
+        console.log('Dados do usuário salvos no localStorage');
+      } catch (storageError) {
+        console.error('Falha ao salvar usuário no localStorage:', storageError);
+        // Continua mesmo se o localStorage falhar
+      }
+      
+      return true;
+    }
+    
+    console.log('Credenciais inválidas fornecidas');
+    return false;
   };
 
   const logout = () => {
     try {
       setUser(null);
       localStorage.removeItem('fisioHub_user');
-      console.log('User logged out successfully');
+      console.log('Usuário desconectado com sucesso');
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error('Erro durante o logout:', error);
     }
   };
 
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    login,
+    logout,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
@@ -108,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
   return context;
 };
