@@ -16,20 +16,31 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log('Form submitted, attempting login with:', username);
 
     try {
-      console.log('Attempting login with:', username);
-      const success = await login(username, password);
-      if (success) {
-        toast.success('Login realizado com sucesso!');
-        navigate('/patients');
-      } else {
-        toast.error('Credenciais inválidas. Tente novamente.');
-      }
+      // Add timeout to prevent UI freezing
+      setTimeout(async () => {
+        try {
+          const success = await login(username, password);
+          console.log('Login result:', success);
+          
+          if (success) {
+            toast.success('Login realizado com sucesso!');
+            navigate('/patients');
+          } else {
+            toast.error('Credenciais inválidas. Tente novamente.');
+          }
+        } catch (error) {
+          console.error('Login processing error:', error);
+          toast.error('Erro ao processar login. Tente novamente.');
+        } finally {
+          setIsLoading(false);
+        }
+      }, 100);
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error('Erro ao fazer login. Tente novamente.');
-    } finally {
+      console.error('Login submission error:', error);
+      toast.error('Erro ao enviar login. Tente novamente.');
       setIsLoading(false);
     }
   };

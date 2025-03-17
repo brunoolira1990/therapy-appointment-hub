@@ -23,7 +23,7 @@ const NavbarAuthSection: React.FC<NavbarAuthSectionProps> = ({
       <div className="flex items-center space-x-2">
         <div className="mr-2 flex items-center">
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium mr-2">
-            {user.name.split(' ')[0][0]}
+            {user.name.charAt(0)}
           </div>
           <span className="text-sm font-medium">{user.name}</span>
         </div>

@@ -22,39 +22,72 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Verificar se o usuário já está logado (do localStorage)
-    const storedUser = localStorage.getItem('fisioHub_user');
-    if (storedUser) {
-      try {
+    // Load user from localStorage
+    try {
+      const storedUser = localStorage.getItem('fisioHub_user');
+      if (storedUser) {
         setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Error parsing user from localStorage:', error);
-        localStorage.removeItem('fisioHub_user');
+        console.log('User loaded from localStorage');
       }
+    } catch (error) {
+      console.error('Error loading user from localStorage:', error);
+      localStorage.removeItem('fisioHub_user');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    console.log('Login attempt:', { username });
+    console.log('Login process started for:', username);
     
-    // Validação de credenciais
-    if (username === 'tatyanelira' && password === 'Fisio@2000') {
-      const user = {
-        id: '1',
-        name: 'Dra. Tatyane Lira',
-        role: 'admin' as const,
-      };
-      setUser(user);
-      localStorage.setItem('fisioHub_user', JSON.stringify(user));
-      return true;
+    try {
+      // Simplified credential validation with defensive programming
+      if (!username || !password) {
+        console.error('Username or password is empty');
+        return false;
+      }
+      
+      // Check credentials
+      if (username === 'tatyanelira' && password === 'Fisio@2000') {
+        const userData = {
+          id: '1',
+          name: 'Dra. Tatyane Lira',
+          role: 'admin' as const,
+        };
+        
+        console.log('Login successful, setting user data');
+        
+        // Set user in state
+        setUser(userData);
+        
+        // Save to localStorage with error handling
+        try {
+          localStorage.setItem('fisioHub_user', JSON.stringify(userData));
+          console.log('User data saved to localStorage');
+        } catch (storageError) {
+          console.error('Failed to save user to localStorage:', storageError);
+          // Continue even if localStorage fails
+        }
+        
+        return true;
+      }
+      
+      console.log('Invalid credentials provided');
+      return false;
+    } catch (error) {
+      console.error('Unexpected error during login:', error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('fisioHub_user');
+    try {
+      setUser(null);
+      localStorage.removeItem('fisioHub_user');
+      console.log('User logged out successfully');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
