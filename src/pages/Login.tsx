@@ -7,7 +7,7 @@ import Button from '@/components/Button';
 import { Lock, User } from 'lucide-react';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -18,7 +18,8 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(email, password);
+      console.log('Attempting login with:', username);
+      const success = await login(username, password);
       if (success) {
         toast.success('Login realizado com sucesso!');
         navigate('/patients');
@@ -26,6 +27,7 @@ const Login = () => {
         toast.error('Credenciais inválidas. Tente novamente.');
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast.error('Erro ao fazer login. Tente novamente.');
     } finally {
       setIsLoading(false);
@@ -50,7 +52,7 @@ const Login = () => {
         <div className="mt-8 glass-card p-8 rounded-2xl">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
+              <label htmlFor="username" className="block text-sm font-medium mb-1">
                 Usuário
               </label>
               <div className="relative">
@@ -58,13 +60,13 @@ const Login = () => {
                   <User size={18} />
                 </div>
                 <input
-                  id="email"
-                  name="email"
+                  id="username"
+                  name="username"
                   type="text"
                   autoComplete="username"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   placeholder="Seu usuário"
                   className="block w-full pl-10 pr-3 py-2 border border-border rounded-md shadow-sm focus:ring-primary focus:border-primary bg-background"
                 />

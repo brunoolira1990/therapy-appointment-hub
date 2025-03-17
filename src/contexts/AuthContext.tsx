@@ -25,17 +25,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Verificar se o usuário já está logado (do localStorage)
     const storedUser = localStorage.getItem('fisioHub_user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Error parsing user from localStorage:', error);
+        localStorage.removeItem('fisioHub_user');
+      }
     }
     setIsLoading(false);
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    // Validação de credenciais atualizada
+    console.log('Login attempt:', { username });
+    
+    // Validação de credenciais
     if (username === 'tatyanelira' && password === 'Fisio@2000') {
       const user = {
         id: '1',
-        name: 'Dra. Tatyane Lira',  // Updated from 'Tatyane Lira' to 'Dra. Tatyane Lira'
+        name: 'Dra. Tatyane Lira',
         role: 'admin' as const,
       };
       setUser(user);
