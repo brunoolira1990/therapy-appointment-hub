@@ -13,7 +13,10 @@ export const useAppointmentManagement = (
   const handleConfirmAppointment = async (patientId: string, appointmentIndex: number) => {
     try {
       const patient = patients.find(p => p.id === patientId);
-      if (!patient || !patient.appointments[appointmentIndex]) return;
+      if (!patient || !patient.appointments[appointmentIndex]) {
+        toast.error('Paciente ou agendamento não encontrado');
+        return;
+      }
       
       const appointmentId = patient.appointments[appointmentIndex].id;
       
@@ -25,10 +28,10 @@ export const useAppointmentManagement = (
       // Atualizar status no banco
       await updateAppointmentStatus(appointmentId, 'scheduled');
       
-      // Atualizar estado local
-      const updatedPatients = patients.map(patient => {
-        if (patient.id === patientId) {
-          const updatedAppointments = [...patient.appointments];
+      // Atualizar estado local de forma imutável
+      const updatedPatients = patients.map(p => {
+        if (p.id === patientId) {
+          const updatedAppointments = [...p.appointments];
           if (updatedAppointments[appointmentIndex]) {
             updatedAppointments[appointmentIndex] = {
               ...updatedAppointments[appointmentIndex],
@@ -36,23 +39,32 @@ export const useAppointmentManagement = (
             };
           }
           
-          // Atualize o paciente selecionado se estiver aberto no dialog
-          if (selectedPatient && selectedPatient.id === patientId) {
-            setSelectedPatient({
-              ...patient,
-              appointments: updatedAppointments
-            });
-          }
-          
           return {
-            ...patient,
+            ...p,
             appointments: updatedAppointments
           };
         }
-        return patient;
+        return p;
       });
       
       setPatients(updatedPatients);
+      
+      // Atualizar paciente selecionado se necessário
+      if (selectedPatient && selectedPatient.id === patientId) {
+        const updatedAppointments = [...selectedPatient.appointments];
+        if (updatedAppointments[appointmentIndex]) {
+          updatedAppointments[appointmentIndex] = {
+            ...updatedAppointments[appointmentIndex],
+            status: 'scheduled'
+          };
+        }
+        
+        setSelectedPatient({
+          ...selectedPatient,
+          appointments: updatedAppointments
+        });
+      }
+      
       toast.success('Consulta confirmada com sucesso', {
         description: 'O paciente receberá um WhatsApp e email com a confirmação'
       });
@@ -62,11 +74,14 @@ export const useAppointmentManagement = (
     }
   };
 
-  // Cancelar uma consulta pendente
+  // Cancelar uma consulta
   const handleCancelAppointment = async (patientId: string, appointmentIndex: number) => {
     try {
       const patient = patients.find(p => p.id === patientId);
-      if (!patient || !patient.appointments[appointmentIndex]) return;
+      if (!patient || !patient.appointments[appointmentIndex]) {
+        toast.error('Paciente ou agendamento não encontrado');
+        return;
+      }
       
       const appointmentId = patient.appointments[appointmentIndex].id;
       
@@ -78,10 +93,10 @@ export const useAppointmentManagement = (
       // Atualizar status no banco
       await updateAppointmentStatus(appointmentId, 'cancelled');
       
-      // Atualizar estado local
-      const updatedPatients = patients.map(patient => {
-        if (patient.id === patientId) {
-          const updatedAppointments = [...patient.appointments];
+      // Atualizar estado local de forma imutável
+      const updatedPatients = patients.map(p => {
+        if (p.id === patientId) {
+          const updatedAppointments = [...p.appointments];
           if (updatedAppointments[appointmentIndex]) {
             updatedAppointments[appointmentIndex] = {
               ...updatedAppointments[appointmentIndex],
@@ -89,23 +104,32 @@ export const useAppointmentManagement = (
             };
           }
           
-          // Atualize o paciente selecionado se estiver aberto no dialog
-          if (selectedPatient && selectedPatient.id === patientId) {
-            setSelectedPatient({
-              ...patient,
-              appointments: updatedAppointments
-            });
-          }
-          
           return {
-            ...patient,
+            ...p,
             appointments: updatedAppointments
           };
         }
-        return patient;
+        return p;
       });
       
       setPatients(updatedPatients);
+      
+      // Atualizar paciente selecionado se necessário
+      if (selectedPatient && selectedPatient.id === patientId) {
+        const updatedAppointments = [...selectedPatient.appointments];
+        if (updatedAppointments[appointmentIndex]) {
+          updatedAppointments[appointmentIndex] = {
+            ...updatedAppointments[appointmentIndex],
+            status: 'cancelled'
+          };
+        }
+        
+        setSelectedPatient({
+          ...selectedPatient,
+          appointments: updatedAppointments
+        });
+      }
+      
       toast.success('Consulta cancelada', {
         description: 'O paciente será notificado sobre o cancelamento'
       });

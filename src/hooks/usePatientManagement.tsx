@@ -19,6 +19,8 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
 
   // Inicializar o banco de dados e carregar pacientes
   useEffect(() => {
+    let isMounted = true;
+    
     const initDB = async () => {
       try {
         // Inicializar banco de dados
@@ -29,51 +31,67 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
         
         // Carregar pacientes do banco
         const loadedPatients = await getPatients();
-        setPatients(loadedPatients);
+        
+        if (isMounted) {
+          setPatients(loadedPatients);
+        }
       } catch (error) {
         console.error('Error initializing database:', error);
-        toast.error('Erro ao conectar ao banco de dados', {
-          description: 'Usando dados locais temporariamente'
-        });
         
-        // Carrega do localStorage como fallback
-        const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
-        if (pendingAppointments.length > 0) {
-          // Processar os dados do localStorage como antes
-          const updatedPatients = [...initialPatients];
-          
-          pendingAppointments.forEach((pendingAppointment: any) => {
-            const existingPatientIndex = updatedPatients.findIndex(
-              p => p.email.toLowerCase() === pendingAppointment.email.toLowerCase()
-            );
-            
-            if (existingPatientIndex >= 0) {
-              updatedPatients[existingPatientIndex].appointments = [
-                ...updatedPatients[existingPatientIndex].appointments,
-                ...pendingAppointment.appointments
-              ];
-            } else {
-              const newPatient = {
-                id: `PT-${1000 + updatedPatients.length + 1}`,
-                name: pendingAppointment.name,
-                email: pendingAppointment.email,
-                whatsApp: pendingAppointment.phone || pendingAppointment.whatsApp || '',
-                birthDate: pendingAppointment.birthDate || new Date().toISOString().split('T')[0],
-                appointments: pendingAppointment.appointments
-              };
-              
-              updatedPatients.push(newPatient);
-            }
+        if (isMounted) {
+          toast.error('Erro ao carregar dados', {
+            description: 'Usando dados locais temporariamente'
           });
           
-          setPatients(updatedPatients);
+          // Carrega do localStorage como fallback
+          try {
+            const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
+            if (pendingAppointments.length > 0) {
+              // Processar os dados do localStorage
+              const updatedPatients = [...initialPatients];
+              
+              pendingAppointments.forEach((pendingAppointment: any) => {
+                const existingPatientIndex = updatedPatients.findIndex(
+                  p => p.email?.toLowerCase() === pendingAppointment.email?.toLowerCase()
+                );
+                
+                if (existingPatientIndex >= 0) {
+                  updatedPatients[existingPatientIndex].appointments = [
+                    ...(updatedPatients[existingPatientIndex].appointments || []),
+                    ...(pendingAppointment.appointments || [])
+                  ];
+                } else {
+                  const newPatient = {
+                    id: `PT-${1000 + updatedPatients.length + 1}`,
+                    name: pendingAppointment.name || '',
+                    email: pendingAppointment.email || '',
+                    whatsApp: pendingAppointment.phone || pendingAppointment.whatsApp || '',
+                    birthDate: pendingAppointment.birthDate || new Date().toISOString().split('T')[0],
+                    appointments: pendingAppointment.appointments || []
+                  };
+                  
+                  updatedPatients.push(newPatient);
+                }
+              });
+              
+              setPatients(updatedPatients);
+            }
+          } catch (storageError) {
+            console.error('Error processing localStorage data:', storageError);
+          }
         }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     
     initDB();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [initialPatients]);
 
   const handleAddPatient = () => {
@@ -91,8 +109,7 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
         await deletePatient(patientId);
         
         // Atualizar estado local
-        const updatedPatients = patients.filter(patient => patient.id !== patientId);
-        setPatients(updatedPatients);
+        setPatients(prev => prev.filter(patient => patient.id !== patientId));
         
         toast.success('Paciente excluído com sucesso');
       } catch (error) {
@@ -112,14 +129,13 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
         } as Patient;
         
         // Atualizar no banco
-        await updatePatient(updatedPatient);
+        const result = await updatePatient(updatedPatient);
         
         // Atualizar estado local
-        const updatedPatients = patients.map(patient => 
+        setPatients(prev => prev.map(patient => 
           patient.id === editingPatient.id ? updatedPatient : patient
-        );
+        ));
         
-        setPatients(updatedPatients);
         toast.success('Paciente atualizado com sucesso');
       } else {
         // Adicionando novo paciente
@@ -135,7 +151,7 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
         const newPatient = await addPatient(newPatientData);
         
         // Atualizar estado local
-        setPatients([...patients, newPatient]);
+        setPatients(prev => [...prev, newPatient]);
         toast.success('Paciente adicionado com sucesso');
       }
       

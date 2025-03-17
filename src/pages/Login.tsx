@@ -22,18 +22,14 @@ const Login = () => {
     }
     
     setIsLoading(true);
-    console.log('Tentando fazer login com:', username);
 
     try {
       const success = await login(username, password);
-      console.log('Resultado do login:', success);
       
       if (success) {
-        console.log('Login bem-sucedido, redirecionando...');
         toast.success('Login realizado com sucesso!');
         navigate('/patients');
       } else {
-        console.log('Credenciais inválidas');
         toast.error('Credenciais inválidas. Tente novamente.');
       }
     } catch (error) {
