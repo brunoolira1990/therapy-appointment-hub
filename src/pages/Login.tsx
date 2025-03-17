@@ -15,22 +15,30 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!username || !password) {
+      toast.error('Por favor, preencha todos os campos');
+      return;
+    }
+    
     setIsLoading(true);
-    console.log('Form submitted, attempting login with:', username);
+    console.log('Tentando fazer login com:', username);
 
     try {
       const success = await login(username, password);
-      console.log('Login result:', success);
+      console.log('Resultado do login:', success);
       
       if (success) {
+        console.log('Login bem-sucedido, redirecionando...');
         toast.success('Login realizado com sucesso!');
         navigate('/patients');
       } else {
+        console.log('Credenciais inválidas');
         toast.error('Credenciais inválidas. Tente novamente.');
       }
     } catch (error) {
       console.error('Erro durante o login:', error);
-      toast.error('Erro ao processar login. Tente novamente.');
+      toast.error('Ocorreu um erro ao tentar fazer login. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -67,6 +75,7 @@ const Login = () => {
                   type="text"
                   autoComplete="username"
                   required
+                  disabled={isLoading}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Seu usuário"
@@ -89,6 +98,7 @@ const Login = () => {
                   type="password"
                   autoComplete="current-password"
                   required
+                  disabled={isLoading}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"

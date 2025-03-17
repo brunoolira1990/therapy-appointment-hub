@@ -15,24 +15,31 @@ type AuthContextType = {
   logout: () => void;
 };
 
+// Criar o contexto
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Chave para armazenamento no localStorage
+const USER_STORAGE_KEY = 'fisioHub_user';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Carregar usuário do localStorage no carregamento inicial
   useEffect(() => {
-    // Carrega o usuário do localStorage
     const loadUser = () => {
       try {
-        const storedUser = localStorage.getItem('fisioHub_user');
+        const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+        
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
-          console.log('Usuário carregado do localStorage');
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          console.log('Usuário carregado do localStorage:', parsedUser.name);
         }
       } catch (error) {
         console.error('Erro ao carregar usuário do localStorage:', error);
-        localStorage.removeItem('fisioHub_user');
+        // Limpar localStorage corrompido
+        localStorage.removeItem(USER_STORAGE_KEY);
       } finally {
         setIsLoading(false);
       }
@@ -42,34 +49,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    console.log('Processo de login iniciado para:', username);
-    
     // Validação básica
     if (!username || !password) {
       console.error('Usuário ou senha está vazio');
       return false;
     }
     
-    // Verifica credenciais
+    console.log('Verificando credenciais para:', username);
+    
+    // Verificar credenciais simplificadas
     if (username === 'tatyanelira' && password === 'Fisio@2000') {
-      const userData = {
+      const userData: User = {
         id: '1',
         name: 'Dra. Tatyane Lira',
-        role: 'admin' as const,
+        role: 'admin',
       };
       
-      console.log('Login bem-sucedido, definindo dados do usuário');
+      console.log('Login bem-sucedido para:', userData.name);
       
-      // Define o usuário no estado
+      // Definir o usuário no estado
       setUser(userData);
       
-      // Salva no localStorage com tratamento de erro
+      // Salvar no localStorage
       try {
-        localStorage.setItem('fisioHub_user', JSON.stringify(userData));
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
         console.log('Dados do usuário salvos no localStorage');
-      } catch (storageError) {
-        console.error('Falha ao salvar usuário no localStorage:', storageError);
-        // Continua mesmo se o localStorage falhar
+      } catch (error) {
+        console.error('Falha ao salvar usuário no localStorage:', error);
+        // Continua mesmo sem localStorage
       }
       
       return true;
@@ -80,15 +87,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    console.log('Realizando logout...');
+    setUser(null);
+    
     try {
-      setUser(null);
-      localStorage.removeItem('fisioHub_user');
-      console.log('Usuário desconectado com sucesso');
+      localStorage.removeItem(USER_STORAGE_KEY);
+      console.log('Usuário removido do localStorage');
     } catch (error) {
-      console.error('Erro durante o logout:', error);
+      console.error('Erro ao remover usuário do localStorage:', error);
     }
   };
 
+  // Valores expostos pelo contexto
   const value = {
     user,
     isAuthenticated: !!user,
