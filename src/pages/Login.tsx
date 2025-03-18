@@ -1,17 +1,26 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import Button from '@/components/Button';
 import { Lock, User } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/patients');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,13 +33,14 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      console.log('Enviando solicitação de login:', { username, password });
       const success = await login(username, password);
       
       if (success) {
-        toast.success('Login realizado com sucesso!');
+        console.log('Login bem sucedido, redirecionando...');
         navigate('/patients');
       } else {
-        toast.error('Credenciais inválidas. Tente novamente.');
+        console.log('Login falhou');
       }
     } catch (error) {
       console.error('Erro durante o login:', error);
@@ -55,17 +65,15 @@ const Login = () => {
           </p>
         </div>
         
-        <div className="mt-8 glass-card p-8 rounded-2xl">
+        <div className="mt-8 glass-card p-8 rounded-2xl shadow-md">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium mb-1">
-                Usuário
-              </label>
+            <div className="space-y-2">
+              <Label htmlFor="username">Usuário</Label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
                   <User size={18} />
                 </div>
-                <input
+                <Input
                   id="username"
                   name="username"
                   type="text"
@@ -75,20 +83,18 @@ const Login = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Seu usuário"
-                  className="block w-full pl-10 pr-3 py-2 border border-border rounded-md shadow-sm focus:ring-primary focus:border-primary bg-background"
+                  className="pl-10"
                 />
               </div>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-1">
-                Senha
-              </label>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
                   <Lock size={18} />
                 </div>
-                <input
+                <Input
                   id="password"
                   name="password"
                   type="password"
@@ -98,7 +104,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full pl-10 pr-3 py-2 border border-border rounded-md shadow-sm focus:ring-primary focus:border-primary bg-background"
+                  className="pl-10"
                 />
               </div>
               <div className="flex justify-end mt-2">

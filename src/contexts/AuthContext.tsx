@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 type User = {
   id: string;
@@ -44,8 +45,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
+    console.log('Tentando login com:', username, password);
+    
     // Validação básica
     if (!username || !password) {
+      toast.error('Por favor, informe usuário e senha');
       return false;
     }
     
@@ -63,6 +67,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Salvar no localStorage
       try {
         localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+        console.log('Usuário salvo no localStorage:', userData);
+        toast.success('Login realizado com sucesso!');
       } catch (error) {
         console.error('Falha ao salvar usuário no localStorage:', error);
       }
@@ -70,6 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return true;
     }
     
+    toast.error('Credenciais inválidas. Tente novamente.');
     return false;
   };
 
@@ -78,6 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       localStorage.removeItem(USER_STORAGE_KEY);
+      toast.success('Logout realizado com sucesso');
     } catch (error) {
       console.error('Erro ao remover usuário do localStorage:', error);
     }
