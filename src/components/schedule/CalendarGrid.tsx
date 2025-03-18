@@ -77,41 +77,31 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           const isCurrentDay = isToday(day);
           const isCurrentMonth = isSameMonth(day, currentMonth);
           const isSelected = selectedDate && isSameDay(day, selectedDate);
-          const hasAvailableSlots = availableSlots.length > 0;
+          
+          // Since there are no appointments, all days should have available slots
+          const hasAvailableSlots = true;
           
           return (
             <button
               key={i}
               onClick={() => hasAvailableSlots && onSelectDate(day)}
-              disabled={!hasAvailableSlots}
+              disabled={!hasAvailableSlots || !isCurrentMonth}
               className={cn(
                 "relative h-14 rounded-md flex flex-col items-center justify-center text-sm",
                 !isCurrentMonth && "text-muted-foreground opacity-50",
                 isCurrentDay && "bg-primary/10 text-primary",
                 isSelected && "bg-primary text-primary-foreground",
-                !isSelected && !isCurrentDay && hasAvailableSlots && "hover:bg-muted",
+                !isSelected && !isCurrentDay && hasAvailableSlots && isCurrentMonth && "hover:bg-muted",
                 !hasAvailableSlots && "opacity-50 cursor-not-allowed"
               )}
             >
               <span>{format(day, 'd')}</span>
               
-              {hasAvailableSlots && (
+              {hasAvailableSlots && isCurrentMonth && (
                 <div className="absolute bottom-1 flex space-x-0.5">
-                  {availableSlots.length <= 3 ? (
-                    availableSlots.map((slot, j) => (
-                      <div
-                        key={j}
-                        className="w-1.5 h-1.5 rounded-full bg-green-400"
-                      />
-                    ))
-                  ) : (
-                    <>
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                      <span className="text-[10px] text-muted-foreground ml-0.5">+{availableSlots.length - 3}</span>
-                    </>
-                  )}
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
                 </div>
               )}
             </button>

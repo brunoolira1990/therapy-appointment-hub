@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate, generateAvailableDateOptions } from '@/utils/dateUtils';
@@ -8,7 +9,8 @@ import { submitAppointment, AppointmentFormData } from '@/utils/appointmentSubmi
 import { validateAppointmentForm } from '@/utils/formValidation';
 import { toast } from 'sonner';
 
-const DUMMY_APPOINTMENTS = [];
+// Empty array for appointments
+const APPOINTMENTS = [];
 
 export const useAppointmentForm = () => {
   const navigate = useNavigate();
@@ -81,10 +83,10 @@ export const useAppointmentForm = () => {
     setShowConfirmation(false);
   };
   
-  const availableTimeSlots = selectedDate ? getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, selectedDate) : [];
+  const availableTimeSlots = selectedDate ? getAvailableTimeSlotsForDay(APPOINTMENTS, selectedDate) : [];
   
   const getAvailableSlotsWrapper = (date: Date) => {
-    return getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, date);
+    return getAvailableTimeSlotsForDay(APPOINTMENTS, date);
   };
   
   const availableDates = generateAvailableDateOptions(getAvailableSlotsWrapper);

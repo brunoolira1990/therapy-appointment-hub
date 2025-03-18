@@ -4,54 +4,8 @@ import { addMonths, subMonths } from 'date-fns';
 import { Appointment, TimeSlot } from '@/types/schedule';
 import { getAvailableTimeSlotsForDay, getAppointmentsForDay } from '@/utils/scheduleUtils';
 
-// Dummy data for demonstration - would come from an API in production
-const DUMMY_APPOINTMENTS: Appointment[] = [
-  {
-    id: '1',
-    patientName: 'João Silva',
-    patientId: 'p1',
-    service: 'Fisioterapia Geral',
-    date: '2023-08-15',
-    time: '09:00',
-    status: 'scheduled',
-  },
-  {
-    id: '2',
-    patientName: 'Maria Oliveira',
-    patientId: 'p2',
-    service: 'Pilates',
-    date: '2023-08-15',
-    time: '14:30',
-    status: 'scheduled',
-  },
-  {
-    id: '3',
-    patientName: 'Carlos Santos',
-    patientId: 'p3',
-    service: 'Fisioterapia Neurológica',
-    date: '2023-08-17',
-    time: '10:00',
-    status: 'pending',
-  },
-  {
-    id: '4',
-    patientName: 'Ana Pereira',
-    patientId: 'p4',
-    service: 'Acupuntura',
-    date: '2023-08-18',
-    time: '15:00',
-    status: 'scheduled',
-  },
-  {
-    id: '5',
-    patientName: 'Ricardo Almeida',
-    patientId: 'p5',
-    service: 'Fisioterapia Esportiva',
-    date: '2023-08-22',
-    time: '11:30',
-    status: 'scheduled',
-  }
-];
+// Empty array instead of dummy data
+const APPOINTMENTS: Appointment[] = [];
 
 export const useSchedule = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -74,20 +28,14 @@ export const useSchedule = () => {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     
-    // Se a data tiver horários disponíveis, mostra o diálogo de horários disponíveis
-    const availableSlots = getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, date);
-    if (availableSlots.length > 0) {
-      setShowAvailableSlots(true);
-    } else {
-      setIsDetailsOpen(true);
-    }
+    // Always show available time slots since there are no appointments
+    setShowAvailableSlots(true);
   };
   
   // Function to handle time slot selection
   const handleTimeSlotSelect = (slot: TimeSlot) => {
     setShowAvailableSlots(false);
-    // Aqui você poderia redirecionar para o formulário de agendamento
-    // ou abrir um diálogo de confirmação
+    // Here you could redirect to the appointment form with the selected slot
   };
   
   // Function to handle appointment click
@@ -99,12 +47,12 @@ export const useSchedule = () => {
   
   // Get appointments for selected date
   const selectedDateAppointments = selectedDate 
-    ? getAppointmentsForDay(DUMMY_APPOINTMENTS, selectedDate) 
+    ? getAppointmentsForDay(APPOINTMENTS, selectedDate) 
     : [];
   
   // Get available time slots for selected date
   const availableTimeSlots = selectedDate
-    ? getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, selectedDate)
+    ? getAvailableTimeSlotsForDay(APPOINTMENTS, selectedDate)
     : [];
   
   return {
@@ -113,7 +61,7 @@ export const useSchedule = () => {
     isDetailsOpen,
     activeTab,
     showAvailableSlots,
-    appointments: DUMMY_APPOINTMENTS,
+    appointments: APPOINTMENTS,
     selectedDateAppointments,
     availableTimeSlots,
     getAvailableTimeSlotsForDay,

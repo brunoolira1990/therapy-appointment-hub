@@ -23,6 +23,7 @@ export const getAvailableTimeSlotsForDay = (appointments: Appointment[], date: D
             (appointment.status === 'scheduled' || appointment.status === 'pending'))
     .map(appointment => appointment.time);
   
+  // Always return all time slots if there are no booked times
   return timeSlots.filter(slot => !bookedTimes.includes(slot.time));
 };
 

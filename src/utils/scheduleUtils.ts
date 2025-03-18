@@ -15,12 +15,15 @@ export const AVAILABLE_TIME_SLOTS: TimeSlot[] = [
 
 // Função para verificar horários disponíveis para uma data específica
 export const getAvailableTimeSlotsForDay = (appointments: Appointment[], date: Date): TimeSlot[] => {
+  if (!date) return [];
+  
   const dateString = format(date, 'yyyy-MM-dd');
   const bookedTimes = appointments
     .filter(appointment => appointment.date === dateString && 
            (appointment.status === 'scheduled' || appointment.status === 'pending'))
     .map(appointment => appointment.time);
   
+  // If there are no appointments, return all available time slots
   return AVAILABLE_TIME_SLOTS.filter(slot => !bookedTimes.includes(slot.time));
 };
 
