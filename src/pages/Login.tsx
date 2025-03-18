@@ -4,20 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import Button from '@/components/Button';
-import { Lock, User } from 'lucide-react';
+import { Lock, User, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, loginLoading } = useAuth();
   const navigate = useNavigate();
 
   // Redirecionar se já estiver autenticado
   useEffect(() => {
     if (isAuthenticated) {
+      console.log('Usuário já autenticado, redirecionando...');
       navigate('/patients');
     }
   }, [isAuthenticated, navigate]);
@@ -30,23 +30,17 @@ const Login = () => {
       return;
     }
     
-    setIsLoading(true);
-
     try {
-      console.log('Enviando solicitação de login:', { username, password });
+      console.log('Enviando solicitação de login:', { username });
       const success = await login(username, password);
       
       if (success) {
         console.log('Login bem sucedido, redirecionando...');
         navigate('/patients');
-      } else {
-        console.log('Login falhou');
       }
     } catch (error) {
       console.error('Erro durante o login:', error);
       toast.error('Ocorreu um erro ao tentar fazer login. Tente novamente.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -79,7 +73,7 @@ const Login = () => {
                   type="text"
                   autoComplete="username"
                   required
-                  disabled={isLoading}
+                  disabled={loginLoading}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Seu usuário"
@@ -100,7 +94,7 @@ const Login = () => {
                   type="password"
                   autoComplete="current-password"
                   required
-                  disabled={isLoading}
+                  disabled={loginLoading}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -120,9 +114,17 @@ const Login = () => {
                 variant="primary"
                 size="lg"
                 fullWidth
-                disabled={isLoading}
+                disabled={loginLoading}
+                className="relative"
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                {loginLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span>Entrando...</span>
+                  </>
+                ) : (
+                  'Entrar'
+                )}
               </Button>
             </div>
           </form>
