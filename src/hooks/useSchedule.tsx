@@ -116,7 +116,7 @@ export const useSchedule = () => {
     appointments: DUMMY_APPOINTMENTS,
     selectedDateAppointments,
     availableTimeSlots,
-    getAvailableTimeSlotsForDay: (date: Date) => getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, date),
+    getAvailableTimeSlotsForDay,
     actions: {
       nextMonth,
       prevMonth,
@@ -125,7 +125,8 @@ export const useSchedule = () => {
       handleAppointmentClick,
       setActiveTab,
       setIsDetailsOpen,
-      setShowAvailableSlots
+      setShowAvailableSlots,
+      getAvailableTimeSlotsForDay
     }
   };
 };

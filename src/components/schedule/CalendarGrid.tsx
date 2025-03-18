@@ -14,7 +14,7 @@ interface CalendarGridProps {
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onSelectDate: (date: Date) => void;
-  getAvailableTimeSlotsForDay: (appointments: Appointment[], date: Date) => any[];
+  getAvailableTimeSlotsForDay: (date: Date) => any[];
 }
 
 const CalendarGrid: React.FC<CalendarGridProps> = ({
@@ -73,7 +73,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         
         {/* Days of the month */}
         {daysInMonth.map((day, i) => {
-          const availableSlots = getAvailableTimeSlotsForDay(appointments, day);
+          const availableSlots = getAvailableTimeSlotsForDay(day);
           const isCurrentDay = isToday(day);
           const isCurrentMonth = isSameMonth(day, currentMonth);
           const isSelected = selectedDate && isSameDay(day, selectedDate);

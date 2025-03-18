@@ -1,11 +1,6 @@
 
 import { format } from 'date-fns';
-import { bookedAppointments } from './dateUtils';
-
-export interface TimeSlot {
-  id: string;
-  time: string;
-}
+import { Appointment, TimeSlot } from '@/types/schedule';
 
 // Available time slots
 export const timeSlots: TimeSlot[] = [
@@ -19,12 +14,13 @@ export const timeSlots: TimeSlot[] = [
 ];
 
 // Function to check available time slots for a specific date
-export const getAvailableTimeSlotsForDay = (date: Date): TimeSlot[] => {
+export const getAvailableTimeSlotsForDay = (appointments: Appointment[], date: Date): TimeSlot[] => {
   if (!date) return [];
   
   const dateString = format(date, 'yyyy-MM-dd');
-  const bookedTimes = bookedAppointments
-    .filter(appointment => appointment.date === dateString)
+  const bookedTimes = appointments
+    .filter(appointment => appointment.date === dateString && 
+            (appointment.status === 'scheduled' || appointment.status === 'pending'))
     .map(appointment => appointment.time);
   
   return timeSlots.filter(slot => !bookedTimes.includes(slot.time));
