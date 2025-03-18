@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate, generateAvailableDateOptions } from '@/utils/dateUtils';
@@ -8,6 +7,8 @@ import { handleWhatsAppChange } from '@/utils/formUtils';
 import { submitAppointment, AppointmentFormData } from '@/utils/appointmentSubmission';
 import { validateAppointmentForm } from '@/utils/formValidation';
 import { toast } from 'sonner';
+
+const DUMMY_APPOINTMENTS = [];
 
 export const useAppointmentForm = () => {
   const navigate = useNavigate();
@@ -19,7 +20,6 @@ export const useAppointmentForm = () => {
   const [whatsApp, setWhatsApp] = useState('');
   const [notes, setNotes] = useState('');
   
-  // Form validation state
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -81,11 +81,13 @@ export const useAppointmentForm = () => {
     setShowConfirmation(false);
   };
   
-  // Get available time slots for the selected date
-  const availableTimeSlots = selectedDate ? getAvailableTimeSlotsForDay(selectedDate) : [];
+  const availableTimeSlots = selectedDate ? getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, selectedDate) : [];
   
-  // Generate list of available dates
-  const availableDates = generateAvailableDateOptions(getAvailableTimeSlotsForDay);
+  const getAvailableSlotsWrapper = (date: Date) => {
+    return getAvailableTimeSlotsForDay(DUMMY_APPOINTMENTS, date);
+  };
+  
+  const availableDates = generateAvailableDateOptions(getAvailableSlotsWrapper);
 
   return {
     formData: {
