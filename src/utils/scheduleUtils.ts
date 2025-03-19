@@ -2,15 +2,16 @@
 import { format } from 'date-fns';
 import { Appointment, TimeSlot } from '@/types/schedule';
 
-// Horários disponíveis para agendamento
+// Horários disponíveis para agendamento baseados no horário de trabalho da doutora
 export const AVAILABLE_TIME_SLOTS: TimeSlot[] = [
-  { id: '1', time: '09:00' },
-  { id: '2', time: '10:00' },
-  { id: '3', time: '11:00' },
-  { id: '4', time: '13:00' },
+  { id: '1', time: '08:00' },
+  { id: '2', time: '09:00' },
+  { id: '3', time: '10:00' },
+  { id: '4', time: '11:00' },
   { id: '5', time: '14:00' },
   { id: '6', time: '15:00' },
-  { id: '7', time: '16:00' }
+  { id: '7', time: '16:00' },
+  { id: '8', time: '17:00' }
 ];
 
 // Função para verificar horários disponíveis para uma data específica
@@ -29,6 +30,7 @@ export const getAvailableTimeSlotsForDay = (appointments: Appointment[], date: D
 
 // Function to get appointments for a specific day
 export const getAppointmentsForDay = (appointments: Appointment[], date: Date): Appointment[] => {
+  if (!date) return [];
   const dateString = format(date, 'yyyy-MM-dd');
   return appointments.filter(appointment => appointment.date === dateString);
 };

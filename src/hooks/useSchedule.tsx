@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { addMonths, subMonths } from 'date-fns';
+import React, { useState, useCallback, useMemo } from 'react';
+import { addMonths, subMonths, format } from 'date-fns';
 import { Appointment, TimeSlot } from '@/types/schedule';
 import { getAvailableTimeSlotsForDay, getAppointmentsForDay } from '@/utils/scheduleUtils';
 
@@ -14,46 +14,49 @@ export const useSchedule = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [showAvailableSlots, setShowAvailableSlots] = useState(false);
   
-  // Function to go to next month
-  const nextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
-  };
+  // Memoize functions to prevent unnecessary re-renders
+  const nextMonth = useCallback(() => {
+    setCurrentMonth(prevMonth => addMonths(prevMonth, 1));
+  }, []);
   
-  // Function to go to previous month
-  const prevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
-  };
+  const prevMonth = useCallback(() => {
+    setCurrentMonth(prevMonth => subMonths(prevMonth, 1));
+  }, []);
   
   // Function to handle date selection
-  const handleDateSelect = (date: Date) => {
+  const handleDateSelect = useCallback((date: Date) => {
     setSelectedDate(date);
-    
     // Always show available time slots since there are no appointments
     setShowAvailableSlots(true);
-  };
+  }, []);
   
   // Function to handle time slot selection
-  const handleTimeSlotSelect = (slot: TimeSlot) => {
+  const handleTimeSlotSelect = useCallback((slot: TimeSlot) => {
     setShowAvailableSlots(false);
     // Here you could redirect to the appointment form with the selected slot
-  };
+  }, []);
   
   // Function to handle appointment click
-  const handleAppointmentClick = (appointment: Appointment) => {
+  const handleAppointmentClick = useCallback((appointment: Appointment) => {
     const [year, month, day] = appointment.date.split('-').map(Number);
     setSelectedDate(new Date(year, month - 1, day));
     setIsDetailsOpen(true);
-  };
+  }, []);
   
-  // Get appointments for selected date
-  const selectedDateAppointments = selectedDate 
-    ? getAppointmentsForDay(APPOINTMENTS, selectedDate) 
-    : [];
+  // Get appointments for selected date - memoized to improve performance
+  const selectedDateAppointments = useMemo(() => 
+    selectedDate ? getAppointmentsForDay(APPOINTMENTS, selectedDate) : [],
+  [selectedDate]);
   
-  // Get available time slots for selected date
-  const availableTimeSlots = selectedDate
-    ? getAvailableTimeSlotsForDay(APPOINTMENTS, selectedDate)
-    : [];
+  // Get available time slots for selected date - memoized to improve performance
+  const availableTimeSlots = useMemo(() => 
+    selectedDate ? getAvailableTimeSlotsForDay(APPOINTMENTS, selectedDate) : [],
+  [selectedDate]);
+  
+  // Memoize the getAvailableTimeSlotsForDay function to avoid unnecessary calculations
+  const getAvailableSlotsForDay = useCallback((date: Date) => {
+    return getAvailableTimeSlotsForDay(APPOINTMENTS, date);
+  }, []);
   
   return {
     currentMonth,
@@ -64,7 +67,7 @@ export const useSchedule = () => {
     appointments: APPOINTMENTS,
     selectedDateAppointments,
     availableTimeSlots,
-    getAvailableTimeSlotsForDay,
+    getAvailableTimeSlotsForDay: getAvailableSlotsForDay,
     actions: {
       nextMonth,
       prevMonth,
@@ -74,7 +77,7 @@ export const useSchedule = () => {
       setActiveTab,
       setIsDetailsOpen,
       setShowAvailableSlots,
-      getAvailableTimeSlotsForDay
+      getAvailableTimeSlotsForDay: getAvailableSlotsForDay
     }
   };
 };

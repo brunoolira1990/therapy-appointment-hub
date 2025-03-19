@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -27,10 +27,10 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   getAvailableTimeSlotsForDay
 }) => {
   // Get days in current month
-  const daysInMonth = eachDayOfInterval({
+  const daysInMonth = useMemo(() => eachDayOfInterval({
     start: startOfMonth(currentMonth),
     end: endOfMonth(currentMonth)
-  });
+  }), [currentMonth]);
   
   return (
     <div className="bg-card rounded-xl shadow-sm border border-border p-6">
@@ -78,29 +78,27 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           const isCurrentMonth = isSameMonth(day, currentMonth);
           const isSelected = selectedDate && isSameDay(day, selectedDate);
           
-          // Since there are no appointments, all days should have available slots
-          const hasAvailableSlots = true;
+          // All days should have available slots
+          const hasAvailableSlots = isCurrentMonth;
           
           return (
             <button
               key={i}
               onClick={() => hasAvailableSlots && onSelectDate(day)}
-              disabled={!hasAvailableSlots || !isCurrentMonth}
+              disabled={!hasAvailableSlots}
               className={cn(
                 "relative h-14 rounded-md flex flex-col items-center justify-center text-sm",
                 !isCurrentMonth && "text-muted-foreground opacity-50",
                 isCurrentDay && "bg-primary/10 text-primary",
                 isSelected && "bg-primary text-primary-foreground",
-                !isSelected && !isCurrentDay && hasAvailableSlots && isCurrentMonth && "hover:bg-muted",
+                !isSelected && !isCurrentDay && hasAvailableSlots && "hover:bg-muted",
                 !hasAvailableSlots && "opacity-50 cursor-not-allowed"
               )}
             >
               <span>{format(day, 'd')}</span>
               
-              {hasAvailableSlots && isCurrentMonth && (
+              {hasAvailableSlots && (
                 <div className="absolute bottom-1 flex space-x-0.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
                 </div>
               )}
