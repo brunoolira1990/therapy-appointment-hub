@@ -25,6 +25,7 @@ const Patients = () => {
     selectedPatient,
     filteredPatients,
     patientHasPendingAppointment,
+    isLoading,
     handleAddPatient,
     handleEditPatient,
     handleDeletePatient,
@@ -34,14 +35,30 @@ const Patients = () => {
     handleCancelAppointment
   } = usePatientsData();
   
-  // Redirecionar para login se não estiver autenticado
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
-  // Verificar se o usuário tem papel de admin (doutora)
+  // Check if user has admin role (doctor)
   if (user?.role !== 'admin') {
     return <Navigate to="/" />;
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 pt-24 pb-16 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Carregando pacientes...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   return (

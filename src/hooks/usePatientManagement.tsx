@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Patient } from '@/types/patient';
 import { 
@@ -17,19 +17,19 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Inicializar o banco de dados e carregar pacientes
+  // Initialize database and load patients
   useEffect(() => {
     let isMounted = true;
     
     const initDB = async () => {
       try {
-        // Inicializar banco de dados
+        // Initialize database
         await initializeDatabase();
         
-        // Migrar dados do localStorage para o banco, se houver
+        // Migrate data from localStorage to database if exists
         await migrateLocalStorageToDatabase();
         
-        // Carregar pacientes do banco
+        // Load patients from database
         const loadedPatients = await getPatients();
         
         if (isMounted) {
@@ -43,11 +43,11 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
             description: 'Usando dados locais temporariamente'
           });
           
-          // Carrega do localStorage como fallback
+          // Load from localStorage as fallback
           try {
             const pendingAppointments = JSON.parse(localStorage.getItem('pendingAppointments') || '[]');
             if (pendingAppointments.length > 0) {
-              // Processar os dados do localStorage
+              // Process localStorage data
               const updatedPatients = [...initialPatients];
               
               pendingAppointments.forEach((pendingAppointment: any) => {
@@ -94,21 +94,22 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
     };
   }, [initialPatients]);
 
-  const handleAddPatient = () => {
+  // Memoize handlers with useCallback to prevent unnecessary re-renders
+  const handleAddPatient = useCallback(() => {
     setEditingPatient(null);
-  };
+  }, []);
 
-  const handleEditPatient = (patient: Patient) => {
+  const handleEditPatient = useCallback((patient: Patient) => {
     setEditingPatient(patient);
-  };
+  }, []);
 
-  const handleDeletePatient = async (patientId: string) => {
+  const handleDeletePatient = useCallback(async (patientId: string) => {
     if (window.confirm('Tem certeza que deseja excluir este paciente?')) {
       try {
-        // Deletar paciente no banco
+        // Delete patient from database
         await deletePatient(patientId);
         
-        // Atualizar estado local
+        // Update local state
         setPatients(prev => prev.filter(patient => patient.id !== patientId));
         
         toast.success('Paciente excluído com sucesso');
@@ -117,28 +118,28 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
         toast.error('Erro ao excluir paciente');
       }
     }
-  };
+  }, []);
 
-  const handleFormSubmit = async (patientData: Partial<Patient>) => {
+  const handleFormSubmit = useCallback(async (patientData: Partial<Patient>) => {
     try {
       if (editingPatient) {
-        // Atualizando paciente existente
+        // Update existing patient
         const updatedPatient = {
           ...editingPatient,
           ...patientData
         } as Patient;
         
-        // Atualizar no banco
-        const result = await updatePatient(updatedPatient);
+        // Update in database
+        await updatePatient(updatedPatient);
         
-        // Atualizar estado local
+        // Update local state
         setPatients(prev => prev.map(patient => 
           patient.id === editingPatient.id ? updatedPatient : patient
         ));
         
         toast.success('Paciente atualizado com sucesso');
       } else {
-        // Adicionando novo paciente
+        // Add new patient
         const newPatientData = {
           name: patientData.name || '',
           email: patientData.email || '',
@@ -147,10 +148,10 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
           appointments: []
         };
         
-        // Adicionar no banco
+        // Add to database
         const newPatient = await addPatient(newPatientData);
         
-        // Atualizar estado local
+        // Update local state
         setPatients(prev => [...prev, newPatient]);
         toast.success('Paciente adicionado com sucesso');
       }
@@ -160,11 +161,11 @@ export const usePatientManagement = (initialPatients: Patient[] = []) => {
       console.error('Error saving patient:', error);
       toast.error('Erro ao salvar paciente');
     }
-  };
+  }, [editingPatient]);
 
-  const handleViewAppointments = (patient: Patient) => {
+  const handleViewAppointments = useCallback((patient: Patient) => {
     setSelectedPatient(patient);
-  };
+  }, []);
 
   return {
     patients,

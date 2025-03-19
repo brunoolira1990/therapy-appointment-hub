@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { addMonths, subMonths, format } from 'date-fns';
 import { Appointment, TimeSlot } from '@/types/schedule';
-import { getAvailableTimeSlotsForDay, getAppointmentsForDay } from '@/utils/scheduleUtils';
+import { getAvailableTimeSlotsForDay as getAvailableSlotsForDate, getAppointmentsForDay } from '@/utils/scheduleUtils';
 
 // Empty array instead of dummy data
 const APPOINTMENTS: Appointment[] = [];
@@ -50,12 +50,12 @@ export const useSchedule = () => {
   
   // Get available time slots for selected date - memoized to improve performance
   const availableTimeSlots = useMemo(() => 
-    selectedDate ? getAvailableTimeSlotsForDay(APPOINTMENTS, selectedDate) : [],
+    selectedDate ? getAvailableSlotsForDate(APPOINTMENTS, selectedDate) : [],
   [selectedDate]);
   
   // Memoize the getAvailableTimeSlotsForDay function to avoid unnecessary calculations
-  const getAvailableSlotsForDay = useCallback((date: Date) => {
-    return getAvailableTimeSlotsForDay(APPOINTMENTS, date);
+  const getAvailableTimeSlotsForDay = useCallback((date: Date) => {
+    return getAvailableSlotsForDate(APPOINTMENTS, date);
   }, []);
   
   return {
@@ -67,7 +67,7 @@ export const useSchedule = () => {
     appointments: APPOINTMENTS,
     selectedDateAppointments,
     availableTimeSlots,
-    getAvailableTimeSlotsForDay: getAvailableSlotsForDay,
+    getAvailableTimeSlotsForDay,
     actions: {
       nextMonth,
       prevMonth,
