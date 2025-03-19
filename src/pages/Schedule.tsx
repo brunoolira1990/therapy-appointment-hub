@@ -18,6 +18,7 @@ const Schedule: React.FC = () => {
     appointments,
     availableTimeSlots,
     selectedDateAppointments,
+    getAvailableTimeSlotsForDay,
     actions
   } = useSchedule();
   
@@ -44,7 +45,7 @@ const Schedule: React.FC = () => {
                 onPrevMonth={actions.prevMonth}
                 onNextMonth={actions.nextMonth}
                 onSelectDate={actions.handleDateSelect}
-                getAvailableTimeSlotsForDay={(date) => actions.getAvailableTimeSlotsForDay(appointments, date)}
+                getAvailableTimeSlotsForDay={getAvailableTimeSlotsForDay}
               />
             </div>
             

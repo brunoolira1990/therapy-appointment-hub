@@ -76,8 +76,7 @@ export const useSchedule = () => {
       handleAppointmentClick,
       setActiveTab,
       setIsDetailsOpen,
-      setShowAvailableSlots,
-      getAvailableTimeSlotsForDay: getAvailableSlotsForDay
+      setShowAvailableSlots
     }
   };
 };
