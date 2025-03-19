@@ -1,4 +1,5 @@
 
+import { useCallback } from 'react';
 import { usePatientManagement } from './usePatientManagement';
 import { usePatientFilters } from './usePatientFilters';
 import { useAppointmentManagement } from './useAppointmentManagement';
