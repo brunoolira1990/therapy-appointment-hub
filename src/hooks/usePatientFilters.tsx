@@ -13,9 +13,14 @@ export const usePatientFilters = (patients: Patient[]) => {
 
   // Filter patients based on search term and pending filter - memoized for performance
   const filteredPatients = useMemo(() => {
+    if (!patients || patients.length === 0) return [];
+    
+    // If no filters are applied, return all patients
+    if (!searchTerm && !filterPending) return patients;
+    
     return patients.filter(patient => {
       // Search filter
-      const matchesSearch = 
+      const matchesSearch = !searchTerm ? true :
         patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         patient.whatsApp.includes(searchTerm);
@@ -27,12 +32,19 @@ export const usePatientFilters = (patients: Patient[]) => {
     });
   }, [patients, searchTerm, filterPending, patientHasPendingAppointment]);
 
+  // Adding additional optimization to count pending patients without refiltering
+  const pendingPatientsCount = useMemo(() => {
+    if (!patients || patients.length === 0) return 0;
+    return patients.filter(patientHasPendingAppointment).length;
+  }, [patients, patientHasPendingAppointment]);
+
   return {
     searchTerm,
     setSearchTerm,
     filterPending,
     setFilterPending,
     filteredPatients,
-    patientHasPendingAppointment
+    patientHasPendingAppointment,
+    pendingPatientsCount
   };
 };

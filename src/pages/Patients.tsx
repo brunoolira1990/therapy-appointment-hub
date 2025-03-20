@@ -23,10 +23,13 @@ const Patients = () => {
     patients,
     searchTerm,
     setSearchTerm,
+    filterPending,
+    setFilterPending,
     editingPatient,
     selectedPatient,
     filteredPatients,
     patientHasPendingAppointment,
+    pendingPatientsCount,
     isLoading,
     handleAddPatient,
     handleEditPatient,
@@ -39,18 +42,21 @@ const Patients = () => {
   
   // Pagination logic - memoized to prevent unnecessary calculations
   const paginatedPatients = useMemo(() => {
+    if (!filteredPatients || filteredPatients.length === 0) return [];
     const startIndex = (currentPage - 1) * patientsPerPage;
     return filteredPatients.slice(startIndex, startIndex + patientsPerPage);
   }, [filteredPatients, currentPage, patientsPerPage]);
   
   const totalPages = useMemo(() => 
-    Math.ceil(filteredPatients.length / patientsPerPage),
-  [filteredPatients.length, patientsPerPage]);
+    filteredPatients && filteredPatients.length > 0 
+      ? Math.ceil(filteredPatients.length / patientsPerPage)
+      : 1,
+  [filteredPatients, patientsPerPage]);
   
   // Reset to first page when search changes
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, filterPending]);
   
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
@@ -106,15 +112,22 @@ const Patients = () => {
         <div className="container-wide">
           <PatientsHeader onAddPatient={handleOpenForm} />
           
-          <PatientsSearch 
-            searchTerm={searchTerm} 
-            setSearchTerm={setSearchTerm} 
-          />
-          
-          <PendingAppointmentsFilter
-            patients={patients}
-            patientHasPendingAppointment={patientHasPendingAppointment}
-          />
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+            <div className="lg:col-span-3">
+              <PatientsSearch 
+                searchTerm={searchTerm} 
+                setSearchTerm={setSearchTerm} 
+              />
+            </div>
+            
+            <div className="lg:col-span-1 flex items-center">
+              <PendingAppointmentsFilter
+                pendingCount={pendingPatientsCount}
+                filterPending={filterPending}
+                setFilterPending={setFilterPending}
+              />
+            </div>
+          </div>
           
           <PatientsList
             filteredPatients={paginatedPatients}

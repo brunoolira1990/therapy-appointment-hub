@@ -24,8 +24,11 @@ export const usePatientsData = () => {
   const {
     searchTerm,
     setSearchTerm,
+    filterPending,
+    setFilterPending,
     filteredPatients,
-    patientHasPendingAppointment
+    patientHasPendingAppointment,
+    pendingPatientsCount
   } = usePatientFilters(patients);
 
   const {
@@ -41,12 +44,15 @@ export const usePatientsData = () => {
     setPatients,
     searchTerm,
     setSearchTerm,
+    filterPending,
+    setFilterPending,
     editingPatient,
     setEditingPatient,
     selectedPatient,
     setSelectedPatient,
     filteredPatients,
     patientHasPendingAppointment,
+    pendingPatientsCount,
     isLoading,
     handleAddPatient,
     handleEditPatient,
