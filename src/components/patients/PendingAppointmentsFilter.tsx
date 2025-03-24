@@ -8,12 +8,17 @@ interface PendingAppointmentsFilterProps {
   setFilterPending: (value: boolean) => void;
 }
 
-// Memoized component to prevent unnecessary re-renders
+// Using memo to prevent unnecessary re-renders
 const PendingAppointmentsFilter: React.FC<PendingAppointmentsFilterProps> = memo(({ 
   pendingCount,
   filterPending,
   setFilterPending
 }) => {
+  // Clicking the button will toggle the filter state
+  const handleToggleFilter = React.useCallback(() => {
+    setFilterPending(!filterPending);
+  }, [filterPending, setFilterPending]);
+
   return (
     <div className="mb-6">
       <button 
@@ -22,7 +27,7 @@ const PendingAppointmentsFilter: React.FC<PendingAppointmentsFilterProps> = memo
             ? 'bg-amber-500 text-white' 
             : 'bg-amber-100 text-amber-800 hover:bg-amber-200'
         }`}
-        onClick={() => setFilterPending(!filterPending)}
+        onClick={handleToggleFilter}
         disabled={pendingCount === 0}
         aria-pressed={filterPending}
       >

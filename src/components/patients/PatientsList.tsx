@@ -14,7 +14,7 @@ interface PatientsListProps {
   onViewAppointments: (patient: Patient) => void;
 }
 
-// Memoized component to prevent unnecessary re-renders
+// Fully memoized component to prevent unnecessary re-renders
 const PatientsList: React.FC<PatientsListProps> = memo(({
   filteredPatients,
   patients,
@@ -24,6 +24,7 @@ const PatientsList: React.FC<PatientsListProps> = memo(({
   onDeletePatient,
   onViewAppointments,
 }) => {
+  // Render empty state if no patients match filter
   if (!filteredPatients || filteredPatients.length === 0) {
     return (
       <div className="text-center py-12">
@@ -65,6 +66,14 @@ const PatientsList: React.FC<PatientsListProps> = memo(({
         </div>
       )}
     </>
+  );
+}, (prevProps, nextProps) => {
+  // Custom comparison function to prevent unnecessary re-renders
+  return (
+    prevProps.filteredPatients === nextProps.filteredPatients &&
+    prevProps.patients === nextProps.patients &&
+    prevProps.searchTerm === nextProps.searchTerm &&
+    prevProps.patientHasPendingAppointment === nextProps.patientHasPendingAppointment
   );
 });
 
