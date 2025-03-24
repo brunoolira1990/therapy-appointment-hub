@@ -122,11 +122,10 @@ const Login = () => {
             <div>
               <Button
                 type="submit"
-                variant="primary"
+                variant="default"
                 size="lg"
-                fullWidth
                 disabled={loginLoading}
-                className="relative"
+                className="w-full relative"
               >
                 {loginLoading ? (
                   <>
