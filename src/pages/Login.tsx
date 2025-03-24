@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import Button from '@/components/Button';
-import { Lock, User, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Lock, User, Loader2, ArrowLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -46,6 +46,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+      {/* Back button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => navigate('/')}
+        className="absolute top-4 left-4 flex items-center gap-2"
+      >
+        <ArrowLeft size={16} />
+        Voltar
+      </Button>
+      
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center">
