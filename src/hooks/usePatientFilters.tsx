@@ -8,35 +8,37 @@ export const usePatientFilters = (patients: Patient[]) => {
 
   // Check if patient has pending appointments - memoized for performance
   const patientHasPendingAppointment = useCallback((patient: Patient) => {
-    return patient.appointments.some(apt => apt.status === 'pending');
+    return patient?.appointments?.some(apt => apt.status === 'pending') || false;
   }, []);
 
-  // Filter patients based on search term and pending filter - memoized for performance
+  // Calculate pending patients count only once per patients array update
+  const pendingPatientsCount = useMemo(() => {
+    if (!patients || patients.length === 0) return 0;
+    return patients.filter(patient => patientHasPendingAppointment(patient)).length;
+  }, [patients, patientHasPendingAppointment]);
+
+  // Optimized filtering logic
   const filteredPatients = useMemo(() => {
     if (!patients || patients.length === 0) return [];
     
-    // If no filters are applied, return all patients
+    // Skip filtering if no filters are applied
     if (!searchTerm && !filterPending) return patients;
     
+    // Apply filters
     return patients.filter(patient => {
-      // Search filter
-      const matchesSearch = !searchTerm ? true :
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.whatsApp.includes(searchTerm);
+      // Search filter - skip if no search term
+      const matchesSearch = !searchTerm ? true : (
+        (patient.name?.toLowerCase().includes(searchTerm.toLowerCase())) || 
+        (patient.email?.toLowerCase().includes(searchTerm.toLowerCase())) || 
+        (patient.whatsApp?.includes(searchTerm))
+      );
       
-      // Pending filter
+      // Pending filter - skip if not filtering pending
       const matchesPending = !filterPending || patientHasPendingAppointment(patient);
       
       return matchesSearch && matchesPending;
     });
   }, [patients, searchTerm, filterPending, patientHasPendingAppointment]);
-
-  // Adding additional optimization to count pending patients without refiltering
-  const pendingPatientsCount = useMemo(() => {
-    if (!patients || patients.length === 0) return 0;
-    return patients.filter(patientHasPendingAppointment).length;
-  }, [patients, patientHasPendingAppointment]);
 
   return {
     searchTerm,

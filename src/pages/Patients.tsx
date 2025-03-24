@@ -17,7 +17,8 @@ const Patients = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const patientsPerPage = 9; // Show 9 patients per page (3x3 grid)
+  // Reduced patients per page to improve performance
+  const patientsPerPage = 6; 
   
   const {
     patients,
@@ -48,18 +49,19 @@ const Patients = () => {
   }, [filteredPatients, currentPage, patientsPerPage]);
   
   const totalPages = useMemo(() => 
-    filteredPatients && filteredPatients.length > 0 
-      ? Math.ceil(filteredPatients.length / patientsPerPage)
-      : 1,
-  [filteredPatients, patientsPerPage]);
+    Math.max(1, Math.ceil((filteredPatients?.length || 0) / patientsPerPage)),
+    [filteredPatients, patientsPerPage]
+  );
   
-  // Reset to first page when search changes
+  // Reset to first page when search or filter changes
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterPending]);
   
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
+    // Scroll to top when changing page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
   
   // Memoize these handlers to prevent unnecessary re-renders
@@ -142,21 +144,22 @@ const Patients = () => {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-8 flex justify-center">
-              <div className="flex space-x-2">
+              <nav className="flex space-x-2" aria-label="Pagination">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`px-3 py-1 rounded ${
+                    className={`px-3 py-1 rounded-md transition-colors ${
                       currentPage === page
                         ? 'bg-primary text-white'
                         : 'bg-secondary hover:bg-primary/20'
                     }`}
+                    aria-current={currentPage === page ? 'page' : undefined}
                   >
                     {page}
                   </button>
                 ))}
-              </div>
+              </nav>
             </div>
           )}
         </div>

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Clock } from 'lucide-react';
 
 interface PendingAppointmentsFilterProps {
@@ -8,7 +8,8 @@ interface PendingAppointmentsFilterProps {
   setFilterPending: (value: boolean) => void;
 }
 
-const PendingAppointmentsFilter: React.FC<PendingAppointmentsFilterProps> = ({ 
+// Memoized component to prevent unnecessary re-renders
+const PendingAppointmentsFilter: React.FC<PendingAppointmentsFilterProps> = memo(({ 
   pendingCount,
   filterPending,
   setFilterPending
@@ -22,6 +23,8 @@ const PendingAppointmentsFilter: React.FC<PendingAppointmentsFilterProps> = ({
             : 'bg-amber-100 text-amber-800 hover:bg-amber-200'
         }`}
         onClick={() => setFilterPending(!filterPending)}
+        disabled={pendingCount === 0}
+        aria-pressed={filterPending}
       >
         <Clock size={14} className="mr-2" />
         <span className="text-sm">
@@ -31,6 +34,8 @@ const PendingAppointmentsFilter: React.FC<PendingAppointmentsFilterProps> = ({
       </button>
     </div>
   );
-};
+});
+
+PendingAppointmentsFilter.displayName = 'PendingAppointmentsFilter';
 
 export default PendingAppointmentsFilter;

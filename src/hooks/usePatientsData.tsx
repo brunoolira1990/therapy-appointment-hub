@@ -36,7 +36,7 @@ export const usePatientsData = () => {
     handleCancelAppointment
   } = useAppointmentManagement(patients, setPatients, selectedPatient, setSelectedPatient);
 
-  // Carrega agendamentos pendentes do localStorage e migra para o banco
+  // Load pending appointments once
   usePendingAppointments(patients, setPatients);
 
   return {

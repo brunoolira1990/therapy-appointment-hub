@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { UserCheck } from 'lucide-react';
 import PatientCard from '@/components/PatientCard';
 import { Patient } from '@/types/patient';
@@ -14,7 +14,8 @@ interface PatientsListProps {
   onViewAppointments: (patient: Patient) => void;
 }
 
-const PatientsList: React.FC<PatientsListProps> = ({
+// Memoized component to prevent unnecessary re-renders
+const PatientsList: React.FC<PatientsListProps> = memo(({
   filteredPatients,
   patients,
   searchTerm,
@@ -23,7 +24,7 @@ const PatientsList: React.FC<PatientsListProps> = ({
   onDeletePatient,
   onViewAppointments,
 }) => {
-  if (filteredPatients.length === 0) {
+  if (!filteredPatients || filteredPatients.length === 0) {
     return (
       <div className="text-center py-12">
         <UserCheck size={48} className="mx-auto text-muted-foreground mb-4" />
@@ -43,13 +44,13 @@ const PatientsList: React.FC<PatientsListProps> = ({
         {filteredPatients.map((patient) => (
           <PatientCard
             key={patient.id}
-            name={patient.name}
-            email={patient.email}
-            whatsApp={patient.whatsApp}
-            birthDate={patient.birthDate}
+            name={patient.name || ''}
+            email={patient.email || ''}
+            whatsApp={patient.whatsApp || ''}
+            birthDate={patient.birthDate || ''}
             patientId={patient.id}
-            appointmentsCount={patient.appointments.length}
-            appointments={patient.appointments}
+            appointmentsCount={patient.appointments?.length || 0}
+            appointments={patient.appointments || []}
             hasPendingAppointment={patientHasPendingAppointment(patient)}
             onEdit={() => onEditPatient(patient)}
             onDelete={() => onDeletePatient(patient.id)}
@@ -65,6 +66,8 @@ const PatientsList: React.FC<PatientsListProps> = ({
       )}
     </>
   );
-};
+});
+
+PatientsList.displayName = 'PatientsList';
 
 export default PatientsList;
