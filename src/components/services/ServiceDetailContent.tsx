@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ interface ServiceDetailContentProps {
   onContactClick: () => void;
 }
 
-const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({ 
+const ServiceDetailContent: React.FC<ServiceDetailContentProps> = memo(({ 
   title, 
   onScheduleClick, 
   onContactClick 
@@ -19,13 +19,13 @@ const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({
   const navigate = useNavigate();
   const { openAppointmentForm } = useAppointmentForm();
   
-  const handleScheduleClick = () => {
+  const handleScheduleClick = useCallback(() => {
     openAppointmentForm();
-  };
+  }, [openAppointmentForm]);
   
-  const handleContactClick = () => {
+  const handleContactClick = useCallback(() => {
     navigate('/contact');
-  };
+  }, [navigate]);
   
   return (
     <section className="py-16">
@@ -68,6 +68,8 @@ const ServiceDetailContent: React.FC<ServiceDetailContentProps> = ({
       </div>
     </section>
   );
-};
+});
+
+ServiceDetailContent.displayName = 'ServiceDetailContent';
 
 export default ServiceDetailContent;

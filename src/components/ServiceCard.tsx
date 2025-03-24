@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -15,26 +15,32 @@ interface ServiceCardProps {
 }
 
 // Componente IconWrapper para encapsular o ícone
-const IconWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const IconWrapper = memo(({ children }: { children: React.ReactNode }) => (
   <div className="w-12 h-12 mb-6 rounded-xl bg-primary/10 flex items-center justify-center text-primary transition-colors group-hover:bg-primary group-hover:text-white">
     {children}
   </div>
-);
+));
+
+IconWrapper.displayName = 'IconWrapper';
 
 // Componente CardContent para o conteúdo do card
-const CardContent: React.FC<{ title: string, description: string }> = ({ title, description }) => (
+const CardContent = memo(({ title, description }: { title: string, description: string }) => (
   <>
     <h3 className="text-xl font-bold mb-3">{title}</h3>
     <p className="text-muted-foreground mb-6">{description}</p>
   </>
-);
+));
+
+CardContent.displayName = 'CardContent';
 
 // Componente GradientOverlay para o efeito de gradiente
-const GradientOverlay: React.FC = () => (
+const GradientOverlay = memo(() => (
   <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-);
+));
 
-const ServiceCard: React.FC<ServiceCardProps> = ({
+GradientOverlay.displayName = 'GradientOverlay';
+
+const ServiceCard: React.FC<ServiceCardProps> = memo(({
   title,
   description,
   icon,
@@ -43,13 +49,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
 }) => {
   const navigate = useNavigate();
   
-  const handleViewService = () => {
+  const handleViewService = useCallback(() => {
     if (id) {
       navigate(`/services/${id}`);
     } else {
       navigate('/services');
     }
-  };
+  }, [navigate, id]);
   
   return (
     <div 
@@ -77,6 +83,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <GradientOverlay />
     </div>
   );
-};
+});
+
+ServiceCard.displayName = 'ServiceCard';
 
 export default ServiceCard;

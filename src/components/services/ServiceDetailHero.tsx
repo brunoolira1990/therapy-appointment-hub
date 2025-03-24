@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,13 +12,29 @@ interface ServiceDetailHeroProps {
   onScheduleClick: () => void;
 }
 
-const ServiceDetailHero: React.FC<ServiceDetailHeroProps> = ({ service, onScheduleClick }) => {
+// Memoized benefits list to prevent re-renders
+const BenefitsList = memo(({ benefits }: { benefits: string[] }) => (
+  <ul className="space-y-3">
+    {benefits.map((benefit, idx) => (
+      <li key={idx} className="flex items-start">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mr-2 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="m5 12 5 5L20 7" />
+        </svg>
+        <span>{benefit}</span>
+      </li>
+    ))}
+  </ul>
+));
+
+BenefitsList.displayName = 'BenefitsList';
+
+const ServiceDetailHero: React.FC<ServiceDetailHeroProps> = memo(({ service, onScheduleClick }) => {
   const navigate = useNavigate();
   const { openAppointmentForm } = useAppointmentForm();
   
-  const handleScheduleClick = () => {
+  const handleScheduleClick = useCallback(() => {
     openAppointmentForm();
-  };
+  }, [openAppointmentForm]);
   
   return (
     <section className={`py-16 ${service.color}`}>
@@ -52,22 +68,15 @@ const ServiceDetailHero: React.FC<ServiceDetailHeroProps> = ({ service, onSchedu
           <div className="w-full md:w-1/3 rounded-xl overflow-hidden">
             <div className="border border-primary/10 rounded-xl p-6 bg-white/80">
               <h3 className="font-semibold text-xl mb-4">Benefícios</h3>
-              <ul className="space-y-3">
-                {service.benefits.map((benefit, idx) => (
-                  <li key={idx} className="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mr-2 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="m5 12 5 5L20 7" />
-                    </svg>
-                    <span>{benefit}</span>
-                  </li>
-                ))}
-              </ul>
+              <BenefitsList benefits={service.benefits} />
             </div>
           </div>
         </div>
       </div>
     </section>
   );
-};
+});
+
+ServiceDetailHero.displayName = 'ServiceDetailHero';
 
 export default ServiceDetailHero;

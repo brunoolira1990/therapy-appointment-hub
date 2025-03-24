@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import ServiceCard from '@/components/ServiceCard';
 import { ServiceDetailProps, getIconComponent } from '@/services/api';
 
@@ -8,7 +8,8 @@ interface ServicesOverviewProps {
   isLoading: boolean;
 }
 
-const ServicesOverview: React.FC<ServicesOverviewProps> = ({ services, isLoading }) => {
+// Memoize the component to prevent unnecessary re-renders
+const ServicesOverview: React.FC<ServicesOverviewProps> = memo(({ services, isLoading }) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -45,6 +46,9 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ services, isLoading
       </div>
     </section>
   );
-};
+});
+
+// Add displayName for better debugging
+ServicesOverview.displayName = 'ServicesOverview';
 
 export default ServicesOverview;

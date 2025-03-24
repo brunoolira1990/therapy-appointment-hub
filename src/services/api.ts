@@ -1,6 +1,6 @@
 
 import { ArrowRight, MoveHorizontal, Activity, Stethoscope, FileHeart, UserCheck, ShieldCheck } from 'lucide-react';
-import React from 'react';
+import React, { memo } from 'react';
 
 export interface ServiceDetailProps {
   id: string;
@@ -11,16 +11,24 @@ export interface ServiceDetailProps {
   color: string;
 }
 
+// Cache for services data
+let servicesCache: ServiceDetailProps[] | null = null;
+
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// This function simulates fetching services from an API
+// This function simulates fetching services from an API with caching
 export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
-  // Simulate network delay
+  // Return cached data if available
+  if (servicesCache) {
+    return servicesCache;
+  }
+  
+  // Simulate network delay only on first load
   await delay(800);
   
   // Serviços oferecidos pela Dra. Tatyane Lira
-  return [
+  const services = [
     {
       id: "1",
       title: "Reabilitação Física",
@@ -106,24 +114,25 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
       color: "bg-teal-50"
     }
   ];
+  
+  // Cache the data for future requests
+  servicesCache = services;
+  
+  return services;
+};
+
+// Memoize icon components to prevent unnecessary re-renders
+const iconComponents = {
+  MoveHorizontal: memo((props: any) => <MoveHorizontal {...props} />),
+  Activity: memo((props: any) => <Activity {...props} />),
+  Stethoscope: memo((props: any) => <Stethoscope {...props} />),
+  FileHeart: memo((props: any) => <FileHeart {...props} />),
+  UserCheck: memo((props: any) => <UserCheck {...props} />),
+  ShieldCheck: memo((props: any) => <ShieldCheck {...props} />)
 };
 
 // Helper function to map icon names to actual React components
 export const getIconComponent = (iconName: string, size = 24): React.ReactNode => {
-  switch (iconName) {
-    case 'MoveHorizontal':
-      return React.createElement(MoveHorizontal, { size });
-    case 'Activity':
-      return React.createElement(Activity, { size });
-    case 'Stethoscope':
-      return React.createElement(Stethoscope, { size });
-    case 'FileHeart':
-      return React.createElement(FileHeart, { size });
-    case 'UserCheck':
-      return React.createElement(UserCheck, { size });
-    case 'ShieldCheck':
-      return React.createElement(ShieldCheck, { size });
-    default:
-      return React.createElement(MoveHorizontal, { size });
-  }
+  const IconComponent = iconComponents[iconName as keyof typeof iconComponents] || iconComponents.MoveHorizontal;
+  return <IconComponent size={size} />;
 };
