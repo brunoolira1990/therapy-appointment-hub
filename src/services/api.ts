@@ -142,5 +142,5 @@ const iconComponents = {
 // Helper function to map icon names to actual React components
 export const getIconComponent = (iconName: string, size = 24): React.ReactNode => {
   const IconComponent = iconComponents[iconName as keyof typeof iconComponents] || iconComponents.MoveHorizontal;
-  return <IconComponent size={size} />;
+  return React.createElement(IconComponent, { size });
 };
