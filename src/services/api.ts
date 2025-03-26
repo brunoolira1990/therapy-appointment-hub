@@ -122,13 +122,21 @@ export const fetchServices = async (): Promise<ServiceDetailProps[]> => {
 };
 
 // Memoize icon components to prevent unnecessary re-renders
+const MemoizedMoveHorizontal = memo(MoveHorizontal);
+const MemoizedActivity = memo(Activity);
+const MemoizedStethoscope = memo(Stethoscope);
+const MemoizedFileHeart = memo(FileHeart);
+const MemoizedUserCheck = memo(UserCheck);
+const MemoizedShieldCheck = memo(ShieldCheck);
+
+// Map of icon names to component references
 const iconComponents = {
-  MoveHorizontal: memo((props: any) => <MoveHorizontal {...props} />),
-  Activity: memo((props: any) => <Activity {...props} />),
-  Stethoscope: memo((props: any) => <Stethoscope {...props} />),
-  FileHeart: memo((props: any) => <FileHeart {...props} />),
-  UserCheck: memo((props: any) => <UserCheck {...props} />),
-  ShieldCheck: memo((props: any) => <ShieldCheck {...props} />)
+  MoveHorizontal: MemoizedMoveHorizontal,
+  Activity: MemoizedActivity,
+  Stethoscope: MemoizedStethoscope,
+  FileHeart: MemoizedFileHeart,
+  UserCheck: MemoizedUserCheck,
+  ShieldCheck: MemoizedShieldCheck
 };
 
 // Helper function to map icon names to actual React components
